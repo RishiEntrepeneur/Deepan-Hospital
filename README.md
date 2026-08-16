@@ -1,6 +1,6 @@
 # Deepan Hospital · தீபன் மருத்துவமனை
 
-Bilingual (English / Tamil) appointment booking for Deepan Hospital, Tiruchirappalli.
+Trilingual (English / Tamil / Hindi) appointment booking for Deepan Hospital, Tiruchirappalli.
 
 - **Front end** — React 19, Vite, Tailwind CSS v4, Lucide icons
 - **API** — Node (Express 5) with SQLite via Node's built-in `node:sqlite` — no native build step

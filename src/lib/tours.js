@@ -6,7 +6,7 @@
  * than quietly pointing at the wrong thing.
  */
 
-/** First-run tour for patients. Bilingual, like the rest of the patient app. */
+/** First-run tour for patients. In all three languages, like the rest of the patient app. */
 export const patientTour = (t) => [
   {
     target: '[data-tour="book"]',

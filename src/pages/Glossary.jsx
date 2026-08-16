@@ -24,7 +24,7 @@ export default function Glossary({ onStartTour }) {
   const categories = useMemo(
     () => [
       ...GLOSSARY_CATEGORIES,
-      { id: 'department', name: { en: 'Departments', ta: 'துறைகள்' } },
+      { id: 'department', name: { en: 'Departments', ta: 'துறைகள்', hi: 'विभाग' } },
     ],
     [],
   )

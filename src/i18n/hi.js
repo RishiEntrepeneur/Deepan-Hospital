@@ -7,11 +7,12 @@
  * block, where a patient reading English would have been shown Hindi. A file
  * per language makes that mistake impossible to write.
  *
- * Coverage is deliberately partial and prioritised: everything a patient
- * touches to find a doctor and book, cancel or manage an appointment. Anything
- * missing falls back to English automatically (see LanguageContext), so a gap
- * reads as English rather than as a broken key. `npm run i18n:coverage` lists
- * exactly what is still untranslated.
+ * Coverage was deliberately partial for a long time — the booking journey
+ * first — and it is complete now, so this file is held to the same parity as
+ * Tamil: `npm run i18n:check` fails on a key English has and Hindi does not.
+ * Anything missing would still fall back to English automatically (see
+ * LanguageContext), so a gap reads as English rather than as a broken key —
+ * that safety net stays, it is just no longer somewhere to leave work.
  *
  * Register: plain, respectful Hindi as spoken rather than Sanskritised
  * officialese — "अपॉइंटमेंट" and "डॉक्टर" are what people actually say, and a

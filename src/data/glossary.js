@@ -271,7 +271,7 @@ export const GLOSSARY = [
   {
     id: 'grade-chief',
     category: 'grade',
-    term: { en: 'Chief Consultant', ta: 'தலைமை ஆலோசகர்', hi: 'मुख्य परामर्शदाता' },
+    term: { en: 'Chief Consultant', ta: 'தலைமை ஆலோசகர்', hi: 'मुख्य सलाहकार' },
     definition: {
       en: 'The most senior doctor in the hospital or a department, usually with the longest experience.',
       ta: 'மருத்துவமனை அல்லது துறையின் மிக மூத்த மருத்துவர் — பொதுவாக அதிக அனுபவம் உள்ளவர்.',
@@ -281,7 +281,7 @@ export const GLOSSARY = [
   {
     id: 'grade-senior',
     category: 'grade',
-    term: { en: 'Senior Consultant', ta: 'மூத்த ஆலோசகர்', hi: 'वरिष्ठ परामर्शदाता' },
+    term: { en: 'Senior Consultant', ta: 'மூத்த ஆலோசகர்', hi: 'वरिष्ठ सलाहकार' },
     definition: {
       en: 'An experienced specialist who leads difficult cases and supervises junior doctors.',
       ta: 'கடினமான வழக்குகளை கையாளும், இளநிலை மருத்துவர்களை மேற்பார்வையிடும் அனுபவமிக்க நிபுணர்.',
@@ -291,7 +291,7 @@ export const GLOSSARY = [
   {
     id: 'grade-consultant',
     category: 'grade',
-    term: { en: 'Consultant', ta: 'ஆலோசகர்', hi: 'परामर्शदाता' },
+    term: { en: 'Consultant', ta: 'ஆலோசகர்', hi: 'सलाहकार' },
     definition: {
       en: 'A fully qualified specialist who runs their own clinic and treats patients independently.',
       ta: 'சொந்தமாக ஆலோசனை வழங்கி, தனித்து நோயாளிகளுக்குச் சிகிச்சை அளிக்கும் முழுத் தகுதி பெற்ற நிபுணர்.',
@@ -301,7 +301,7 @@ export const GLOSSARY = [
   {
     id: 'grade-visiting',
     category: 'grade',
-    term: { en: 'Visiting Consultant', ta: 'வருகை ஆலோசகர்', hi: 'विज़िटिंग परामर्शदाता' },
+    term: { en: 'Visiting Consultant', ta: 'வருகை ஆலோசகர்', hi: 'आगंतुक सलाहकार' },
     definition: {
       en: 'A specialist who attends only on fixed days — book early, as their slots are limited.',
       ta: 'குறிப்பிட்ட நாட்களில் மட்டும் வரும் நிபுணர் — நேரம் குறைவு என்பதால் முன்கூட்டியே பதிவு செய்யுங்கள்.',
@@ -311,7 +311,7 @@ export const GLOSSARY = [
   {
     id: 'grade-dmo',
     category: 'grade',
-    term: { en: 'Duty Medical Officer', ta: 'பணி மருத்துவ அலுவலர்', hi: 'ड्यूटी मेडिकल ऑफ़िसर' },
+    term: { en: 'Duty Medical Officer', ta: 'பணி மருத்துவ அலுவலர்', hi: 'ड्यूटी चिकित्सा अधिकारी' },
     definition: {
       en: 'The doctor on shift in casualty who sees you first in an emergency and calls in specialists if needed.',
       ta: 'அவசரப் பிரிவில் பணியில் இருந்து முதலில் உங்களைப் பார்க்கும் மருத்துவர்; தேவைப்பட்டால் நிபுணரை அழைப்பார்.',

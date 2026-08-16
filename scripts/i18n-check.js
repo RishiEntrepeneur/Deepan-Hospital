@@ -15,9 +15,11 @@
  *      translation. A dropped placeholder prints "Welcome back, " with nothing
  *      after it; an invented one prints the braces raw at a patient.
  *
- * Hindi is reported rather than enforced. Its coverage is deliberately partial
- * — the patient journey first — and missing keys fall back to English by
- * design, so an incomplete Hindi dictionary is a known state, not a failure.
+ * Hindi used to be reported rather than enforced, because its coverage was
+ * deliberately partial — the patient journey first, everything else falling
+ * back to English. It is complete now, so it is held to the same parity as
+ * Tamil. The fallback still exists and still works; it is simply no longer
+ * something a new key is allowed to rely on.
  *
  *   node scripts/i18n-check.js          report, exit 1 on a real problem
  *   node scripts/i18n-check.js --list   also list every missing Hindi key
@@ -135,12 +137,13 @@ for (const lang of ['ta', 'hi']) {
   }
 }
 
-/* ---------- Hindi coverage — reported, not enforced ---------- */
+/* ---------- Hindi coverage ---------- */
 const hi = new Set(keysOf('hi'))
 const missingHindi = [...en].filter((key) => !hi.has(key))
 const strayHindi = [...hi].filter((key) => !en.has(key))
 
 for (const key of strayHindi) problems.push(`Hindi key that no longer exists: ${key}`)
+for (const key of missingHindi) problems.push(`missing in Hindi:    ${key}`)
 
 const done = en.size - missingHindi.length
 const percent = Math.round((done / en.size) * 100)
@@ -148,7 +151,10 @@ const percent = Math.round((done / en.size) * 100)
 console.log()
 console.log(`  English  ${en.size} keys`)
 console.log(`  Tamil    ${ta.size} keys`)
-console.log(`  Hindi    ${hi.size} keys  (${percent}% — the rest falls back to English)`)
+console.log(
+  `  Hindi    ${hi.size} keys` +
+    (missingHindi.length ? `  (${percent}% — the rest falls back to English)` : ''),
+)
 
 if (missingHindi.length && process.argv.includes('--list')) {
   const byArea = {}

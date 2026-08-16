@@ -3,7 +3,7 @@ import { useLanguage } from '../i18n/context'
 import { cx } from '../lib/cx'
 import BrandMark from './BrandMark'
 
-/** Hospital wordmark: a stethoscope-inspired glyph plus the bilingual name. */
+/** Hospital wordmark: a stethoscope-inspired glyph plus the name in the active language. */
 export default function Logo({ compact = false, onClick, className }) {
   const { t } = useLanguage()
 

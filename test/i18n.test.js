@@ -3,6 +3,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { translations, LANGUAGES } from '../src/i18n/translations'
+import { GLOSSARY, GLOSSARY_CATEGORIES } from '../src/data/glossary'
+import { HEALTH_TOPICS } from '../src/data/healthTips'
+import { FACILITIES, GRADES, WEEKDAYS, SPOKEN_LANGUAGES } from '../src/data/hospital'
 
 /**
  * The translation dictionaries.
@@ -135,24 +138,73 @@ describe('Hindi is a deliberate partial translation', () => {
     expect(stray).toEqual([])
   })
 
-  it('still covers the whole booking journey', () => {
+  it('defines every key English defines', () => {
     /*
-     * Coverage is intentionally partial, so this asserts the floor rather than
-     * completeness: the keys a patient cannot book without must be translated.
+     * Hindi began as a deliberately partial dictionary covering the booking
+     * journey, with everything else falling back to English. It is complete
+     * now, so this asserts parity rather than a floor — a new English key
+     * added without its Hindi fails here instead of silently reintroducing
+     * an English line into a Hindi patient's screen.
      */
-    const mustHave = [
-      'action.book',
-      'booking.title',
-      'booking.patientDetails',
-      'visit.question',
-      'visit.first',
-      'visit.review',
-      'error.nameRequired',
-      'error.visitTypeRequired',
-      'pay.title',
-      'appt.cancelled',
-    ]
-    const missing = mustHave.filter((k) => !(k in (translations.hi ?? {})))
+    const missing = Object.keys(translations.en).filter((k) => !(k in (translations.hi ?? {})))
     expect(missing).toEqual([])
+  })
+})
+
+describe('the data files carry all three languages', () => {
+  /*
+   * Nothing in translations.js covers these — the glossary, the health topics
+   * and the facility list keep their own `{ en, ta, hi }` values, and `tl()`
+   * falls back to English silently when one is missing. The glossary sat at 16
+   * of 57 terms translated for exactly that reason: nothing failed.
+   */
+  const langs = ['en', 'ta', 'hi']
+  const gaps = (rows, fields, id = (r) => r.id) =>
+    rows.flatMap((row) =>
+      fields.flatMap((field) =>
+        row[field] == null
+          ? []
+          : langs.filter((l) => !row[field][l]).map((l) => `${id(row)}.${field}.${l}`),
+      ),
+    )
+
+  it('glossary terms and categories', () => {
+    expect(gaps(GLOSSARY_CATEGORIES, ['name'])).toEqual([])
+    expect(gaps(GLOSSARY, ['term', 'expansion', 'definition'])).toEqual([])
+  })
+
+  it('health topics', () => {
+    expect(gaps(HEALTH_TOPICS, ['title', 'body'])).toEqual([])
+  })
+
+  it('facilities', () => {
+    expect(gaps(FACILITIES, ['name', 'text'])).toEqual([])
+  })
+
+  it('grades, weekdays and spoken languages', () => {
+    const asRows = (obj) => Object.entries(obj).map(([id, value]) => ({ id, value }))
+    expect(gaps(asRows(GRADES), ['value'])).toEqual([])
+    expect(gaps(asRows(SPOKEN_LANGUAGES), ['value'])).toEqual([])
+    expect(gaps(WEEKDAYS, ['short', 'long'], (d) => `day${d.index}`)).toEqual([])
+  })
+
+  it('names a doctor grade the same way in the glossary as on the doctor card', () => {
+    /*
+     * The glossary exists to explain the label a patient just read on a doctor
+     * card. Two different Hindi words for "Consultant" — one on the card, one
+     * in the entry explaining it — makes the explanation look like a different
+     * thing entirely.
+     */
+    const entry = (id) => GLOSSARY.find((g) => g.id === id)?.term
+    const same = [
+      ['grade-chief', GRADES.chief],
+      ['grade-senior', GRADES.senior],
+      ['grade-consultant', GRADES.consultant],
+      ['grade-visiting', GRADES.visiting],
+      ['grade-dmo', GRADES.dmo],
+    ]
+    for (const [id, grade] of same) {
+      for (const lang of langs) expect(entry(id)?.[lang]).toBe(grade[lang])
+    }
   })
 })

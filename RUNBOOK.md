@@ -196,22 +196,26 @@ The app runs in **English, Tamil and Hindi**. The switch is in the header and
 the choice is remembered per browser; a phone set to Tamil or Hindi gets that
 language on first visit without touching anything.
 
-**Coverage is not equal, and that is deliberate.** English and Tamil are
-complete. Hindi covers the whole patient journey — finding a doctor, booking,
-paying, cancelling, every error message — and falls back to English for the
-rest. A missing Hindi string shows the English one; it never shows a broken key.
+**All three are now complete**, and the build keeps them that way: a key added
+to English without its Tamil and Hindi fails `npm run i18n:check` and fails the
+test suite. Hindi was partial by design for a long time — the patient journey
+first, everything else falling back to English — so older notes describing it
+that way are out of date. The fallback still exists and still works; it is
+simply no longer something a new string is allowed to lean on.
 
-Check where it stands:
+That covers the interface, the guided tour, the glossary (all 57 terms and
+their categories), the health topics the assistant reads from, and the facility
+list. Check where it stands:
 
 ```bash
 npm run i18n:check -- --list
 ```
 
-Still English at the time of writing: the health-tips pages, the privacy notice,
-the guided tour, and most glossary definitions. **The privacy notice should be
-translated by a person, not generated** — it is the document patients consent
-to under the DPDP Act, and a mistranslation there is a legal problem rather
-than a cosmetic one.
+**One thing is deliberately not machine-translated: the privacy notice.** The
+Hindi in `privacy.*` was written for the app, but before it is relied on it
+**should be reviewed by a person** — it is the document patients consent to
+under the DPDP Act, and a mistranslation there is a legal problem rather than a
+cosmetic one. The same goes for any future change to it.
 
 That same command is worth running after *any* edit to a translation file. It
 catches the mistakes this file structure invites:
@@ -519,5 +523,6 @@ Being straight about this is more useful than a feature list:
 - **One server, one file.** No redundancy. If the machine is off, the app is down
 - **The assistant is not AI.** It matches what you type against the hospital's
   own listings. It cannot reason and will not always understand you
-- **Hindi is not complete.** The patient journey is translated; the health tips,
-  privacy notice and guided tour still read in English. See **Languages** above
+- **The Hindi privacy notice has not been checked by a person.** Everything
+  else reads in all three languages, but that one document is what patients
+  consent to under the DPDP Act. See **Languages** above

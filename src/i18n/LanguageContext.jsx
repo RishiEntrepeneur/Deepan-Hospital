@@ -42,7 +42,7 @@ export function LanguageProvider({ children }) {
     [lang],
   )
 
-  /** Pick the active-language side of a `{ en, ta }` pair coming from mock data. */
+  /** Pick the active language out of an `{ en, ta, hi }` value from the data files. */
   const tl = useCallback(
     (pair) => {
       if (pair == null) return ''
