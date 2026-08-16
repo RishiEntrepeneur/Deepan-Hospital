@@ -1,0 +1,260 @@
+@import 'tailwindcss';
+
+/*
+ * Deepan Hospital — design tokens.
+ *
+ * The approach is deliberate: rather than restyle twenty-five components, the
+ * built-in Tailwind scales themselves are redefined here. `text-slate-900`,
+ * `rounded-2xl` and `shadow-sm` keep their names throughout the codebase but
+ * resolve to a warm, quiet, low-contrast-shadow system.
+ *
+ * The character comes from three decisions:
+ *   1. No pure white and no cool grey. Everything sits on warm bone paper.
+ *   2. Ink and deep forest instead of the default sky blue.
+ *   3. Shadows are near-eliminated; separation is done with hairline rules.
+ */
+@theme {
+  /* ---- Neutrals: warm stone, replacing Tailwind's cool slate ---- */
+  --color-slate-50: #faf9f6;
+  --color-slate-100: #f4f2ec;
+  --color-slate-200: #e7e3d9; /* the hairline rule */
+  --color-slate-300: #d3cec1;
+  --color-slate-400: #a8a294;
+  /*
+   * Darkened from #7c776a, which measured 4.46:1 on white — just under the
+   * 4.5:1 WCAG AA floor for body text. This tone carries taglines, field
+   * labels and most secondary copy, so it was quietly failing everywhere at
+   * once. #706b5e clears AA on white (5.31) and on slate-100 (4.58) while
+   * reading as the same warm grey. Patients here are frequently elderly and
+   * often outdoors in bright light; the margin is worth having.
+   */
+  --color-slate-500: #706b5e;
+  --color-slate-600: #5b564c;
+  --color-slate-700: #403b33;
+  --color-slate-800: #2a2620;
+  --color-slate-900: #16130f; /* 16.8:1 on bone — ink, not black */
+  --color-slate-950: #0d0b08;
+
+  /* ---- Brand: the logo's deep teal ---- */
+  --color-brand-50: #eef6f4;
+  --color-brand-100: #d5eae5;
+  --color-brand-200: #a8d4cc;
+  --color-brand-300: #72b7ab;
+  --color-brand-400: #3d9789;
+  --color-brand-500: #197c6d;
+  --color-brand-600: #0e6a5c; /* 6.4:1 on bone; white on it is 6.3:1 */
+  --color-brand-700: #0a5449;
+  --color-brand-800: #084038;
+  --color-brand-900: #052b26;
+
+  /* ---- Leaf: the lime end of the logo gradient. Accents only ---- */
+  --color-leaf-300: #c3dd7a;
+  --color-leaf-400: #a6ce39;
+  --color-leaf-500: #8cb832;
+  --color-leaf-600: #6f9628;
+  --color-leaf-700: #55731f;
+
+  /* ---- Secondary: the logo's mid-green, for confirmed / paid states ---- */
+  --color-mint-50: #f2f8ea;
+  --color-mint-100: #e3f0d2;
+  --color-mint-200: #c8e0a7;
+  --color-mint-300: #a9cd78;
+  --color-mint-400: #8fba52;
+  --color-mint-500: #76a33e;
+  --color-mint-600: #5e8531;
+  --color-mint-700: #496827;
+  --color-mint-800: #39511f;
+
+  /* Emerald is used for "consulting today" — keep it in the same family. */
+  --color-emerald-50: #f2f8ea;
+  --color-emerald-100: #e3f0d2;
+  --color-emerald-600: #5e8531;
+  --color-emerald-700: #496827;
+
+  /* ---- Alert: burnt clay. Reserved for emergency and destructive only ---- */
+  --color-rose-50: #fbf3f0;
+  --color-rose-100: #f6e3db;
+  --color-rose-200: #ebc8ba;
+  --color-rose-300: #d99e88;
+  --color-rose-400: #c4765b;
+  --color-rose-500: #ad573c;
+  --color-rose-600: #8f4128; /* 6.6:1 on bone */
+  --color-rose-700: #75341f;
+  --color-rose-800: #5c2919;
+
+  /* ---- Pending / awaiting: dark ochre, never a bright yellow ---- */
+  --color-amber-50: #faf6ea;
+  --color-amber-100: #f1e9cf;
+  --color-amber-200: #e2d3a6;
+  --color-amber-300: #cbb578;
+  --color-amber-500: #9c8038;
+  --color-amber-600: #806829; /* 5.4:1 on amber-50 */
+  --color-amber-700: #675421;
+  --color-amber-800: #52431a;
+  --color-amber-900: #3d3213;
+
+  /* Remaining accents folded into the same restrained family, so no stray
+     violet/fuchsia/teal/pink can leak in from department colour maps. */
+  --color-violet-100: #e3e4ec;
+  --color-violet-600: #4a4e6b;
+  --color-violet-700: #3b3e56;
+  --color-fuchsia-100: #ece2e7;
+  --color-fuchsia-600: #6b4a5c;
+  --color-teal-100: #dde8e6;
+  --color-teal-600: #197c6d;
+  --color-teal-700: #0a5449;
+  --color-pink-100: #f0e2e0;
+  --color-pink-700: #6b4a45;
+  --color-sky-50: #f1f5f3;
+  --color-sky-600: #197c6d;
+  --color-cyan-50: #f1f5f3;
+  --color-cyan-600: #197c6d;
+
+  /* ---- Type ---- */
+  --font-sans: 'Instrument Sans', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
+  --font-display: 'Instrument Serif', 'Noto Serif Tamil', Georgia, serif;
+  --font-tamil: 'Noto Sans Tamil', 'Instrument Sans', system-ui, sans-serif;
+  --font-tamil-display: 'Noto Serif Tamil', 'Instrument Serif', Georgia, serif;
+
+  /* ---- Radii: tightened. Nothing here is a bubble ---- */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 10px;
+  --radius-3xl: 14px;
+
+  /* ---- Shadows: almost none. Hairlines do the separating ---- */
+  --shadow-2xs: 0 1px 1px rgb(22 19 15 / 0.03);
+  --shadow-xs: 0 1px 2px rgb(22 19 15 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(22 19 15 / 0.04);
+  --shadow-md: 0 1px 3px rgb(22 19 15 / 0.05);
+  --shadow-lg: 0 2px 10px rgb(22 19 15 / 0.06);
+  --shadow-xl: 0 6px 24px rgb(22 19 15 / 0.07);
+  --shadow-2xl: 0 12px 48px rgb(22 19 15 / 0.10);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    /* Warm paper, never #fff. This single change carries most of the mood. */
+    background: var(--color-slate-50);
+    color: var(--color-slate-700);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings carry the identity: a serif, set tight and large. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
+  /* Tamil has taller glyphs and longer words than Latin at the same size. */
+  html[lang='ta'] body {
+    font-family: var(--font-tamil);
+    line-height: 1.75;
+  }
+  html[lang='ta'] h1,
+  html[lang='ta'] h2 {
+    font-family: var(--font-tamil-display);
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+
+  /* Figures line up in tables, fees and appointment references. */
+  table,
+  time,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-brand-100);
+    color: var(--color-brand-900);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Small letterspaced label — replaces the pill-badge habit. */
+  .label-caps {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+@keyframes dh-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dh-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: dh-fade-up 0.5s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+.animate-scale-in {
+  animation: dh-scale-in 0.18s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-scale-in {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  .print-hide {
+    display: none !important;
+  }
+}

@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Secrets ---
+# server/.env holds the session secret, payment keys and the ElevenLabs key.
+# .env.example is the tracked template and stays.
+.env
+.env.*
+!.env.example
+
+# --- Patient data ---
+# This is the hospital's records. It must never enter version control, and
+# under the DPDP Act a copy in a git history is a copy the hospital cannot
+# delete on request.
+server/data/
+server/backups/
+server/logs/

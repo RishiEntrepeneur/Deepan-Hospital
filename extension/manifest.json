@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Deepan Hospital → Klinique",
+  "version": "1.1.0",
+  "description": "Fills a booking from the Deepan Hospital website into the Klinique appointment form.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["https://deepan.klinique.net/*"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Deepan bookings"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://deepan.klinique.net/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

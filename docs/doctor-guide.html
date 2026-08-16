@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deepan Hospital — Guide for Doctors</title>
+    <style>
+      @page { size: A4; margin: 18mm 16mm; }
+      * { box-sizing: border-box; }
+      body {
+        font: 11pt/1.5 -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1a2b26; margin: 0;
+      }
+      h1 { font-size: 22pt; margin: 0 0 2pt; color: #14503f; }
+      h2 {
+        font-size: 13pt; margin: 22pt 0 6pt; color: #14503f;
+        border-bottom: 2px solid #cfe6dc; padding-bottom: 3pt;
+      }
+      .sub { color: #5b6b66; font-size: 10.5pt; margin: 0 0 4pt; }
+      .lead { font-size: 11.5pt; color: #333; }
+      ol, ul { margin: 6pt 0 6pt 18pt; padding: 0; }
+      li { margin: 4pt 0; }
+      code {
+        background: #eef4f1; padding: 1pt 5pt; border-radius: 4pt;
+        font: 10pt "SF Mono", Menlo, Consolas, monospace; color: #14503f;
+      }
+      .card {
+        border: 1px solid #d7e6df; border-radius: 8pt; padding: 10pt 14pt;
+        margin: 8pt 0; background: #f7fbf9;
+      }
+      .flow { display: flex; gap: 6pt; align-items: stretch; margin: 8pt 0; }
+      .flow .step {
+        flex: 1; border: 1px solid #cfe6dc; border-radius: 8pt; padding: 8pt;
+        background: #fff; font-size: 9.5pt; text-align: center;
+      }
+      .flow .step b { display: block; color: #14503f; font-size: 10pt; margin-bottom: 2pt; }
+      .flow .arrow { align-self: center; color: #7aa; font-size: 14pt; }
+      .note { background: #fff8e6; border: 1px solid #f0dca0; border-radius: 8pt; padding: 9pt 12pt; }
+      header.top { display: flex; align-items: center; gap: 12pt; border-bottom: 3px solid #14503f; padding-bottom: 10pt; }
+      header.top .leaf { font-size: 26pt; }
+      .muted { color: #5b6b66; }
+      table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+      td, th { border: 1px solid #d7e6df; padding: 6pt 9pt; text-align: left; font-size: 10.5pt; }
+      th { background: #eef4f1; color: #14503f; }
+      footer { margin-top: 26pt; border-top: 1px solid #cfe6dc; padding-top: 8pt; font-size: 9pt; color: #5b6b66; }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="leaf">🌿</div>
+      <div>
+        <h1>Deepan Hospital</h1>
+        <p class="sub">A short guide for doctors — the new online appointment booking</p>
+      </div>
+    </header>
+
+    <p class="lead" style="margin-top:14pt">
+      Patients can now book appointments on the hospital's website. This guide explains what that
+      means for you. The short version: <b>nothing changes in how you work.</b> Every online booking
+      arrives in Klinique — where you already see your patients — exactly like a booking made at the
+      front desk.
+    </p>
+
+    <h2>How a booking reaches you</h2>
+    <div class="flow">
+      <div class="step"><b>1. Patient</b>books on the website (phone or computer)</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>2. Reception</b>approves it and enters it into Klinique</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>3. You</b>see it in your Klinique appointment list, as always</div>
+    </div>
+    <p class="muted">
+      You do not need to check the website or learn anything new. Your queue in Klinique is still the
+      one place your appointments appear.
+    </p>
+
+    <h2>If you want to see the booking desk yourself</h2>
+    <p>
+      You have a login to the hospital's booking desk — useful if you want to watch appointments
+      arrive, or check your own schedule is open for booking. It is optional.
+    </p>
+    <table>
+      <tr><th>Your username</th><td><code>doctor</code> followed by your name — e.g. <code>doctordeepan</code>, <code>doctorpriyanka</code></td></tr>
+      <tr><th>Your password</th><td>Ask the administrator to set one for you (they run one command and read it to you). Change of password is on request.</td></tr>
+      <tr><th>Where to sign in</th><td>The hospital website → <b>Sign in</b> → <b>I work at the hospital</b></td></tr>
+    </table>
+    <div class="card">
+      Once signed in you land on the <b>reception desk</b>, and the <b>Klinique</b> tab opens the full
+      Klinique portal — including your own physician login — without leaving the page.
+    </div>
+
+    <h2>Making sure patients can book you</h2>
+    <p>
+      A patient can only book you online once your <b>consulting days, session times and fee</b> are
+      set. Reception does this from the desk (Schedules). If you are not appearing as bookable on the
+      website, that is the thing to check — ask reception to open your schedule.
+    </p>
+
+    <h2>What patients see about you</h2>
+    <ul>
+      <li>Your name, speciality and qualifications.</li>
+      <li>Your registration number — <b>only if the hospital has entered it.</b> It is never invented.</li>
+      <li>Your consulting times and consultation fee.</li>
+      <li>No personal contact details. Patients reach you through the hospital, not directly.</li>
+    </ul>
+
+    <div class="note" style="margin-top:16pt">
+      <b>In short:</b> patients book online → reception puts it in Klinique → it appears in your list.
+      Your day does not change. Your login to the desk is there if you want it, but you do not need it
+      to see your appointments.
+    </div>
+
+    <footer>
+      Deepan Hospital · 50, Bishop Road, opposite M.A. Honda, Puthur, Tennur, Tiruchirappalli – 620017 ·
+      0431&nbsp;279&nbsp;4989 · dnhtrichy@gmail.com<br />
+      Questions about the website or your login: contact the administrator.
+    </footer>
+  </body>
+</html>

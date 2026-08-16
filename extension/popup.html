@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root { color-scheme: light; }
+      body {
+        margin: 0;
+        width: 380px;
+        max-height: 560px;
+        overflow-y: auto;
+        font: 13px/1.5 system-ui, -apple-system, sans-serif;
+        color: #1a1a1a;
+        background: #fafaf8;
+      }
+      header {
+        position: sticky; top: 0;
+        background: #1f6f5c; color: white;
+        padding: 12px 14px;
+      }
+      header h1 { margin: 0; font-size: 14px; }
+      header p { margin: 2px 0 0; font-size: 11px; opacity: .85; }
+      .body { padding: 12px 14px; }
+      .row { display: flex; gap: 8px; align-items: center; }
+      button {
+        font: inherit; font-weight: 600; cursor: pointer;
+        border-radius: 8px; padding: 7px 11px; border: 1px solid #d4d0c8;
+        background: white; color: #333;
+      }
+      button:hover { background: #f2f0ec; }
+      button.primary { background: #1f6f5c; border-color: #1f6f5c; color: white; }
+      button.primary:hover { background: #185a4a; }
+      button:disabled { opacity: .5; cursor: default; }
+      input {
+        font: inherit; width: 100%; box-sizing: border-box;
+        padding: 7px 9px; border: 1px solid #d4d0c8; border-radius: 8px;
+      }
+      label { display: block; font-size: 11px; font-weight: 600; color: #6b6558; margin-bottom: 3px; }
+      .card {
+        background: white; border: 1px solid #e6e3dc; border-radius: 10px;
+        padding: 10px; margin-bottom: 8px;
+      }
+      .ref { font-family: ui-monospace, monospace; font-size: 11px; color: #1f6f5c; font-weight: 700; }
+      .who { font-weight: 600; margin-top: 2px; }
+      .when { color: #6b6558; font-size: 12px; }
+      .note {
+        background: #fef7e6; border: 1px solid #f5dfa8; color: #7a5c15;
+        border-radius: 8px; padding: 9px 10px; font-size: 12px; margin-bottom: 10px;
+      }
+      .ok { background: #eaf7f0; border-color: #b9e3cd; color: #17603f; }
+      .bad { background: #fdeaea; border-color: #f3c0c0; color: #8a2020; }
+      .muted { color: #6b6558; font-size: 12px; }
+      .hint { color: #6b6558; font-size: 11px; margin-top: 4px; }
+      .stack > * + * { margin-top: 8px; }
+      details {
+        background: white; border: 1px solid #e6e3dc;
+        border-radius: 10px; padding: 9px 10px;
+      }
+      summary { cursor: pointer; font-weight: 600; font-size: 12px; color: #6b6558; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Deepan Hospital → Klinique</h1>
+      <p id="status">Loading…</p>
+    </header>
+    <div class="body stack" id="app"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
