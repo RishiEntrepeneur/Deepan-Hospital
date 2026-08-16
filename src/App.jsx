@@ -40,6 +40,7 @@ const Health = lazy(() => import("./pages/Health"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const DoctorProfile = lazy(() => import("./pages/DoctorProfile"));
 const ConsentPrompt = lazy(() => import("./components/ConsentPrompt"));
+const Opening = lazy(() => import("./components/Opening"));
 
 import { patientTour } from "./lib/tours";
 import { parseRoute } from "./lib/navigation";
@@ -75,19 +76,50 @@ export default function App() {
   const showConsent = auth.consentNeeded && !consentDismissed && page !== 'desk';
 
   /*
+   * The opening screen, on a first visit only.
+   *
+   * Read synchronously in the initial state rather than set by an effect: a
+   * frame of the home page appearing and then being covered by a full-screen
+   * panel is worse than either on its own. The desk is exempt — staff open this
+   * app twenty times a day and are not choosing a language each time.
+   */
+  const [openingOpen, setOpeningOpen] = useState(() => {
+    if (window.location.hash.includes("desk")) return false;
+    try {
+      return !localStorage.getItem("deepan_opening_seen");
+    } catch {
+      /* private mode: show it, and it simply offers again next time */
+      return true;
+    }
+  });
+
+  const closeOpening = useCallback(() => {
+    setOpeningOpen(false);
+    try {
+      localStorage.setItem("deepan_opening_seen", "1");
+    } catch {
+      /* private mode — nothing to remember it with */
+    }
+  }, []);
+
+  /*
    * Offer the tour once, and only after the catalogue has loaded so the tour
    * never highlights a skeleton. Declining is remembered — nobody should be
    * shown the same walkthrough twice.
+   *
+   * It waits for the opening screen to be gone. Two overlays at once is one
+   * too many, and the tour points at controls the opening screen covers.
    */
   useEffect(() => {
+    if (openingOpen) return undefined;
     try {
-      if (localStorage.getItem("deepan_tour_seen")) return;
+      if (localStorage.getItem("deepan_tour_seen")) return undefined;
     } catch {
-      return;
+      return undefined;
     }
     const timer = setTimeout(() => setTourOpen(true), 900);
     return () => clearTimeout(timer);
-  }, []);
+  }, [openingOpen]);
 
   /*
    * Built once per language, not once per render.
@@ -444,6 +476,20 @@ export default function App() {
       </Suspense>
 
       <Toast message={toast} onDismiss={dismissToast} />
+
+      {/* Last, so it covers everything, and lazy so it costs nothing on the
+          visits — almost all of them — where it never appears. */}
+      {openingOpen && (
+        <Suspense fallback={null}>
+          <Opening
+            onEnter={closeOpening}
+            onBook={() => {
+              closeOpening();
+              openBooking();
+            }}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

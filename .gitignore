@@ -37,3 +37,6 @@ dist-ssr
 server/data/
 server/backups/
 server/logs/
+
+# Built by `npm run build:demo` — a single self-contained HTML file.
+demo-dist

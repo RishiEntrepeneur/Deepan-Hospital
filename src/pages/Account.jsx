@@ -348,13 +348,15 @@ function PatientSignIn({ auth, onBack, onDone }) {
         {mode === 'signin' ? t('account.noAccountYet') : t('account.haveAccount')}
       </button>
 
-      <button
-        type="button"
-        onClick={onBack}
-        className="mt-4 w-full text-sm font-semibold text-slate-500 hover:text-brand-700"
-      >
-        {t('action.back')}
-      </button>
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="mt-4 w-full text-sm font-semibold text-slate-500 hover:text-brand-700"
+        >
+          {t('action.back')}
+        </button>
+      )}
     </div>
   )
 }
@@ -462,44 +464,33 @@ function DeskSignIn({ onSignedIn, onBack }) {
   )
 }
 
-/* ------------------------------------------------------------------ *
- * Who is signing in?
- * ------------------------------------------------------------------ */
-function RoleChooser({ onChoose }) {
+/*
+ * The way in for hospital staff.
+ *
+ * This used to be one of two equal cards on a "how are you signing in?" screen,
+ * which asked every patient to classify themselves before they could do
+ * anything. Almost everyone arriving here is a patient, and the ones who are
+ * not know exactly who they are — so the patient path is now the page itself
+ * and this is a line at the bottom of it.
+ *
+ * Deliberately still present. Reception and doctors reach the desk through
+ * here, and hiding it entirely would mean the only route left was typing a URL
+ * nobody wrote down.
+ */
+function StaffEntry({ onChoose }) {
   const { t } = useLanguage()
-  const options = [
-    { role: 'patient', icon: CircleUser, label: 'account.asPatient', hint: 'account.asPatientHint' },
-    { role: 'desk', icon: ConciergeBell, label: 'account.asDesk', hint: 'account.asDeskHint' },
-  ]
-
   return (
-    <>
-      <header className="text-center">
-        <h1 className="text-2xl text-slate-900 sm:text-3xl">{t('account.whoAreYou')}</h1>
-      </header>
-
-      <div className="mt-7 space-y-3">
-        {options.map((option) => {
-          const Icon = option.icon
-          return (
-            <button
-              key={option.role}
-              type="button"
-              onClick={() => onChoose(option.role)}
-              className="flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-start transition hover:-translate-y-0.5 hover:border-brand-300"
-            >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                <Icon className="size-5" aria-hidden="true" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-base font-semibold text-slate-900">{t(option.label)}</span>
-                <span className="mt-0.5 block text-sm text-slate-500">{t(option.hint)}</span>
-              </span>
-            </button>
-          )
-        })}
-      </div>
-    </>
+    <div className="mx-auto mt-10 max-w-md border-t border-slate-200 pt-6 text-center">
+      <button
+        type="button"
+        onClick={onChoose}
+        className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand-700"
+      >
+        <ConciergeBell className="size-4" aria-hidden="true" />
+        {t('account.asDesk')}
+      </button>
+      <p className="mt-1 text-xs text-slate-400">{t('account.asDeskHint')}</p>
+    </div>
   )
 }
 
@@ -507,7 +498,8 @@ function RoleChooser({ onChoose }) {
 export default function Account({ auth, upcomingCount, onNavigate, onBook }) {
   const { t } = useLanguage()
   const [editing, setEditing] = useState(false)
-  const [role, setRole] = useState(null)
+  /* 'patient' is the page; 'desk' is the staff door reached from the bottom. */
+  const [role, setRole] = useState('patient')
 
   if (auth.status === 'loading') {
     return (
@@ -520,12 +512,13 @@ export default function Account({ auth, upcomingCount, onNavigate, onBook }) {
   if (!auth.isSignedIn) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-        {role === null && <RoleChooser onChoose={setRole} />}
-        {role === 'patient' && (
-          <PatientSignIn auth={auth} onBack={() => setRole(null)} onDone={() => onNavigate('appointments')} />
-        )}
-        {role === 'desk' && (
-          <DeskSignIn onSignedIn={() => onNavigate('desk')} onBack={() => setRole(null)} />
+        {role === 'desk' ? (
+          <DeskSignIn onSignedIn={() => onNavigate('desk')} onBack={() => setRole('patient')} />
+        ) : (
+          <>
+            <PatientSignIn auth={auth} onDone={() => onNavigate('appointments')} />
+            <StaffEntry onChoose={() => setRole('desk')} />
+          </>
         )}
       </div>
     )

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "i18n:check": "node scripts/i18n-check.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:demo": "vite build --config vite.demo.config.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

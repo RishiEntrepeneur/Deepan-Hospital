@@ -19,11 +19,14 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
   const hasSession = Boolean(user || staff)
 
   /*
-   * "Sign in" reads as "sign up" to a lot of people. If this device has logged
-   * in before we know there is already an account, so say so.
+   * What the button offers depends on whether there is anything to come back
+   * to. A first-time visitor has no account, so "Sign in" asks them for
+   * credentials they were never given — "Create account" says what actually
+   * happens next. If this device has logged in before, we know an account
+   * exists and the honest word is "Log in".
    */
   const returning = !hasSession && hasAccountOnThisDevice()
-  const signInLabel = returning ? t('account.logIn') : t('account.signIn')
+  const signInLabel = returning ? t('account.logIn') : t('account.createAccount')
 
   // Revert the "Copied" confirmation so the number is readable again.
   useEffect(() => {
@@ -209,7 +212,11 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
             ) : (
               <CircleUser className="size-4" aria-hidden="true" />
             )}
-            <span className="max-w-24 truncate">
+            {/* The width cap is for names, which can be any length. The
+                signed-out label is a fixed phrase we chose, and clipping it to
+                "Create ac…" makes the one button a new visitor needs look
+                broken. */}
+            <span className={cx('truncate', hasSession && 'max-w-24')}>
               {/* Always identify who is signed in. Falling back to the generic
                   "My account" told the patient nothing; their number does. */}
               {user

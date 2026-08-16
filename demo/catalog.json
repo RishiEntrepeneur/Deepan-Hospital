@@ -1,0 +1,977 @@
+{
+    "departments": [
+        {
+            "id": "general-medicine",
+            "icon": "Stethoscope",
+            "name": {
+                "en": "General Medicine",
+                "ta": "பொது மருத்துவம்",
+                "hi": "सामान्य चिकित्सा"
+            },
+            "description": {
+                "en": "Fever, infections, diabetes, blood pressure and general physician care.",
+                "ta": "காய்ச்சல், தொற்று, சர்க்கரை நோய், ரத்த அழுத்தம் மற்றும் பொது மருத்துவ சிகிச்சை.",
+                "hi": "बुखार, संक्रमण, मधुमेह, रक्तचाप और सामान्य चिकित्सा।"
+            }
+        },
+        {
+            "id": "general-surgery",
+            "icon": "Scissors",
+            "name": {
+                "en": "General Surgery",
+                "ta": "பொது அறுவை சிகிச்சை",
+                "hi": "सामान्य शल्य चिकित्सा"
+            },
+            "description": {
+                "en": "Hernia, appendix, gallbladder, NSV and other general surgical procedures.",
+                "ta": "குடலிறக்கம், குடல்வால், பித்தப்பை, NSV மற்றும் பிற பொது அறுவை சிகிச்சைகள்.",
+                "hi": "हर्निया, अपेंडिक्स, पित्ताशय और अन्य सामान्य ऑपरेशन।"
+            }
+        },
+        {
+            "id": "orthopedics",
+            "icon": "Bone",
+            "name": {
+                "en": "Orthopaedics",
+                "ta": "எலும்பியல்",
+                "hi": "हड्डी रोग"
+            },
+            "description": {
+                "en": "Fractures, joint problems, arthroscopy and sports injuries.",
+                "ta": "எலும்பு முறிவு, மூட்டு பிரச்சினைகள், ஆர்த்ரோஸ்கோபி மற்றும் விளையாட்டு காயங்கள்.",
+                "hi": "हड्डी टूटना, जोड़ों की तकलीफ़, आर्थ्रोस्कोपी और खेल में लगी चोटें।"
+            }
+        },
+        {
+            "id": "gynecology",
+            "icon": "Venus",
+            "name": {
+                "en": "Obstetrics & Gynaecology",
+                "ta": "மகப்பேறு மற்றும் மகளிர் நலம்",
+                "hi": "प्रसूति एवं स्त्री रोग"
+            },
+            "description": {
+                "en": "Antenatal care, deliveries, laparoscopic gynaecology and women’s health.",
+                "ta": "கர்ப்ப கால பராமரிப்பு, பிரசவம், லேபராஸ்கோபி மற்றும் மகளிர் நலம்.",
+                "hi": "गर्भावस्था की देखभाल, प्रसव, लेप्रोस्कोपिक सर्जरी और महिला स्वास्थ्य।"
+            }
+        },
+        {
+            "id": "pediatrics",
+            "icon": "Baby",
+            "name": {
+                "en": "Paediatrics & Neonatology",
+                "ta": "குழந்தை நலம் மற்றும் பச்சிளம் குழந்தை",
+                "hi": "बाल एवं नवजात रोग"
+            },
+            "description": {
+                "en": "Newborn care, childhood illness, growth and immunisation.",
+                "ta": "பச்சிளம் குழந்தை பராமரிப்பு, குழந்தை நோய்கள், வளர்ச்சி மற்றும் தடுப்பூசி.",
+                "hi": "नवजात की देखभाल, बच्चों की बीमारियाँ, विकास और टीकाकरण।"
+            }
+        },
+        {
+            "id": "pediatric-surgery",
+            "icon": "Baby",
+            "name": {
+                "en": "Paediatric Surgery",
+                "ta": "குழந்தை அறுவை சிகிச்சை",
+                "hi": "बाल शल्य चिकित्सा"
+            },
+            "description": {
+                "en": "Laparoscopic and open surgery for infants and children.",
+                "ta": "குழந்தைகளுக்கான லேபராஸ்கோபி மற்றும் திறந்த அறுவை சிகிச்சை.",
+                "hi": "शिशुओं और बच्चों की लेप्रोस्कोपिक तथा खुली सर्जरी।"
+            }
+        },
+        {
+            "id": "nephrology",
+            "icon": "Droplet",
+            "name": {
+                "en": "Nephrology",
+                "ta": "சிறுநீரகவியல்",
+                "hi": "गुर्दा रोग"
+            },
+            "description": {
+                "en": "Kidney disease, dialysis and transplant follow-up.",
+                "ta": "சிறுநீரக நோய், டயாலிசிஸ் மற்றும் மாற்று அறுவை பின் பராமரிப்பு.",
+                "hi": "गुर्दे की बीमारी, डायलिसिस और प्रत्यारोपण के बाद की देखभाल।"
+            }
+        },
+        {
+            "id": "urology",
+            "icon": "Droplet",
+            "name": {
+                "en": "Urology",
+                "ta": "சிறுநீர் பாதை அறுவை சிகிச்சை",
+                "hi": "मूत्र रोग"
+            },
+            "description": {
+                "en": "Kidney stones, prostate problems and urinary tract surgery.",
+                "ta": "சிறுநீரக கல், புராஸ்டேட் பிரச்சினைகள் மற்றும் சிறுநீர் பாதை அறுவை சிகிச்சை.",
+                "hi": "गुर्दे की पथरी, प्रोस्टेट की तकलीफ़ और मूत्र मार्ग की सर्जरी।"
+            }
+        },
+        {
+            "id": "dermatology",
+            "icon": "Sparkles",
+            "name": {
+                "en": "Dermatology",
+                "ta": "தோல் மருத்துவம்",
+                "hi": "त्वचा रोग"
+            },
+            "description": {
+                "en": "Skin, hair and nail conditions, allergies and cosmetic care.",
+                "ta": "தோல், முடி, நக நோய்கள், ஒவ்வாமை மற்றும் அழகு சிகிச்சை.",
+                "hi": "त्वचा, बाल और नाखून की तकलीफ़ें, एलर्जी और सौंदर्य उपचार।"
+            }
+        },
+        {
+            "id": "ent",
+            "icon": "Ear",
+            "name": {
+                "en": "ENT",
+                "ta": "காது, மூக்கு, தொண்டை",
+                "hi": "कान, नाक और गला"
+            },
+            "description": {
+                "en": "Ear, nose and throat conditions, sinus and hearing problems.",
+                "ta": "காது, மூக்கு, தொண்டை நோய்கள், சைனஸ் மற்றும் கேட்கும் திறன் பிரச்சினைகள்.",
+                "hi": "कान, नाक और गले के रोग, साइनस तथा सुनने की तकलीफ़।"
+            }
+        },
+        {
+            "id": "psychiatry",
+            "icon": "HeartHandshake",
+            "name": {
+                "en": "Psychiatry",
+                "ta": "மனநல மருத்துவம்",
+                "hi": "मनोरोग"
+            },
+            "description": {
+                "en": "Depression, anxiety, sleep problems, addiction and counselling.",
+                "ta": "மனச்சோர்வு, பதற்றம், தூக்கமின்மை, போதைப் பழக்கம் மற்றும் ஆலோசனை.",
+                "hi": "अवसाद, घबराहट, नींद की तकलीफ़, नशे की लत और परामर्श।"
+            }
+        }
+    ],
+    "doctors": [
+        {
+            "id": "gunasekaran-r",
+            "departmentId": "general-medicine",
+            "name": {
+                "en": "Dr. R. Gunasekaran",
+                "ta": "டாக்டர் ரா. குணசேகரன்",
+                "hi": "डॉ. रा. गुनशेकरन"
+            },
+            "grade": "chief",
+            "specialization": {
+                "en": "Chief Physician",
+                "ta": "தலைமை மருத்துவர்",
+                "hi": "मुख्य चिकित्सक"
+            },
+            "qualification": "M.D., FRCP (Glasgow), FICP",
+            "regNo": null,
+            "experience": null,
+            "fee": 400,
+            "feeReview": 280,
+            "room": null,
+            "languages": [
+                "ta",
+                "en",
+                "te"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "09:00",
+                    "14:00"
+                ],
+                "evening": [
+                    "18:00",
+                    "19:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "deepan-g",
+            "departmentId": "orthopedics",
+            "name": {
+                "en": "Dr. G. Deepan",
+                "ta": "டாக்டர் கோ. தீபன்",
+                "hi": "डॉ. गो. दीपन"
+            },
+            "grade": "senior",
+            "specialization": {
+                "en": "Orthopaedic & Arthroscopy Surgeon",
+                "ta": "எலும்பியல் மற்றும் ஆர்த்ரோஸ்கோபி அறுவை சிகிச்சை நிபுணர்",
+                "hi": "हड्डी एवं आर्थ्रोस्कोपी सर्जन"
+            },
+            "qualification": "M.S. (Ortho)",
+            "regNo": null,
+            "experience": null,
+            "fee": 250,
+            "feeReview": null,
+            "room": "OPD 3",
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "09:00",
+                    "14:00"
+                ],
+                "evening": [
+                    "18:00",
+                    "19:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "priyanka-v",
+            "departmentId": "gynecology",
+            "name": {
+                "en": "Dr. V. Priyanka",
+                "ta": "டாக்டர் வ. பிரியங்கா",
+                "hi": "डॉ. व. प्रियंका"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Obstetrician & Gynaecologist",
+                "ta": "மகப்பேறு மற்றும் மகளிர் நல மருத்துவர்",
+                "hi": "प्रसूति एवं स्त्री रोग विशेषज्ञ"
+            },
+            "qualification": "M.B.B.S., D.G.O., F.MAS",
+            "regNo": null,
+            "experience": null,
+            "fee": 250,
+            "feeReview": 200,
+            "room": "OPD 15",
+            "languages": [
+                "ta",
+                "en",
+                "hi"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "12:00",
+                    "14:00"
+                ],
+                "evening": [
+                    "18:00",
+                    "19:00"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "kawin-g",
+            "departmentId": "nephrology",
+            "name": {
+                "en": "Dr. G. Kawin",
+                "ta": "டாக்டர் கோ. கவின்",
+                "hi": "डॉ. गो. कविन"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Nephrologist",
+                "ta": "சிறுநீரகவியல் நிபுணர்",
+                "hi": "गुर्दा रोग विशेषज्ञ"
+            },
+            "qualification": "M.D., D.M.",
+            "regNo": null,
+            "experience": null,
+            "fee": 250,
+            "feeReview": 200,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "10:30",
+                    "14:00"
+                ],
+                "evening": [
+                    "18:00",
+                    "19:00"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "vaishnavi-rm",
+            "departmentId": "general-surgery",
+            "name": {
+                "en": "Dr. RM. Vaishnavi",
+                "ta": "டாக்டர் ரம. வைஷ்ணவி",
+                "hi": "डॉ. रम. वैष्णवी"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "General Surgeon",
+                "ta": "பொது அறுவை சிகிச்சை நிபுணர்",
+                "hi": "सामान्य सर्जन"
+            },
+            "qualification": "M.S. (General Surgery)",
+            "regNo": null,
+            "experience": null,
+            "fee": 200,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en",
+                "hi"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "12:00",
+                    "14:00"
+                ],
+                "evening": null
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "rajagopal-p",
+            "departmentId": "general-surgery",
+            "name": {
+                "en": "Dr. P. Rajagopal",
+                "ta": "டாக்டர் ப. ராஜகோபால்",
+                "hi": "डॉ. प. राजगोपाल"
+            },
+            "grade": "senior",
+            "specialization": {
+                "en": "Senior General Surgeon",
+                "ta": "மூத்த பொது அறுவை சிகிச்சை நிபுணர்",
+                "hi": "वरिष्ठ सामान्य सर्जन"
+            },
+            "qualification": "M.S. (General & NSV Surgery)",
+            "regNo": null,
+            "experience": null,
+            "fee": 200,
+            "feeReview": null,
+            "room": "OPD 7",
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                3,
+                6
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": [
+                    "18:00",
+                    "19:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "venkateswaran-n",
+            "departmentId": "pediatrics",
+            "name": {
+                "en": "Dr. N. Venkateswaran",
+                "ta": "டாக்டர் ந. வெங்கடேஸ்வரன்",
+                "hi": "डॉ. न. वेंकटेश्वरन"
+            },
+            "grade": "senior",
+            "specialization": {
+                "en": "Paediatrician & Neonatologist",
+                "ta": "குழந்தை நல மற்றும் பச்சிளம் குழந்தை மருத்துவர்",
+                "hi": "बाल एवं नवजात रोग विशेषज्ञ"
+            },
+            "qualification": "M.D. (Paediatrics)",
+            "regNo": null,
+            "experience": null,
+            "fee": 300,
+            "feeReview": 280,
+            "room": null,
+            "languages": [
+                "ta",
+                "en",
+                "hi"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "11:00",
+                    "15:00"
+                ],
+                "evening": [
+                    "19:00",
+                    "20:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "krishnasamy-kannan",
+            "departmentId": "urology",
+            "name": {
+                "en": "Dr. Krishnasamy Kannan",
+                "ta": "டாக்டர் கிருஷ்ணசாமி கண்ணன்",
+                "hi": "डॉ. कृष्णसामी कण्णन"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Urologist",
+                "ta": "சிறுநீர் பாதை அறுவை சிகிச்சை நிபுணர்",
+                "hi": "मूत्र रोग विशेषज्ञ"
+            },
+            "qualification": "M.S., M.Ch (Urology)",
+            "regNo": null,
+            "experience": null,
+            "fee": 600,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": [
+                    "12:00",
+                    "14:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "narmadha-s",
+            "departmentId": "dermatology",
+            "name": {
+                "en": "Dr. S. Narmadha",
+                "ta": "டாக்டர் ச. நர்மதா",
+                "hi": "डॉ. स. नर्मदा"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Dermatologist",
+                "ta": "தோல் மருத்துவ நிபுணர்",
+                "hi": "त्वचा रोग विशेषज्ञ"
+            },
+            "qualification": "M.D., D.V.L.",
+            "regNo": null,
+            "experience": null,
+            "fee": 200,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                3,
+                6
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": [
+                    "16:00",
+                    "18:00"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "hari-prasad",
+            "departmentId": "ent",
+            "name": {
+                "en": "Dr. Hari Prasad",
+                "ta": "டாக்டர் ஹரி பிரசாத்",
+                "hi": "डॉ. हरि प्रसाद"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "ENT Surgeon",
+                "ta": "காது மூக்கு தொண்டை அறுவை சிகிச்சை நிபுணர்",
+                "hi": "कान, नाक, गला सर्जन"
+            },
+            "qualification": "M.S. (ENT)",
+            "regNo": null,
+            "experience": null,
+            "fee": 200,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en",
+                "te"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "09:00",
+                    "11:00"
+                ],
+                "evening": [
+                    "18:00",
+                    "19:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "nithya",
+            "departmentId": "psychiatry",
+            "name": {
+                "en": "Dr. Nithya",
+                "ta": "டாக்டர் நித்யா",
+                "hi": "डॉ. नित्या"
+            },
+            "grade": "visiting",
+            "specialization": {
+                "en": "Psychiatrist",
+                "ta": "மனநல மருத்துவர்",
+                "hi": "मनोरोग विशेषज्ञ"
+            },
+            "qualification": "M.D., D.M.",
+            "regNo": null,
+            "experience": null,
+            "fee": null,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                2,
+                5
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": null
+            },
+            "bookingMode": "pending",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "deborah-roselin",
+            "departmentId": "dermatology",
+            "name": {
+                "en": "Dr. Deborah Roselin",
+                "ta": "டாக்டர் தெபோரா ரோஸ்லின்",
+                "hi": "डॉ. देबोरा रोज़लिन"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Dermatologist",
+                "ta": "தோல் நோய் நிபுணர்",
+                "hi": "त्वचा रोग विशेषज्ञ"
+            },
+            "qualification": "",
+            "regNo": null,
+            "experience": null,
+            "fee": 200,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "10:00",
+                    "12:00"
+                ],
+                "evening": null
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "devika-sudhager",
+            "departmentId": "gynecology",
+            "name": {
+                "en": "Dr. Devika Sudhager",
+                "ta": "டாக்டர் தேவிகா சுதாகர்",
+                "hi": "डॉ. देविका सुधाकर"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Obstetrician & Gynaecologist",
+                "ta": "மகப்பேறு மற்றும் மகளிர் நோய் நிபுணர்",
+                "hi": "प्रसूति एवं स्त्री रोग विशेषज्ञ"
+            },
+            "qualification": "MBBS, DGO",
+            "regNo": null,
+            "experience": null,
+            "fee": 300,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "10:00",
+                    "12:00"
+                ],
+                "evening": null
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "bharani-dharan-g",
+            "departmentId": "pediatric-surgery",
+            "name": {
+                "en": "Dr. G. Bharani Dharan",
+                "ta": "டாக்டர் கோ. பரணி தரன்",
+                "hi": "डॉ. गो. भरणी धरन"
+            },
+            "grade": "visiting",
+            "specialization": {
+                "en": "Paediatric Surgeon",
+                "ta": "குழந்தைகள் அறுவை சிகிச்சை நிபுணர்",
+                "hi": "बाल शल्य चिकित्सक"
+            },
+            "qualification": "M.S., M.Ch.",
+            "regNo": null,
+            "experience": null,
+            "fee": 300,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": null
+            },
+            "bookingMode": "pending",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "sudhager-sundararajan-gks",
+            "departmentId": "general-medicine",
+            "name": {
+                "en": "Dr. G.K.S. Sudhager Sundararajan",
+                "ta": "டாக்டர் கோ.கே.எஸ். சுதாகர் சுந்தரராஜன்",
+                "hi": "डॉ. जी.के.एस. सुधाकर सुंदरराजन"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "General Physician",
+                "ta": "பொது மருத்துவர்",
+                "hi": "सामान्य चिकित्सक"
+            },
+            "qualification": "M.D.",
+            "regNo": null,
+            "experience": null,
+            "fee": 400,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "10:00",
+                    "12:00"
+                ],
+                "evening": null
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "neethu",
+            "departmentId": "pediatrics",
+            "name": {
+                "en": "Dr. Neethu",
+                "ta": "டாக்டர் நீது",
+                "hi": "डॉ. नीतू"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Paediatrician",
+                "ta": "குழந்தைகள் நல மருத்துவர்",
+                "hi": "बाल रोग विशेषज्ञ"
+            },
+            "qualification": "MBBS, DCH",
+            "regNo": null,
+            "experience": null,
+            "fee": 300,
+            "feeReview": 280,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": [
+                    "11:00",
+                    "15:00"
+                ],
+                "evening": [
+                    "19:00",
+                    "20:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "nithya-duraisamy",
+            "departmentId": "pediatrics",
+            "name": {
+                "en": "Dr. Nithya Duraisamy",
+                "ta": "டாக்டர் நித்யா துரைசாமி",
+                "hi": "डॉ. नित्या दुरैसामी"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "Paediatrician",
+                "ta": "குழந்தைகள் நல மருத்துவர்",
+                "hi": "बाल रोग विशेषज्ञ"
+            },
+            "qualification": "MBBS, DCH, DNB (Paed)",
+            "regNo": null,
+            "experience": null,
+            "fee": null,
+            "feeReview": null,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                2,
+                4
+            ],
+            "sessions": {
+                "morning": [
+                    "11:00",
+                    "13:30"
+                ],
+                "evening": null
+            },
+            "bookingMode": "pending",
+            "about": "",
+            "away": null,
+            "featured": false
+        },
+        {
+            "id": "nivedha-p",
+            "departmentId": "general-medicine",
+            "name": {
+                "en": "Dr. P. Nivedha",
+                "ta": "டாக்டர் ப. நிவேதா",
+                "hi": "डॉ. प. निवेदा"
+            },
+            "grade": "consultant",
+            "specialization": {
+                "en": "General Physician",
+                "ta": "பொது மருத்துவர்",
+                "hi": "सामान्य चिकित्सक"
+            },
+            "qualification": "M.D.",
+            "regNo": null,
+            "experience": null,
+            "fee": 250,
+            "feeReview": 230,
+            "room": null,
+            "languages": [
+                "ta",
+                "en"
+            ],
+            "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "sessions": {
+                "morning": null,
+                "evening": [
+                    "17:00",
+                    "19:30"
+                ]
+            },
+            "bookingMode": "live",
+            "about": "",
+            "away": null,
+            "featured": false
+        }
+    ],
+    "booking": {
+        "windowDays": 30,
+        "slotMinutes": 20,
+        "visitCharges": {
+            "first": 50,
+            "review": 20
+        }
+    },
+    "klinique": {
+        "portalUrl": "https://deepan.klinique.net"
+    },
+    "privacy": {
+        "version": "2026-08-05",
+        "contact": "dnhtrichy@gmail.com"
+    },
+    "payments": {
+        "provider": "none",
+        "convenienceFee": 20,
+        "razorpayKeyId": null
+    }
+}

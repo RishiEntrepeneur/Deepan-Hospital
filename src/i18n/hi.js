@@ -672,6 +672,14 @@ export const hi = {
   'record.note': 'चिकित्सकीय टिप्पणी',
   'record.vaccination': 'टीकाकरण',
 
+  /* ---------- Opening screen ---------- */
+  'opening.title': 'शुरू करने के लिए अपनी भाषा चुनिए',
+  'opening.book': 'अपॉइंटमेंट बुक करें',
+  'opening.browse': 'पहले देख लीजिए',
+  'opening.emergency': 'चिकित्सा आपातकाल? {number} पर कॉल कीजिए — हम चौबीसों घंटे उपलब्ध हैं',
+  'opening.noAccount':
+    'बुकिंग के लिए खाता ज़रूरी नहीं। खाता होने से आपकी सारी अपॉइंटमेंट एक ही जगह रहती हैं।',
+
   /* ---------- Guided tour ---------- */
   'tour.start': 'थोड़ा घूमकर देखिए',
   'tour.skip': 'छोड़ें',

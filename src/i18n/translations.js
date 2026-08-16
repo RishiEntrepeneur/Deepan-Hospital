@@ -368,6 +368,13 @@ export const translations = {
     'record.discharge': 'Discharge summary',
     'record.note': 'Clinical note',
     'record.vaccination': 'Vaccination',
+    /* ---------- Opening screen ---------- */
+    'opening.title': 'Choose your language to begin',
+    'opening.book': 'Book an appointment',
+    'opening.browse': 'Look around first',
+    'opening.emergency': 'Medical emergency? Call {number} — we answer 24 × 7',
+    'opening.noAccount': 'Booking needs no account. An account just keeps your appointments in one place.',
+
     'tour.start': 'Take a quick tour',
     'tour.skip': 'Skip',
     'tour.done': 'Finish',
@@ -1006,6 +1013,14 @@ export const translations = {
     'record.discharge': 'வெளியேற்ற சுருக்கம்',
     'record.note': 'மருத்துவக் குறிப்பு',
     'record.vaccination': 'தடுப்பூசி',
+    /* ---------- Opening screen ---------- */
+    'opening.title': 'தொடங்க உங்கள் மொழியைத் தேர்ந்தெடுங்கள்',
+    'opening.book': 'சந்திப்பு பதிவு செய்ய',
+    'opening.browse': 'முதலில் பார்வையிட',
+    'opening.emergency': 'அவசர சிகிச்சையா? {number} என்ற எண்ணை அழையுங்கள் — இரவு பகல் பதிலளிக்கிறோம்',
+    'opening.noAccount':
+      'பதிவு செய்ய கணக்கு தேவையில்லை. கணக்கு இருந்தால் உங்கள் சந்திப்புகள் ஒரே இடத்தில் இருக்கும்.',
+
     'tour.start': 'விரைவு அறிமுகம் பார்க்க',
     'tour.skip': 'தவிர்',
     'tour.done': 'முடிந்தது',
