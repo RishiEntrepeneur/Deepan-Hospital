@@ -53,6 +53,29 @@ website booking (name, phone, doctor, date), but it is a large form.
 4. **Gender is inverted** (1=Female, 2=Male) — easy to get backwards, and wrong
    on a medical record.
 
+## What the code now does about these four risks
+
+Session mode was still capable of all four. It has been changed so that the
+three it can control are structural rather than a matter of remembering:
+
+| Risk | Before | Now |
+| --- | --- | --- |
+| Wrong doctor | An unmapped doctor was sent as *our* id, trusting Klinique to reject it | Refused. Nothing is sent; the booking stays on reception's worklist naming the doctor to add to `KLINIQUE_DOCTOR_MAP` |
+| Inverted gender | Our word (`male`) was sent raw into a numeric field | Only `KLINIQUE_GENDER_MAP`'s codes are ever sent. Unset, or a gender not in it, refuses the same way |
+| SMS on submit | Off only because the field map happened to omit the checkboxes | Named and set to `0` on every submit, unless `KLINIQUE_SEND_SMS=true` |
+| Duplicate patient | — | Still open. It is a property of `register_patient`, not of this code |
+
+A refusal is not a failure: nothing was attempted, so the appointment stays
+`pending` and reads at the desk as an ordinary manual entry, with the reason in
+the log and the audit trail. Tests cover each case, including that an unmapped
+doctor produces *no* HTTP request at all.
+
+Relying on Klinique to reject a bad value was the assumption worth removing.
+`physician_id` is a type-ahead, not a validated foreign key, and Rails coerces
+an unknown string to `0` rather than erroring — so "let them reject it" could
+book a patient against physician 0, or against whoever the form defaults to,
+with nothing anywhere reporting a problem.
+
 ## Why this argues for a human glance
 
 Fully hands-off submission into this form means that a wrong doctor match, a

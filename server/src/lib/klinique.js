@@ -104,6 +104,23 @@ export async function pushAppointment(row) {
       return { state: 'pending', reason: 'session mode — booking form not captured yet' }
     }
     const result = await submitBooking(row)
+    if (!result.ok && result.manual) {
+      /*
+       * Refused before anything was sent — an unmapped doctor or a gender code
+       * we do not know. That is a booking waiting on a person, not a broken
+       * one, so it stays 'pending' and reads as an ordinary manual entry at
+       * the desk. Logged once so whoever maintains the mapping can see it.
+       */
+      console.warn(`[klinique] ${row.id} left for manual entry: ${result.reason}`)
+      setState.run('pending', null, null, row.id)
+      audit({
+        action: 'klinique.left_manual',
+        entity: 'appointment',
+        entityId: row.id,
+        detail: { via: 'session', reason: result.reason },
+      })
+      return { state: 'pending', reason: result.reason }
+    }
     if (result.ok) {
       setState.run('sent', result.ref ?? null, nowIso(), row.id)
       audit({

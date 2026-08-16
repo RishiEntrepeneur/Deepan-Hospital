@@ -63,6 +63,9 @@ before(async () => {
     'appointment[doctor_id]': 'doctorRef',
   })
   process.env.KLINIQUE_DOCTOR_MAP = JSON.stringify({ 'deepan-g': '42' })
+  /* Klinique's own codes, inverted from the obvious order — see
+     KLINIQUE-FINDINGS.md. Nothing is submitted until these are stated. */
+  process.env.KLINIQUE_GENDER_MAP = JSON.stringify({ female: '1', male: '2' })
 
   session = await import('../src/lib/klinique-session.js')
 })
@@ -99,16 +102,92 @@ describe('Klinique session mode', () => {
     mock.bookings.length = 0
     await session.submitBooking(booking)
     const saved = mock.bookings[0]
-    assert.equal(saved['appointment[gender]'], 'male')
+    // Klinique's code for male, not our word for it. 1 = Female, 2 = Male.
+    assert.equal(saved['appointment[gender]'], '2')
     assert.equal(saved['appointment[date]'], '2026-09-01')
     assert.equal(saved['appointment[time]'], '10:20')
     assert.ok(!('appointment[fee]' in saved), 'sent a field that was never mapped')
+  })
+
+  it('sends the gender code Klinique uses, which is inverted', async () => {
+    /*
+     * The single easiest thing to get backwards here, and it is written onto a
+     * medical record. Both directions are pinned so a later "tidy-up" of the
+     * map cannot quietly swap them.
+     */
+    mock.bookings.length = 0
+    await session.submitBooking({ ...booking, patient_gender: 'female' })
+    assert.equal(mock.bookings[0]['appointment[gender]'], '1')
+
+    mock.bookings.length = 0
+    await session.submitBooking({ ...booking, patient_gender: 'male' })
+    assert.equal(mock.bookings[0]['appointment[gender]'], '2')
+  })
+
+  it('never sends our own doctor id when the Klinique id is unknown', async () => {
+    /*
+     * The most dangerous failure available here. Klinique's physician field is
+     * a type-ahead over a directory much larger than Deepan's list, and an
+     * unknown value does not reliably bounce — Rails coerces it to 0. So an
+     * unmapped doctor must not be submitted at all.
+     */
+    mock.bookings.length = 0
+    const result = await session.submitBooking({ ...booking, doctor_id: 'someone-new' })
+
+    assert.equal(result.ok, false)
+    assert.equal(result.manual, true, 'should be a refusal, not a failure')
+    assert.match(result.reason, /no Klinique id/)
+    assert.equal(mock.bookings.length, 0, 'a booking was sent with an unmapped doctor')
+  })
+
+  it('refuses a gender it has no Klinique code for', async () => {
+    mock.bookings.length = 0
+    const result = await session.submitBooking({ ...booking, patient_gender: 'other' })
+
+    assert.equal(result.ok, false)
+    assert.equal(result.manual, true)
+    assert.match(result.reason, /no Klinique code/)
+    assert.equal(mock.bookings.length, 0, 'guessed a gender code')
+  })
+
+  it('switches the form’s SMS checkboxes off explicitly', async () => {
+    /*
+     * A submit with these on texts whoever is in the phone field. Relying on
+     * them being absent from the field map is not a decision anyone can see —
+     * so they are named and set to 0 on every booking.
+     */
+    mock.bookings.length = 0
+    await session.submitBooking(booking)
+    const saved = mock.bookings[0]
+    assert.equal(saved['send_sms[op_app_confirmation]'], '0')
+    assert.equal(saved['send_sms[op_app_reminder]'], '0')
   })
 
   it('re-signs-in by itself when the session is dropped', async () => {
     session.resetSession()
     const result = await session.submitBooking(booking)
     assert.equal(result.ok, true, 'did not recover from a dropped session')
+  })
+
+  it('recovers when Klinique expires the session mid-flight', async () => {
+    /*
+     * Different from the case above: there, this side had forgotten the
+     * session. Here it still holds a cookie it believes in and Klinique has
+     * timed it out — which is what actually happens on a quiet afternoon
+     * between bookings.
+     *
+     * This used to lose the booking. The driver noticed the sign-in page,
+     * signed in again, and then read its CSRF token out of the response it
+     * already had — the sign-in page — so the submit went out unauthenticated
+     * and the booking landed on the worklist for no reason.
+     */
+    mock.bookings.length = 0
+    await session.signIn()
+    mock.expireSessions()
+
+    const result = await session.submitBooking(booking)
+    assert.equal(result.ok, true, `did not recover from a server-side expiry: ${result.reason}`)
+    assert.equal(mock.bookings.length, 1, 'the booking never arrived')
   })
 
   it('reports a failure (never throws) when a required field is missing', async () => {

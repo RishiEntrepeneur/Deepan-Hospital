@@ -160,29 +160,114 @@ function parsedFieldMap() {
   }
 }
 
-function parsedDoctorMap() {
-  if (!config.klinique.doctorMap) return {}
+const parseJsonObject = (raw) => {
+  if (!raw) return null
   try {
-    return JSON.parse(config.klinique.doctorMap) ?? {}
+    const value = JSON.parse(raw)
+    return value && typeof value === 'object' ? value : null
   } catch {
-    return {}
+    return null
   }
+}
+
+function parsedDoctorMap() {
+  return parseJsonObject(config.klinique.doctorMap) ?? {}
+}
+
+/**
+ * Klinique's own code for each gender, which cannot be guessed.
+ *
+ * On Deepan's build the quick-registration form uses 1 = Female, 2 = Male —
+ * inverted from the order anyone would assume, and recorded that way in
+ * KLINIQUE-FINDINGS.md. There is deliberately no default here: a build that
+ * wants the word "male" and one that wants 2 are indistinguishable from
+ * outside, and guessing wrong writes the wrong sex onto a medical record.
+ */
+function parsedGenderMap() {
+  return parseJsonObject(config.klinique.genderMap)
+}
+
+/**
+ * Reasons this booking must not be submitted automatically.
+ *
+ * Everything here is a value we would otherwise send to Klinique while only
+ * half-knowing what it means. Each one is a record written under a patient's
+ * name, so the rule is that anything unmappable goes to a person instead —
+ * reception still sees it on the worklist and enters it by hand.
+ *
+ * The alternative, which this replaces, was to send our own value and let
+ * Klinique reject it. That assumes a validation the vendor never promised:
+ * `physician_id` is a type-ahead over a large directory, and Rails coercing an
+ * unknown string to an integer yields 0, not an error. A booking against
+ * physician 0 — or against whoever the form defaults to — is exactly the
+ * outcome nobody would notice.
+ */
+export function submissionBlockers(row) {
+  const map = parsedFieldMap() ?? {}
+  const sources = new Set(Object.values(map))
+  const blockers = []
+
+  if (sources.has('doctorRef')) {
+    const doctorRef = parsedDoctorMap()[row.doctor_id]
+    if (!doctorRef) {
+      blockers.push(
+        `doctor "${row.doctor_id}" has no Klinique id — add it to KLINIQUE_DOCTOR_MAP`,
+      )
+    }
+  }
+
+  if (sources.has('gender')) {
+    const genderMap = parsedGenderMap()
+    const gender = row.patient_gender ?? ''
+    if (!genderMap) {
+      blockers.push('KLINIQUE_GENDER_MAP is not set — Klinique’s gender codes are not guessable')
+    } else if (!gender) {
+      blockers.push('the booking has no gender recorded')
+    } else if (!(gender in genderMap)) {
+      blockers.push(`gender "${gender}" has no Klinique code in KLINIQUE_GENDER_MAP`)
+    }
+  }
+
+  return blockers
 }
 
 /** The booking, flattened to the values a form field might want. */
 function bookingValues(row) {
-  const doctorMap = parsedDoctorMap()
+  const genderMap = parsedGenderMap()
+  const gender = row.patient_gender ?? ''
   return {
     name: row.patient_name ?? '',
     phone: row.patient_phone ?? '',
     age: row.patient_age == null ? '' : String(row.patient_age),
-    gender: row.patient_gender ?? '',
+    /* Only ever the vendor's own code — never our word for it. Unmappable
+       genders never reach here; submissionBlockers stops the booking first. */
+    gender: genderMap ? String(genderMap[gender] ?? '') : '',
     date: row.date ?? '',
     time: row.slot ?? '',
     reason: row.reason ?? '',
-    doctorRef: doctorMap[row.doctor_id] ?? row.doctor_id ?? '',
+    doctorRef: String(parsedDoctorMap()[row.doctor_id] ?? ''),
     ref: row.id ?? '',
   }
+}
+
+/**
+ * The form's "text the patient" checkboxes, switched off explicitly.
+ *
+ * Klinique's booking form carries `send_sms[op_app_confirmation]` and
+ * `send_sms[op_app_reminder]`, and a submit with them on texts whoever is in
+ * the phone field. Leaving them out of the field map happens to work — an
+ * absent Rails checkbox reads as unchecked — but "happens to work" is not a
+ * decision anyone can see, and a later capture that includes them would turn
+ * SMS on without a word. So they are named and set to 0 every time.
+ *
+ * KLINIQUE_SEND_SMS=true switches them on deliberately, once the hospital has
+ * decided Klinique rather than this app should be the one texting patients.
+ */
+function smsFields() {
+  return String(config.klinique.smsFields ?? '')
+    .split(',')
+    .map((field) => field.trim())
+    .filter(Boolean)
 }
 
 /**
@@ -198,6 +283,7 @@ function buildBookingBody(row, token) {
   for (const [field, source] of Object.entries(map)) {
     if (source in values) body.set(field, values[source])
   }
+  for (const field of smsFields()) body.set(field, config.klinique.sendSms ? '1' : '0')
   return body
 }
 
@@ -210,6 +296,16 @@ export async function submitBooking(row) {
     return { ok: false, reason: 'session mode not fully configured (booking path / field map)' }
   }
 
+  const blockers = submissionBlockers(row)
+  if (blockers.length) {
+    /*
+     * Not a failure — a refusal. Nothing was sent, so this belongs back on
+     * reception's worklist as an ordinary manual booking rather than as a
+     * broken one, and the reason says exactly which setting would fix it.
+     */
+    return { ok: false, manual: true, reason: `not submitted: ${blockers.join('; ')}` }
+  }
+
   try {
     await ensureSession()
 
@@ -217,13 +313,20 @@ export async function submitBooking(row) {
     // would before typing into it. Falls back to the submit path if no separate
     // "new" page was captured.
     const formUrl = url(config.klinique.bookingNewPath || config.klinique.bookingPath)
-    const form = await fetch(formUrl, {
-      headers: { Cookie: session.cookie, Accept: 'text/html' },
-      signal: timeout(),
-    })
+    const getForm = () =>
+      fetch(formUrl, { headers: { Cookie: session.cookie, Accept: 'text/html' }, signal: timeout() })
+
+    let form = await getForm()
     if (form.status === 401 || form.status === 403 || /sign_in/.test(form.url)) {
-      // Session lapsed between bookings — sign in once more and retry the fetch.
+      /*
+       * Session lapsed between bookings. Signing in again is only half the
+       * recovery — the response in hand is still the sign-in page, so the form
+       * has to be fetched a second time with the new cookie. Without this the
+       * retry cost a login and then failed anyway on a missing CSRF token,
+       * sending a perfectly good booking to the worklist.
+       */
       await signIn()
+      form = await getForm()
     }
     const formHtml = form.ok ? await form.text() : ''
     session.cookie = mergeCookies(session.cookie, form.headers.getSetCookie?.() ?? [])

@@ -252,11 +252,36 @@ export const config = {
     fieldMap: process.env.KLINIQUE_FIELD_MAP ?? '',
     /*
      * How to tell a Klinique doctor id from ours. JSON: {"deepan-g":"42",...}.
-     * Without it, session mode sends our own doctor id and lets Klinique reject
-     * an unknown one — which shows up as a failure on the worklist, not a wrong
-     * booking.
+     *
+     * A doctor missing from this map is NOT submitted automatically — the
+     * booking stays on reception's worklist. Klinique's physician field is a
+     * type-ahead over a directory far larger than Deepan's own list, with
+     * near-duplicate names in it, so an id we are unsure of is an appointment
+     * under the wrong doctor's name. That is the one failure here that a
+     * patient would discover by being seen by a stranger.
      */
     doctorMap: process.env.KLINIQUE_DOCTOR_MAP ?? '',
+    /*
+     * Klinique's own code for each gender, as JSON: {"female":"1","male":"2"}.
+     *
+     * Deliberately empty by default. On Deepan's build the quick-registration
+     * form uses 1 = Female and 2 = Male — inverted from the obvious order —
+     * but a different build may want the plain word, and the two are
+     * indistinguishable from outside. While this is unset, any booking whose
+     * form maps a gender field goes to the worklist instead of being guessed:
+     * the wrong sex on a medical record is not a cosmetic error.
+     */
+    genderMap: process.env.KLINIQUE_GENDER_MAP ?? '',
+    /*
+     * Klinique's "text the patient" checkboxes on the booking form. They are
+     * set explicitly on every submit — off unless KLINIQUE_SEND_SMS says
+     * otherwise — so a re-captured field map can never quietly start texting
+     * real people from a test booking.
+     */
+    smsFields:
+      process.env.KLINIQUE_SMS_FIELDS ??
+      'send_sms[op_app_confirmation],send_sms[op_app_reminder]',
+    sendSms: bool(process.env.KLINIQUE_SEND_SMS, false),
     /** Longer than the API timeout: a login plus a form post is two round trips. */
     sessionTimeoutMs: Number(process.env.KLINIQUE_SESSION_TIMEOUT_MS ?? 12000),
   },

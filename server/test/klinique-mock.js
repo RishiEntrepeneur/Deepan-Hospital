@@ -125,6 +125,14 @@ export function startKliniqueMock({ username = 'website', password = 'correct-ho
         setPassword: (p) => {
           expectedPassword = p
         },
+        /*
+         * Drop every signed-in session while keeping the cookies valid, which
+         * is what a Klinique-side timeout looks like from here: the cookie is
+         * still sent and still recognised, but it is no longer signed in.
+         */
+        expireSessions: () => {
+          for (const sess of sessions.values()) sess.signedIn = false
+        },
         close: () => new Promise((r) => server.close(r)),
       })
     })
