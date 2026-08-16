@@ -3,12 +3,12 @@
  * the letters after a doctor's name, tests, and the booking/payment terms.
  */
 export const GLOSSARY_CATEGORIES = [
-  { id: 'visit', name: { en: 'Hospital & visit', ta: 'மருத்துவமனை மற்றும் வருகை' } },
-  { id: 'qualification', name: { en: 'Doctor qualifications', ta: 'மருத்துவர் தகுதிகள்' } },
-  { id: 'grade', name: { en: 'Doctor grades', ta: 'மருத்துவர் நிலைகள்' } },
-  { id: 'test', name: { en: 'Tests & procedures', ta: 'பரிசோதனைகள் மற்றும் சிகிச்சைகள்' } },
-  { id: 'booking', name: { en: 'Booking terms', ta: 'பதிவு தொடர்பான சொற்கள்' } },
-  { id: 'payment', name: { en: 'Payment terms', ta: 'கட்டணச் சொற்கள்' } },
+  { id: 'visit', name: { en: 'Hospital & visit', ta: 'மருத்துவமனை மற்றும் வருகை', hi: 'अस्पताल और विज़िट' } },
+  { id: 'qualification', name: { en: 'Doctor qualifications', ta: 'மருத்துவர் தகுதிகள்', hi: 'डॉक्टर की योग्यताएँ' } },
+  { id: 'grade', name: { en: 'Doctor grades', ta: 'மருத்துவர் நிலைகள்', hi: 'डॉक्टर के पद' } },
+  { id: 'test', name: { en: 'Tests & procedures', ta: 'பரிசோதனைகள் மற்றும் சிகிச்சைகள்', hi: 'जाँचें और सर्जरी' } },
+  { id: 'booking', name: { en: 'Booking terms', ta: 'பதிவு தொடர்பான சொற்கள்', hi: 'बुकिंग से जुड़े शब्द' } },
+  { id: 'payment', name: { en: 'Payment terms', ta: 'கட்டணச் சொற்கள்', hi: 'भुगतान से जुड़े शब्द' } },
 ]
 
 export const GLOSSARY = [
@@ -59,11 +59,12 @@ export const GLOSSARY = [
   {
     id: 'hdu',
     category: 'visit',
-    term: { en: 'HDU', ta: 'எச்.டி.யு.' },
-    expansion: { en: 'High Dependency Unit', ta: 'அதிக கவனிப்புப் பிரிவு' },
+    term: { en: 'HDU', ta: 'எச்.டி.யு.', hi: 'एचडीयू' },
+    expansion: { en: 'High Dependency Unit', ta: 'அதிக கவனிப்புப் பிரிவு', hi: 'हाई डिपेंडेंसी यूनिट' },
     definition: {
       en: 'A step between the ICU and a normal ward — closer watch than a ward, less than the ICU.',
       ta: 'ஐ.சி.யு.வுக்கும் சாதாரண வார்டுக்கும் இடைப்பட்ட பிரிவு — வார்டை விட அதிக கவனிப்பு.',
+      hi: 'आईसीयू और सामान्य वार्ड के बीच की व्यवस्था — वार्ड से ज़्यादा निगरानी, आईसीयू से कम।',
     },
   },
   {
@@ -100,46 +101,52 @@ export const GLOSSARY = [
   {
     id: 'tnmc',
     category: 'visit',
-    term: { en: 'TNMC / TNDC number', ta: 'TNMC / TNDC எண்' },
+    term: { en: 'TNMC / TNDC number', ta: 'TNMC / TNDC எண்', hi: 'टीएनएमसी / टीएनडीसी नंबर' },
     expansion: {
       en: 'Tamil Nadu Medical / Dental Council registration',
       ta: 'தமிழ்நாடு மருத்துவ / பல் மருத்துவ கவுன்சில் பதிவு',
+      hi: 'तमिलनाडु मेडिकल / डेंटल काउंसिल पंजीकरण',
     },
     definition: {
       en: 'The licence number every practising doctor is registered under. It is how you verify a doctor is genuine.',
       ta: 'பயிற்சி செய்யும் ஒவ்வொரு மருத்துவரும் பதிவு செய்யப்படும் உரிம எண். மருத்துவர் உண்மையானவரா என்பதைச் சரிபார்க்க இதுவே வழி.',
+      hi: 'हर प्रैक्टिस करने वाले डॉक्टर का लाइसेंस नंबर। इसी से पता चलता है कि डॉक्टर असली हैं।',
     },
   },
   {
     id: 'tpa',
     category: 'visit',
-    term: { en: 'TPA', ta: 'டி.பி.ஏ.' },
-    expansion: { en: 'Third Party Administrator', ta: 'மூன்றாம் தரப்பு நிர்வாகி' },
+    term: { en: 'TPA', ta: 'டி.பி.ஏ.', hi: 'टीपीए' },
+    expansion: { en: 'Third Party Administrator', ta: 'மூன்றாம் தரப்பு நிர்வாகி', hi: 'थर्ड पार्टी एडमिनिस्ट्रेटर' },
     definition: {
       en: 'The company that settles your bill directly with your health insurer, so you pay less at the counter.',
       ta: 'உங்கள் மருத்துவக் காப்பீட்டு நிறுவனத்துடன் நேரடியாக பில் தீர்க்கும் நிறுவனம்.',
+      hi: 'वह कंपनी जो आपका बिल सीधे बीमा कंपनी से निपटाती है, ताकि काउंटर पर आपको कम देना पड़े।',
     },
   },
   {
     id: 'cmchis',
     category: 'visit',
-    term: { en: 'CMCHIS', ta: 'சி.எம்.சி.எச்.ஐ.எஸ்.' },
+    term: { en: 'CMCHIS', ta: 'சி.எம்.சி.எச்.ஐ.எஸ்.', hi: 'सीएमसीएचआईएस' },
     expansion: {
       en: 'Chief Minister’s Comprehensive Health Insurance Scheme',
       ta: 'முதலமைச்சரின் விரிவான மருத்துவக் காப்பீட்டுத் திட்டம்',
+      hi: 'मुख्यमंत्री व्यापक स्वास्थ्य बीमा योजना',
     },
     definition: {
       en: 'The Tamil Nadu government health scheme that covers treatment costs for eligible families.',
       ta: 'தகுதியான குடும்பங்களுக்கு சிகிச்சைச் செலவை ஈடுசெய்யும் தமிழ்நாடு அரசின் திட்டம்.',
+      hi: 'तमिलनाडु सरकार की स्वास्थ्य योजना, जो पात्र परिवारों का इलाज ख़र्च उठाती है।',
     },
   },
   {
     id: 'nabl',
     category: 'visit',
-    term: { en: 'NABL accredited', ta: 'NABL அங்கீகாரம்' },
+    term: { en: 'NABL accredited', ta: 'NABL அங்கீகாரம்', hi: 'एनएबीएल मान्यता प्राप्त' },
     definition: {
       en: 'A national quality certification for laboratories — it means test results meet an audited standard.',
       ta: 'ஆய்வகங்களுக்கான தேசிய தரச் சான்று — பரிசோதனை முடிவுகள் தணிக்கை செய்யப்பட்ட தரத்தில் இருக்கும்.',
+      hi: 'प्रयोगशालाओं के लिए राष्ट्रीय गुणवत्ता प्रमाणन — यानी जाँच के नतीजे एक जाँची-परखी कसौटी पर खरे उतरते हैं।',
     },
   },
 
@@ -151,6 +158,7 @@ export const GLOSSARY = [
     expansion: {
       en: 'Bachelor of Medicine, Bachelor of Surgery',
       ta: 'மருத்துவ இளங்கலை பட்டம்',
+      hi: 'बैचलर ऑफ़ मेडिसिन, बैचलर ऑफ़ सर्जरी',
     },
     definition: {
       en: 'The basic medical degree. Everyone called “Doctor” in a hospital holds this first.',
@@ -161,91 +169,101 @@ export const GLOSSARY = [
   {
     id: 'md',
     category: 'qualification',
-    term: { en: 'MD', ta: 'எம்.டி.' },
-    expansion: { en: 'Doctor of Medicine', ta: 'மருத்துவ முதுகலை' },
+    term: { en: 'MD', ta: 'எம்.டி.', hi: 'एमडी' },
+    expansion: { en: 'Doctor of Medicine', ta: 'மருத்துவ முதுகலை', hi: 'डॉक्टर ऑफ़ मेडिसिन' },
     definition: {
       en: 'A three-year postgraduate degree in a medical (non-surgical) speciality such as general medicine or paediatrics.',
       ta: 'பொது மருத்துவம், குழந்தை நலம் போன்ற (அறுவை அல்லாத) துறைகளில் மூன்றாண்டு முதுகலைப் பட்டம்.',
+      hi: 'बिना सर्जरी वाली किसी विशेषज्ञता में तीन साल की स्नातकोत्तर डिग्री, जैसे जनरल मेडिसिन या बाल रोग।',
     },
   },
   {
     id: 'ms',
     category: 'qualification',
-    term: { en: 'MS', ta: 'எம்.எஸ்.' },
-    expansion: { en: 'Master of Surgery', ta: 'அறுவை சிகிச்சை முதுகலை' },
+    term: { en: 'MS', ta: 'எம்.எஸ்.', hi: 'एमएस' },
+    expansion: { en: 'Master of Surgery', ta: 'அறுவை சிகிச்சை முதுகலை', hi: 'मास्टर ऑफ़ सर्जरी' },
     definition: {
       en: 'A postgraduate degree in a surgical speciality — orthopaedics, ENT, eye surgery and so on.',
       ta: 'எலும்பியல், காது மூக்கு தொண்டை, கண் அறுவை போன்ற அறுவை சிகிச்சைத் துறைகளில் முதுகலைப் பட்டம்.',
+      hi: 'सर्जरी से जुड़ी किसी विशेषज्ञता में स्नातकोत्तर डिग्री — हड्डी रोग, नाक-कान-गला, आँख की सर्जरी वग़ैरह।',
     },
   },
   {
     id: 'dm',
     category: 'qualification',
-    term: { en: 'DM', ta: 'டி.எம்.' },
-    expansion: { en: 'Doctorate of Medicine', ta: 'மேல்நிலை மருத்துவ முனைவர்' },
+    term: { en: 'DM', ta: 'டி.எம்.', hi: 'डीएम' },
+    expansion: { en: 'Doctorate of Medicine', ta: 'மேல்நிலை மருத்துவ முனைவர்', hi: 'डॉक्टरेट ऑफ़ मेडिसिन' },
     definition: {
       en: 'A super-speciality qualification taken after MD — for example cardiology, neurology or nephrology.',
       ta: 'எம்.டி.க்குப் பின் பெறும் மேல்நிலைச் சிறப்புத் தகுதி — எ.கா. இருதயவியல், நரம்பியல், சிறுநீரகவியல்.',
+      hi: 'एमडी के बाद ली जाने वाली सुपर-स्पेशलिटी योग्यता — जैसे हृदय रोग, तंत्रिका रोग या गुर्दा रोग।',
     },
   },
   {
     id: 'mch',
     category: 'qualification',
-    term: { en: 'MCh', ta: 'எம்.சி.எச்.' },
-    expansion: { en: 'Master of Chirurgiae', ta: 'மேல்நிலை அறுவை சிகிச்சை முனைவர்' },
+    term: { en: 'MCh', ta: 'எம்.சி.எச்.', hi: 'एमसीएच' },
+    expansion: { en: 'Master of Chirurgiae', ta: 'மேல்நிலை அறுவை சிகிச்சை முனைவர்', hi: 'मास्टर ऑफ़ सर्जरी (सुपर-स्पेशलिटी)' },
     definition: {
       en: 'The surgical equivalent of DM — a super-speciality taken after MS, such as urology or neurosurgery.',
       ta: 'டி.எம்.க்கு இணையான அறுவை சிகிச்சைத் தகுதி — எ.கா. சிறுநீர் பாதை, நரம்பியல் அறுவை சிகிச்சை.',
+      hi: 'डीएम का शल्य चिकित्सा वाला समकक्ष — एमएस के बाद ली जाने वाली सुपर-स्पेशलिटी, जैसे मूत्र रोग या न्यूरोसर्जरी।',
     },
   },
   {
     id: 'dnb',
     category: 'qualification',
-    term: { en: 'DNB', ta: 'டி.என்.பி.' },
-    expansion: { en: 'Diplomate of National Board', ta: 'தேசிய வாரிய பட்டயம்' },
+    term: { en: 'DNB', ta: 'டி.என்.பி.', hi: 'डीएनबी' },
+    expansion: { en: 'Diplomate of National Board', ta: 'தேசிய வாரிய பட்டயம்', hi: 'डिप्लोमेट ऑफ़ नेशनल बोर्ड' },
     definition: {
       en: 'A postgraduate qualification awarded by the National Board of Examinations, treated as equal to MD or MS.',
       ta: 'தேசிய தேர்வு வாரியம் வழங்கும் முதுகலைத் தகுதி — எம்.டி. / எம்.எஸ். அளவிற்கு சமமானது.',
+      hi: 'नेशनल बोर्ड ऑफ़ एग्ज़ामिनेशंस से मिलने वाली स्नातकोत्तर योग्यता, जिसे एमडी या एमएस के बराबर माना जाता है।',
     },
   },
   {
     id: 'diploma',
     category: 'qualification',
-    term: { en: 'DCH, DGO, DLO, DO, D.Ortho', ta: 'DCH, DGO, DLO, DO, D.Ortho' },
+    term: { en: 'DCH, DGO, DLO, DO, D.Ortho', ta: 'DCH, DGO, DLO, DO, D.Ortho', hi: 'डीसीएच, डीजीओ, डीएलओ, डीओ, डी.ऑर्थो' },
     definition: {
       en: 'Two-year postgraduate diplomas in child health, gynaecology, ENT, eye care and orthopaedics respectively.',
       ta: 'குழந்தை நலம், மகளிர் நலம், காது மூக்கு தொண்டை, கண், எலும்பியல் ஆகியவற்றில் இரண்டாண்டு முதுகலை பட்டயங்கள்.',
+      hi: 'क्रमशः बाल स्वास्थ्य, स्त्री रोग, नाक-कान-गला, आँख और हड्डी रोग में दो साल के स्नातकोत्तर डिप्लोमा।',
     },
   },
   {
     id: 'bds',
     category: 'qualification',
-    term: { en: 'BDS / MDS', ta: 'பி.டி.எஸ். / எம்.டி.எஸ்.' },
+    term: { en: 'BDS / MDS', ta: 'பி.டி.எஸ். / எம்.டி.எஸ்.', hi: 'बीडीएस / एमडीएस' },
     expansion: {
       en: 'Bachelor / Master of Dental Surgery',
       ta: 'பல் மருத்துவ இளங்கலை / முதுகலை',
+      hi: 'बैचलर / मास्टर ऑफ़ डेंटल सर्जरी',
     },
     definition: {
       en: 'The basic and postgraduate dental degrees. MDS holders specialise — braces, root canals, jaw surgery.',
       ta: 'பல் மருத்துவத்தின் அடிப்படை மற்றும் முதுகலைப் பட்டங்கள். எம்.டி.எஸ். பெற்றவர்கள் சிறப்புத் துறைகளில் நிபுணர்கள்.',
+      hi: 'दंत चिकित्सा की बुनियादी और स्नातकोत्तर डिग्रियाँ। एमडीएस वाले किसी एक क्षेत्र में विशेषज्ञ होते हैं — तार लगाना, रूट कैनाल, जबड़े की सर्जरी।',
     },
   },
   {
     id: 'fellowship',
     category: 'qualification',
-    term: { en: 'Fellowship', ta: 'ஃபெலோஷிப்' },
+    term: { en: 'Fellowship', ta: 'ஃபெலோஷிப்', hi: 'फ़ेलोशिप' },
     definition: {
       en: 'Extra training in a narrow area after the main degree — for example spine surgery or reproductive medicine.',
       ta: 'முதன்மைப் பட்டத்திற்குப் பின் ஒரு குறுகிய துறையில் பெறும் கூடுதல் பயிற்சி.',
+      hi: 'मुख्य डिग्री के बाद किसी संकरे क्षेत्र में अतिरिक्त प्रशिक्षण — जैसे रीढ़ की सर्जरी या प्रजनन चिकित्सा।',
     },
   },
   {
     id: 'frcp',
     category: 'qualification',
-    term: { en: 'FRCP, MRCEM, FMAS, FVRS', ta: 'FRCP, MRCEM, FMAS, FVRS' },
+    term: { en: 'FRCP, MRCEM, FMAS, FVRS', ta: 'FRCP, MRCEM, FMAS, FVRS', hi: 'एफ़आरसीपी, एमआरसीईएम, एफ़एमएएस, एफ़वीआरएस' },
     definition: {
       en: 'Memberships and fellowships of professional colleges, usually earned by further examination in India or the UK.',
       ta: 'இந்தியா அல்லது இங்கிலாந்தில் கூடுதல் தேர்வு மூலம் பெறப்படும் தொழில் கல்லூரி உறுப்பினர் தகுதிகள்.',
+      hi: 'पेशेवर कॉलेजों की सदस्यताएँ और फ़ेलोशिप, जो आमतौर पर भारत या ब्रिटेन में और परीक्षाएँ देकर मिलती हैं।',
     },
   },
 
@@ -253,46 +271,51 @@ export const GLOSSARY = [
   {
     id: 'grade-chief',
     category: 'grade',
-    term: { en: 'Chief Consultant', ta: 'தலைமை ஆலோசகர்' },
+    term: { en: 'Chief Consultant', ta: 'தலைமை ஆலோசகர்', hi: 'मुख्य परामर्शदाता' },
     definition: {
       en: 'The most senior doctor in the hospital or a department, usually with the longest experience.',
       ta: 'மருத்துவமனை அல்லது துறையின் மிக மூத்த மருத்துவர் — பொதுவாக அதிக அனுபவம் உள்ளவர்.',
+      hi: 'अस्पताल या विभाग के सबसे वरिष्ठ डॉक्टर, आमतौर पर सबसे लंबे अनुभव वाले।',
     },
   },
   {
     id: 'grade-senior',
     category: 'grade',
-    term: { en: 'Senior Consultant', ta: 'மூத்த ஆலோசகர்' },
+    term: { en: 'Senior Consultant', ta: 'மூத்த ஆலோசகர்', hi: 'वरिष्ठ परामर्शदाता' },
     definition: {
       en: 'An experienced specialist who leads difficult cases and supervises junior doctors.',
       ta: 'கடினமான வழக்குகளை கையாளும், இளநிலை மருத்துவர்களை மேற்பார்வையிடும் அனுபவமிக்க நிபுணர்.',
+      hi: 'अनुभवी विशेषज्ञ, जो कठिन मामले सँभालते हैं और कनिष्ठ डॉक्टरों का मार्गदर्शन करते हैं।',
     },
   },
   {
     id: 'grade-consultant',
     category: 'grade',
-    term: { en: 'Consultant', ta: 'ஆலோசகர்' },
+    term: { en: 'Consultant', ta: 'ஆலோசகர்', hi: 'परामर्शदाता' },
     definition: {
       en: 'A fully qualified specialist who runs their own clinic and treats patients independently.',
       ta: 'சொந்தமாக ஆலோசனை வழங்கி, தனித்து நோயாளிகளுக்குச் சிகிச்சை அளிக்கும் முழுத் தகுதி பெற்ற நிபுணர்.',
+      hi: 'पूरी तरह योग्य विशेषज्ञ, जो अपनी ओपीडी ख़ुद चलाते हैं और स्वतंत्र रूप से इलाज करते हैं।',
     },
   },
   {
     id: 'grade-visiting',
     category: 'grade',
-    term: { en: 'Visiting Consultant', ta: 'வருகை ஆலோசகர்' },
+    term: { en: 'Visiting Consultant', ta: 'வருகை ஆலோசகர்', hi: 'विज़िटिंग परामर्शदाता' },
     definition: {
       en: 'A specialist who attends only on fixed days — book early, as their slots are limited.',
       ta: 'குறிப்பிட்ட நாட்களில் மட்டும் வரும் நிபுணர் — நேரம் குறைவு என்பதால் முன்கூட்டியே பதிவு செய்யுங்கள்.',
+      hi: 'ऐसे विशेषज्ञ जो सिर्फ़ तय दिनों पर आते हैं — जल्दी बुकिंग कीजिए, उनके स्लॉट सीमित होते हैं।',
     },
   },
   {
     id: 'grade-dmo',
     category: 'grade',
-    term: { en: 'Duty Medical Officer', ta: 'பணி மருத்துவ அலுவலர்' },
+    term: { en: 'Duty Medical Officer', ta: 'பணி மருத்துவ அலுவலர்', hi: 'ड्यूटी मेडिकल ऑफ़िसर' },
     definition: {
       en: 'The doctor on shift in casualty who sees you first in an emergency and calls in specialists if needed.',
       ta: 'அவசரப் பிரிவில் பணியில் இருந்து முதலில் உங்களைப் பார்க்கும் மருத்துவர்; தேவைப்பட்டால் நிபுணரை அழைப்பார்.',
+      hi: 'कैज़ुअल्टी में ड्यूटी पर मौजूद डॉक्टर, जो आपात स्थिति में सबसे पहले आपको देखते हैं और ज़रूरत हो तो विशेषज्ञ को बुलाते हैं।',
     },
   },
 
@@ -311,39 +334,43 @@ export const GLOSSARY = [
   {
     id: 'echo',
     category: 'test',
-    term: { en: 'Echo', ta: 'எக்கோ' },
-    expansion: { en: 'Echocardiogram', ta: 'இதய ஒலி அலை ஸ்கேன்' },
+    term: { en: 'Echo', ta: 'எக்கோ', hi: 'इको' },
+    expansion: { en: 'Echocardiogram', ta: 'இதய ஒலி அலை ஸ்கேன்', hi: 'इकोकार्डियोग्राम' },
     definition: {
       en: 'An ultrasound scan of the heart that shows how well the valves and pumping chambers work.',
       ta: 'இதய வால்வுகளும் அறைகளும் எப்படி இயங்குகின்றன என்பதைக் காட்டும் ஒலி அலை ஸ்கேன்.',
+      hi: 'दिल का अल्ट्रासाउंड, जिससे पता चलता है कि वाल्व और पंप करने वाले कक्ष कितनी अच्छी तरह काम कर रहे हैं।',
     },
   },
   {
     id: 'tmt',
     category: 'test',
-    term: { en: 'TMT', ta: 'டி.எம்.டி.' },
-    expansion: { en: 'Treadmill Test', ta: 'டிரெட்மில் சோதனை' },
+    term: { en: 'TMT', ta: 'டி.எம்.டி.', hi: 'टीएमटी' },
+    expansion: { en: 'Treadmill Test', ta: 'டிரெட்மில் சோதனை', hi: 'ट्रेडमिल टेस्ट' },
     definition: {
       en: 'An ECG recorded while you walk on a treadmill, to see how the heart behaves under effort.',
       ta: 'டிரெட்மில்லில் நடக்கும்போது எடுக்கப்படும் ஈ.சி.ஜி. — உழைப்பின்போது இதயம் எப்படி செயல்படுகிறது எனக் காண.',
+      hi: 'ट्रेडमिल पर चलते हुए लिया गया ईसीजी, ताकि देखा जा सके कि मेहनत के समय दिल कैसा काम करता है।',
     },
   },
   {
     id: 'angiogram',
     category: 'test',
-    term: { en: 'Angiogram', ta: 'ஆஞ்சியோகிராம்' },
+    term: { en: 'Angiogram', ta: 'ஆஞ்சியோகிராம்', hi: 'एंजियोग्राम' },
     definition: {
       en: 'A dye is injected into the heart’s arteries and X-rayed to find blockages.',
       ta: 'இதய ரத்தக் குழாய்களில் சாயம் செலுத்தி எக்ஸ்-ரே எடுத்து அடைப்புகளைக் கண்டறியும் பரிசோதனை.',
+      hi: 'दिल की धमनियों में रंग (डाई) डालकर एक्स-रे लिया जाता है, जिससे रुकावटें दिख जाती हैं।',
     },
   },
   {
     id: 'angioplasty',
     category: 'test',
-    term: { en: 'Angioplasty', ta: 'ஆஞ்சியோபிளாஸ்டி' },
+    term: { en: 'Angioplasty', ta: 'ஆஞ்சியோபிளாஸ்டி', hi: 'एंजियोप्लास्टी' },
     definition: {
       en: 'A blocked heart artery is opened with a small balloon and usually held open with a stent.',
       ta: 'அடைபட்ட இதயக் குழாயை சிறு பலூன் மூலம் திறந்து, ஸ்டெண்ட் பொருத்தி வைத்திருக்கும் சிகிச்சை.',
+      hi: 'दिल की बंद धमनी को छोटे गुब्बारे से खोला जाता है और आमतौर पर स्टेंट डालकर खुला रखा जाता है।',
     },
   },
   {
@@ -401,17 +428,18 @@ export const GLOSSARY = [
   {
     id: 'biopsy',
     category: 'test',
-    term: { en: 'Biopsy', ta: 'பயாப்ஸி' },
+    term: { en: 'Biopsy', ta: 'பயாப்ஸி', hi: 'बायोप्सी' },
     definition: {
       en: 'A small piece of tissue is taken and examined under a microscope to find out exactly what a lump or patch is. Being sent for one does not mean the result will be serious.',
       ta: 'ஒரு கட்டி அல்லது புள்ளி என்னவென்று துல்லியமாக அறிய, சிறிய திசுத் துண்டை எடுத்து நுண்ணோக்கியில் பரிசோதிப்பது. இது பரிந்துரைக்கப்படுவது தீவிரமான முடிவு என்று அர்த்தமல்ல.',
+      hi: 'ऊतक का छोटा टुकड़ा लेकर सूक्ष्मदर्शी से जाँचा जाता है, ताकि गाँठ या धब्बे की असली वजह पता चले। बायोप्सी के लिए भेजे जाने का मतलब यह नहीं कि नतीजा गंभीर ही होगा।',
     },
   },
   {
     id: 'bloodtest',
     category: 'test',
     term: { en: 'Blood test / CBC', ta: 'ரத்தப் பரிசோதனை / சி.பி.சி.', hi: 'रक्त जाँच' },
-    expansion: { en: 'Complete Blood Count', ta: 'முழு ரத்த எண்ணிக்கை' },
+    expansion: { en: 'Complete Blood Count', ta: 'முழு ரத்த எண்ணிக்கை', hi: 'कंप्लीट ब्लड काउंट' },
     definition: {
       en: 'A small sample of blood checked in the lab. A CBC counts the different blood cells and is the usual first test for fever, tiredness and infection. Some tests need you to come fasting — the lab will say.',
       ta: 'ஆய்வகத்தில் பரிசோதிக்கப்படும் சிறிய ரத்த மாதிரி. சி.பி.சி. வெவ்வேறு ரத்த அணுக்களை எண்ணும்; காய்ச்சல், சோர்வு, தொற்றுக்கு முதலில் செய்யப்படும் பரிசோதனை. சில பரிசோதனைகளுக்கு வெறும் வயிற்றில் வர வேண்டும் — ஆய்வகம் சொல்லும்.',
@@ -421,65 +449,72 @@ export const GLOSSARY = [
   {
     id: 'endoscopy',
     category: 'test',
-    term: { en: 'Endoscopy', ta: 'எண்டோஸ்கோபி' },
+    term: { en: 'Endoscopy', ta: 'எண்டோஸ்கோபி', hi: 'एंडोस्कोपी' },
     definition: {
       en: 'A thin tube with a camera is passed through the mouth to look inside the food pipe and stomach.',
       ta: 'கேமரா பொருத்திய மெல்லிய குழாயை வாய் வழியாகச் செலுத்தி உணவுக் குழாய், இரைப்பையைப் பார்க்கும் பரிசோதனை.',
+      hi: 'कैमरे वाली पतली नली मुँह के रास्ते डालकर भोजन नली और पेट के अंदर देखा जाता है।',
     },
   },
   {
     id: 'eeg',
     category: 'test',
-    term: { en: 'EEG', ta: 'ஈ.ஈ.ஜி.' },
-    expansion: { en: 'Electroencephalogram', ta: 'மூளை அலை வரைபடம்' },
+    term: { en: 'EEG', ta: 'ஈ.ஈ.ஜி.', hi: 'ईईजी' },
+    expansion: { en: 'Electroencephalogram', ta: 'மூளை அலை வரைபடம்', hi: 'इलेक्ट्रोएन्सेफ़ेलोग्राम' },
     definition: {
       en: 'Records the brain’s electrical waves through the scalp — mainly used to investigate fits.',
       ta: 'உச்சந்தலை வழியாக மூளையின் மின் அலைகளைப் பதிவு செய்யும் சோதனை — முக்கியமாக வலிப்புக்கு.',
+      hi: 'खोपड़ी के ऊपर से दिमाग़ की विद्युत तरंगें दर्ज करता है — मुख्य रूप से दौरों की जाँच के लिए।',
     },
   },
   {
     id: 'audiometry',
     category: 'test',
-    term: { en: 'Audiometry', ta: 'செவித்திறன் பரிசோதனை' },
+    term: { en: 'Audiometry', ta: 'செவித்திறன் பரிசோதனை', hi: 'ऑडियोमेट्री' },
     definition: {
       en: 'A hearing test with headphones that measures the softest sound each ear can pick up.',
       ta: 'ஹெட்ஃபோன் மூலம் ஒவ்வொரு காதும் கேட்கும் மென்மையான ஒலியை அளவிடும் சோதனை.',
+      hi: 'हेडफ़ोन लगाकर की जाने वाली सुनने की जाँच, जो बताती है कि हर कान कितनी धीमी आवाज़ पकड़ पाता है।',
     },
   },
   {
     id: 'phaco',
     category: 'test',
-    term: { en: 'Phaco cataract surgery', ta: 'ஃபேக்கோ கண்புரை அறுவை சிகிச்சை' },
+    term: { en: 'Phaco cataract surgery', ta: 'ஃபேக்கோ கண்புரை அறுவை சிகிச்சை', hi: 'फ़ेको मोतियाबिंद सर्जरी' },
     definition: {
       en: 'The clouded lens is broken up by sound waves through a tiny cut and replaced with a clear lens.',
       ta: 'மங்கிய லென்ஸை ஒலி அலைகளால் உடைத்து, சிறு கீறல் வழியாக அகற்றி, தெளிவான லென்ஸ் பொருத்தும் சிகிச்சை.',
+      hi: 'धुँधले लेंस को ध्वनि तरंगों से तोड़कर छोटे से चीरे से निकाला जाता है और साफ़ लेंस लगा दिया जाता है।',
     },
   },
   {
     id: 'arthroscopy',
     category: 'test',
-    term: { en: 'Arthroscopy', ta: 'ஆர்த்ரோஸ்கோபி' },
+    term: { en: 'Arthroscopy', ta: 'ஆர்த்ரோஸ்கோபி', hi: 'आर्थ्रोस्कोपी' },
     definition: {
       en: 'Keyhole surgery on a joint — a camera and fine tools go in through two small cuts.',
       ta: 'மூட்டில் இரண்டு சிறு கீறல்கள் வழியாக கேமரா மற்றும் கருவிகள் செலுத்தி செய்யப்படும் அறுவை சிகிச்சை.',
+      hi: 'जोड़ की दूरबीन सर्जरी — दो छोटे चीरों से कैमरा और महीन औज़ार अंदर जाते हैं।',
     },
   },
   {
     id: 'chemo',
     category: 'test',
-    term: { en: 'Chemotherapy', ta: 'கீமோதெரபி' },
+    term: { en: 'Chemotherapy', ta: 'கீமோதெரபி', hi: 'कीमोथेरेपी' },
     definition: {
       en: 'Cancer medicines given through a drip or as tablets, usually in cycles over several months.',
       ta: 'சொட்டு மருந்து அல்லது மாத்திரை வடிவில், பல மாதங்களுக்குச் சுழற்சி முறையில் தரப்படும் புற்றுநோய் மருந்துகள்.',
+      hi: 'कैंसर की दवाएँ, जो ड्रिप से या गोलियों के रूप में दी जाती हैं — आमतौर पर कई महीनों तक चक्रों में।',
     },
   },
   {
     id: 'masterhealth',
     category: 'test',
-    term: { en: 'Master health check-up', ta: 'முழு உடல் பரிசோதனை' },
+    term: { en: 'Master health check-up', ta: 'முழு உடல் பரிசோதனை', hi: 'मास्टर हेल्थ चेक-अप' },
     definition: {
       en: 'A bundled set of blood tests, scans and a doctor review, done once a year to catch problems early.',
       ta: 'ஆண்டுக்கு ஒருமுறை செய்யப்படும் ரத்தப் பரிசோதனை, ஸ்கேன் மற்றும் மருத்துவர் ஆய்வு அடங்கிய தொகுப்பு.',
+      hi: 'ख़ून की जाँचों, स्कैन और डॉक्टर की जाँच का एक पैकेज, जो साल में एक बार कराया जाता है ताकि दिक़्क़तें जल्दी पकड़ में आ जाएँ।',
     },
   },
 
@@ -497,37 +532,41 @@ export const GLOSSARY = [
   {
     id: 'session',
     category: 'booking',
-    term: { en: 'Morning / Evening session', ta: 'காலை / மாலை அமர்வு' },
+    term: { en: 'Morning / Evening session', ta: 'காலை / மாலை அமர்வு', hi: 'सुबह / शाम की बैठक' },
     definition: {
       en: 'Doctors consult in two blocks a day. Morning is roughly 8 am–1 pm, evening 4 pm–9 pm.',
       ta: 'மருத்துவர்கள் நாளொன்றுக்கு இரண்டு அமர்வுகளில் ஆலோசனை வழங்குகிறார்கள் — காலை 8–1, மாலை 4–9.',
+      hi: 'डॉक्टर दिन में दो हिस्सों में मरीज़ देखते हैं। सुबह लगभग 8 से 1 बजे तक, शाम 4 से 9 बजे तक।',
     },
   },
   {
     id: 'appointment-id',
     category: 'booking',
-    term: { en: 'Appointment ID', ta: 'சந்திப்பு எண்' },
+    term: { en: 'Appointment ID', ta: 'சந்திப்பு எண்', hi: 'अपॉइंटमेंट आईडी' },
     definition: {
       en: 'The DH-XXXXXX code given when you book. Show it at reception to find your booking instantly.',
       ta: 'பதிவு செய்யும்போது கிடைக்கும் DH-XXXXXX குறியீடு. வரவேற்பில் காட்டினால் உடனே பதிவு கிடைக்கும்.',
+      hi: 'बुकिंग के समय मिलने वाला DH-XXXXXX कोड। रिसेप्शन पर दिखाइए, आपकी बुकिंग तुरंत मिल जाएगी।',
     },
   },
   {
     id: 'consulting-days',
     category: 'booking',
-    term: { en: 'Consulting days', ta: 'ஆலோசனை நாட்கள்' },
+    term: { en: 'Consulting days', ta: 'ஆலோசனை நாட்கள்', hi: 'परामर्श के दिन' },
     definition: {
       en: 'The days of the week a particular doctor sees patients. Other dates cannot be selected.',
       ta: 'ஒரு மருத்துவர் நோயாளிகளைப் பார்க்கும் வார நாட்கள். மற்ற தேதிகளைத் தேர்வு செய்ய முடியாது.',
+      hi: 'सप्ताह के वे दिन जब कोई डॉक्टर मरीज़ देखते हैं। बाक़ी तारीख़ें चुनी नहीं जा सकतीं।',
     },
   },
   {
     id: 'reschedule',
     category: 'booking',
-    term: { en: 'Reschedule', ta: 'நேரம் மாற்றுதல்' },
+    term: { en: 'Reschedule', ta: 'நேரம் மாற்றுதல்', hi: 'समय बदलना' },
     definition: {
       en: 'Moving an existing booking to a different date or time. Your appointment ID stays the same.',
       ta: 'ஏற்கனவே உள்ள பதிவை வேறு தேதி அல்லது நேரத்திற்கு மாற்றுவது. சந்திப்பு எண் மாறாது.',
+      hi: 'मौजूदा बुकिंग को दूसरी तारीख़ या समय पर ले जाना। आपकी अपॉइंटमेंट आईडी वही रहती है।',
     },
   },
 
@@ -545,10 +584,11 @@ export const GLOSSARY = [
   {
     id: 'convenience-fee',
     category: 'payment',
-    term: { en: 'Convenience fee', ta: 'சேவைக் கட்டணம்' },
+    term: { en: 'Convenience fee', ta: 'சேவைக் கட்டணம்', hi: 'सुविधा शुल्क' },
     definition: {
       en: 'A small charge added when you pay online. It is not charged if you pay at the hospital counter.',
       ta: 'இணையவழி கட்டணம் செலுத்தும்போது சேர்க்கப்படும் சிறு கட்டணம். மருத்துவமனையில் செலுத்தினால் இது இல்லை.',
+      hi: 'ऑनलाइन भुगतान करने पर जुड़ने वाला छोटा शुल्क। अस्पताल के काउंटर पर भुगतान करने पर यह नहीं लगता।',
     },
   },
   {
@@ -565,29 +605,32 @@ export const GLOSSARY = [
   {
     id: 'upi-id',
     category: 'payment',
-    term: { en: 'UPI ID', ta: 'யு.பி.ஐ. முகவரி' },
+    term: { en: 'UPI ID', ta: 'யு.பி.ஐ. முகவரி', hi: 'यूपीआई आईडी' },
     definition: {
       en: 'Your payment address, written like name@bank. It identifies your account without revealing the number.',
       ta: 'name@bank வடிவில் உள்ள உங்கள் கட்டண முகவரி. கணக்கு எண்ணைக் காட்டாமல் கணக்கை அடையாளம் காட்டும்.',
+      hi: 'आपका भुगतान पता, जो name@bank जैसा लिखा जाता है। यह खाता नंबर बताए बिना आपके खाते की पहचान कर लेता है।',
     },
   },
   {
     id: 'cvv',
     category: 'payment',
-    term: { en: 'CVV', ta: 'சி.வி.வி.' },
-    expansion: { en: 'Card Verification Value', ta: 'அட்டை சரிபார்ப்பு எண்' },
+    term: { en: 'CVV', ta: 'சி.வி.வி.', hi: 'सीवीवी' },
+    expansion: { en: 'Card Verification Value', ta: 'அட்டை சரிபார்ப்பு எண்', hi: 'कार्ड वेरिफ़िकेशन वैल्यू' },
     definition: {
       en: 'The 3-digit number on the back of your card. Never share it over phone or message with anyone.',
       ta: 'அட்டையின் பின்புறம் உள்ள 3 இலக்க எண். இதை யாருடனும் தொலைபேசி அல்லது செய்தி வழியாகப் பகிர வேண்டாம்.',
+      hi: 'आपके कार्ड के पीछे लिखा 3 अंकों का नंबर। इसे फ़ोन या संदेश पर किसी के साथ कभी साझा न करें।',
     },
   },
   {
     id: 'reference',
     category: 'payment',
-    term: { en: 'Payment reference', ta: 'கட்டணக் குறிப்பு எண்' },
+    term: { en: 'Payment reference', ta: 'கட்டணக் குறிப்பு எண்', hi: 'भुगतान संदर्भ' },
     definition: {
       en: 'The transaction number for your payment. Quote it if a payment has to be traced or refunded.',
       ta: 'உங்கள் கட்டணத்தின் பரிவர்த்தனை எண். கட்டணத்தைக் கண்டறியவோ திரும்பப் பெறவோ இதைக் குறிப்பிடவும்.',
+      hi: 'आपके भुगतान का लेन-देन नंबर। भुगतान ढूँढ़ना या वापस कराना हो तो यही बताइए।',
     },
   },
 ]
