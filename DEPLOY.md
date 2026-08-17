@@ -23,6 +23,38 @@ keep its database, so the app will not work on them.
 
 ---
 
+## Second — *where* it runs matters, not just what
+
+This is a hospital's patient data, and the patients are in Tiruchirappalli.
+Two things follow.
+
+**Host it in an Indian region.** The Digital Personal Data Protection Act 2023
+governs this data, and keeping it inside India is the simplest position to be
+in — it avoids the whole question of cross-border transfer, which is the kind of
+thing that is easy to arrange now and awkward to explain later. It is also
+faster: a server in Mumbai or Bangalore is tens of milliseconds from Trichy,
+where one in Frankfurt or Oregon is hundreds.
+
+Providers with an Indian region include **AWS (Mumbai)**, **DigitalOcean
+(Bangalore)**, **Azure (Central India)** and **Akamai/Linode (Mumbai)**.
+**Hetzner has none** — it is the cheapest VPS most people recommend and it is
+the wrong answer here. Check current regions before you commit; they change.
+
+Managed platforms are the weaker option for exactly this reason. At the time of
+writing **Render has no Indian region**, so choosing it means the hospital's
+patient records live in Singapore or the United States. That may be an
+acceptable trade to get live quickly — but it is a decision the hospital should
+make knowingly, not one that happens because a dropdown had no better option.
+
+**Put it in the hospital's own account, not yours.** The domain, the server and
+the backups should be registered to Deepan Hospital and paid for by them. Bill
+it through at cost if you are arranging it. A supplier holding a hospital's
+patient data in a personal account is a problem for both sides the day the
+relationship changes — and it is trivial to get right at the start and painful
+to unpick later.
+
+---
+
 ## Option A — Render.com (easiest, managed)
 
 Good if you want it working without running a server yourself. Costs a few
@@ -78,12 +110,29 @@ provider). More steps, but yours entirely.
 - [ ] The **database disk persists** across restarts (Render disk / the VPS's own disk).
 - [ ] **Admin and every staff password reset** from the development ones.
 - [ ] A copy of `server/data/deepan.db` is taken **off the server** regularly.
+      The app already writes its own backups every 6 hours to `server/backups/`
+      (`BACKUP_EVERY_HOURS`, `BACKUP_KEEP`), but those sit on the same disk as
+      the database — which is no protection at all against the disk being the
+      thing that fails. Copy them somewhere else on a schedule, e.g. nightly:
+      ```
+      0 2 * * *  rclone copy /path/server/backups remote:deepan-backups
+      ```
+      **Then restore one, once, onto a spare machine.** A backup nobody has
+      ever restored is a belief, not a backup.
 - [ ] If using online payments, the Razorpay webhook points at the real HTTPS URL.
 
 ---
 
 ## The honest recommendation
 
-For a real hospital, **Option B (a VPS) is the right long-term home** — it's
-cheapest and it's yours. **Option A (Render) is the fastest to get live today**
-and easy to move off later. Either is fine; a sleeping laptop is not.
+For a real hospital, **Option B — a VPS in an Indian region — is the right
+home.** It is the cheapest, the data stays in the country, it is the fastest for
+patients in Trichy, and it belongs to the hospital. This app is small: 1 vCPU
+and 1–2 GB of RAM is ample, and SQLite means there is no separate database
+server to run or pay for.
+
+**Option A (Render) is the fastest way to be live today** and is easy to move
+off later — but read the region note above before choosing it, because it puts
+patient records outside India.
+
+Either is fine. A sleeping laptop is not.
