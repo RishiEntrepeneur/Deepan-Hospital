@@ -1,0 +1,1018 @@
+<title>Deepan Hospital Desk Manual</title>
+
+<style>
+  /* ------------------------------------------------------------------
+     Tokens, taken from the hospital's own design system (src/index.css)
+     rather than invented, so the manual and the screen it describes are
+     recognisably the same thing.
+     ------------------------------------------------------------------ */
+  :root {
+    --bone:      #faf9f6;
+    --paper:     #ffffff;
+    --sand:      #f4f2ec;
+    --rule:      #e7e3d9;
+    --rule-soft: #efece4;
+    --ink:       #16130f;
+    --ink-soft:  #403b33;
+    --grey:      #706b5e;
+    --teal:      #0e6a5c;
+    --teal-deep: #052b26;
+    --teal-pale: #eef6f4;
+    --teal-line: #a8d4cc;
+    --leaf:      #55731f;
+    --leaf-pale: #f2f8ea;
+    --leaf-line: #c8e0a7;
+    --amber:     #8a5a12;
+    --amber-pale:#fdf6e7;
+    --amber-line:#e8d3a3;
+    --rose:      #91303f;
+    --rose-pale: #fbf0f1;
+    --rose-line: #e9c4c9;
+    --code-bg:   #052b26;
+    --code-ink:  #eef6f4;
+    --code-line: #052b26;
+
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --mono:  ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+    --measure: 68ch;
+  }
+
+  /* Dark: the site's deepest teal as ground, the same way the opening screen
+     uses it. Redefines tokens only — every component below reads them. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bone:      #0c1a18;
+      --paper:     #11221f;
+      --sand:      #162b27;
+      --rule:      #22403a;
+      --rule-soft: #1b332e;
+      --ink:       #f2f5f2;
+      --ink-soft:  #d3ded9;
+      --grey:      #9aaba5;
+      --teal:      #72b7ab;
+      --teal-deep: #d5eae5;
+      --teal-pale: #10302a;
+      --teal-line: #235049;
+      --leaf:      #c3dd7a;
+      --leaf-pale: #152a17;
+      --leaf-line: #2f4c25;
+      --amber:     #e8bf7a;
+      --amber-pale:#2c2213;
+      --amber-line:#4d3c1d;
+      --rose:      #eaa3ad;
+      --rose-pale: #2e1519;
+      --rose-line: #522a30;
+      --code-bg:   #06100f;
+      --code-ink:  #d5eae5;
+      --code-line: #22403a;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bone:      #0c1a18;
+    --paper:     #11221f;
+    --sand:      #162b27;
+    --rule:      #22403a;
+    --rule-soft: #1b332e;
+    --ink:       #f2f5f2;
+    --ink-soft:  #d3ded9;
+    --grey:      #9aaba5;
+    --teal:      #72b7ab;
+    --teal-deep: #d5eae5;
+    --teal-pale: #10302a;
+    --teal-line: #235049;
+    --leaf:      #c3dd7a;
+    --leaf-pale: #152a17;
+    --leaf-line: #2f4c25;
+    --amber:     #e8bf7a;
+    --amber-pale:#2c2213;
+    --amber-line:#4d3c1d;
+    --rose:      #eaa3ad;
+    --rose-pale: #2e1519;
+    --rose-line: #522a30;
+    --code-bg:   #06100f;
+    --code-ink:  #d5eae5;
+    --code-line: #22403a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bone);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 54rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 6rem;
+  }
+
+  /* ---------------- masthead ---------------- */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .crest {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .crest b { color: var(--teal); font-weight: 700; }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .standfirst {
+    margin: 0;
+    max-width: var(--measure);
+    font-size: 1.06rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------------- the two-systems banner ---------------- */
+  .systems {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  @media (min-width: 44rem) { .systems { grid-template-columns: 1fr 1fr; } }
+  .system {
+    background: var(--paper);
+    padding: 1.35rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .system h3 {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .system p { margin: 0; font-size: 0.93rem; color: var(--ink-soft); }
+  .system .who {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  /* ---------------- parts & sections ---------------- */
+  .part { margin-top: 4.25rem; }
+  .part-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .part-no {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+    white-space: nowrap;
+  }
+  .part-head h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.012em;
+  }
+  .part-note {
+    margin: 0.85rem 0 0;
+    max-width: var(--measure);
+    color: var(--ink-soft);
+  }
+
+  h3.rule {
+    margin: 2.6rem 0 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  p { max-width: var(--measure); }
+  p.lead { color: var(--ink-soft); }
+
+  /* ---------------- the routine: genuinely a sequence ---------------- */
+  ol.routine {
+    list-style: none;
+    counter-reset: step;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  ol.routine > li {
+    counter-increment: step;
+    background: var(--paper);
+    padding: 1.1rem 1.3rem 1.1rem 3.6rem;
+    position: relative;
+  }
+  ol.routine > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 1.3rem;
+    top: 1.05rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--teal);
+    font-variant-numeric: tabular-nums;
+  }
+  ol.routine > li > b { display: block; font-size: 0.98rem; letter-spacing: -0.005em; }
+  ol.routine > li > span { display: block; font-size: 0.92rem; color: var(--ink-soft); margin-top: 0.15rem; }
+
+  /* ---------------- task blocks: trigger -> do -> result ---------------- */
+  .task {
+    margin-top: 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .task > header {
+    padding: 0.85rem 1.3rem;
+    background: var(--sand);
+    border-bottom: 1px solid var(--rule);
+  }
+  .task > header b { font-size: 1rem; letter-spacing: -0.01em; }
+  .task > header span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.2rem;
+  }
+  .task-body { padding: 1.15rem 1.3rem; }
+  .task-body > :first-child { margin-top: 0; }
+  .task-body > :last-child { margin-bottom: 0; }
+
+  ol.steps { margin: 0; padding-left: 1.35rem; }
+  ol.steps li { margin: 0.4rem 0; max-width: var(--measure); }
+  ul.plain { margin: 0.6rem 0; padding-left: 1.2rem; }
+  ul.plain li { margin: 0.35rem 0; max-width: var(--measure); }
+
+  .result {
+    margin-top: 1rem;
+    padding: 0.7rem 0.95rem;
+    background: var(--teal-pale);
+    border-left: 3px solid var(--teal);
+    font-size: 0.93rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .result b { color: var(--ink); }
+
+  /* ---------------- tables ---------------- */
+  .scroll { overflow-x: auto; margin-top: 1.1rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 34rem;
+  }
+  caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 0.88rem;
+    color: var(--grey);
+    padding-bottom: 0.55rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.62rem 0.85rem;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey);
+    font-weight: 700;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.tab-name { font-weight: 700; white-space: nowrap; }
+
+  /* state chips — form as well as words, so urgency reads at a glance */
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .chip.wait { background: var(--amber-pale); border-color: var(--amber-line); color: var(--amber); }
+  .chip.go   { background: var(--teal-pale); border-color: var(--teal-line); color: var(--teal); }
+  .chip.done { background: var(--leaf-pale); border-color: var(--leaf-line); color: var(--leaf); }
+  .chip.stop { background: var(--rose-pale); border-color: var(--rose-line); color: var(--rose); }
+  .chip.off  { background: var(--sand); border-color: var(--rule); color: var(--grey); }
+
+  kbd, code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--sand);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.08em 0.35em;
+    white-space: nowrap;
+  }
+  .btn {
+    font-family: var(--sans);
+    font-size: 0.85em;
+    font-weight: 700;
+    background: var(--teal-pale);
+    border: 1px solid var(--teal-line);
+    color: var(--teal);
+    border-radius: 2px;
+    padding: 0.1em 0.42em;
+    white-space: nowrap;
+  }
+
+  pre {
+    margin: 0.9rem 0;
+    padding: 0.95rem 1.1rem;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border: 1px solid var(--code-line);
+    border-radius: 2px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+  pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+
+  /* ---------------- callouts ---------------- */
+  .note {
+    margin: 1.5rem 0;
+    padding: 1.05rem 1.25rem;
+    border-radius: 2px;
+    border: 1px solid;
+    max-width: var(--measure);
+  }
+  .note p { margin: 0; max-width: none; }
+  .note p + p { margin-top: 0.6rem; }
+  .note > b { display: block; margin-bottom: 0.3rem; }
+  .note.warn { background: var(--amber-pale); border-color: var(--amber-line); color: var(--ink-soft); }
+  .note.warn > b { color: var(--amber); }
+  .note.stop { background: var(--rose-pale); border-color: var(--rose-line); color: var(--ink-soft); }
+  .note.stop > b { color: var(--rose); }
+  .note.key  { background: var(--teal-pale); border-color: var(--teal-line); color: var(--ink-soft); }
+  .note.key > b { color: var(--teal); }
+
+  footer.colophon {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--ink);
+    font-size: 0.86rem;
+    color: var(--grey);
+  }
+  footer.colophon p { max-width: var(--measure); }
+
+  a { color: var(--teal); text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  /* ---------------- print: this lives on a desk ---------------- */
+  @media print {
+    /*
+     * All three selectors, not just :root. The dark rule above is
+     * `:root:not([data-theme='light'])`, which outranks a bare `:root` — so a
+     * bare print block loses and a laptop set to dark mode prints sixteen
+     * pages of dark teal. Listing every selector the palette can arrive
+     * through means the later source order settles it.
+     */
+    :root,
+    :root:not([data-theme='light']),
+    :root[data-theme='dark'] {
+      --bone: #fff; --paper: #fff; --sand: #f6f5f1;
+      --ink: #000; --ink-soft: #222; --grey: #555;
+      --rule: #bbb; --rule-soft: #ddd;
+      --code-bg: #f4f4f2; --code-ink: #000; --code-line: #bbb;
+    }
+    body { font-size: 10.5pt; line-height: 1.5; }
+    .sheet { max-width: none; padding: 0; }
+    .part { break-before: page; margin-top: 0; }
+    .task, .note, ol.routine, .systems, table { break-inside: avoid; }
+    .part-head, h3.rule { break-after: avoid; }
+    a { color: #000; text-decoration: underline; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Desk manual · v1</span></p>
+    <h1>How to run the desk</h1>
+    <p class="standfirst">
+      Everything reception does on the booking system, and the few things a doctor does.
+      Written against the screens as they are today. If a button here is not on your screen,
+      you are signed in with an account that does not have it — ask whoever set up your login.
+    </p>
+  </header>
+
+  <!-- The single most important fact, before anything else. -->
+  <div class="systems">
+    <div class="system">
+      <span class="who">This app — reception</span>
+      <h3>Where bookings arrive</h3>
+      <p>
+        Patients book on the hospital website. Those bookings land on the reception desk screen.
+        You approve them, book for people who telephone, keep each doctor's consulting hours
+        correct, and copy every booking into Klinique.
+      </p>
+    </div>
+    <div class="system">
+      <span class="who">Klinique — clinical</span>
+      <h3>Where the record lives</h3>
+      <p>
+        Prescriptions, consultation notes and patient history stay in Klinique. This app does not
+        hold them and is not trying to. One patient must never have two records that disagree.
+      </p>
+    </div>
+  </div>
+
+  <div class="note key">
+    <b>The one rule that matters most</b>
+    <p>
+      A booking is not finished when you approve it. It is finished when it is
+      <b>in Klinique</b>. The <span class="btn">To enter in Klinique</span> tab is the list of
+      bookings that are not there yet. If that list is empty at the end of the day, nothing has
+      been lost. If it is not, somebody will arrive for a clinic that has never heard of them.
+    </p>
+  </div>
+
+  <!-- ============================ PART 1 ============================ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-no">Part 1</span>
+      <h2>Reception</h2>
+    </div>
+    <p class="part-note">
+      The desk screen is in English only. That is deliberate — it is an internal screen used by a
+      few trained people, and an operational word translated loosely here would cost more than it
+      saves. The patient-facing website is in English, Tamil and Hindi.
+    </p>
+
+    <h3 class="rule">Getting in</h3>
+
+    <div class="task">
+      <header><span>Every shift</span><b>Sign in to the desk</b></header>
+      <div class="task-body">
+        <ol class="steps">
+          <li>Open the hospital website in Chrome.</li>
+          <li>Add <code>#desk</code> to the end of the address and press Enter.</li>
+          <li>Type your username and password, and press <span class="btn">Sign in</span>.</li>
+        </ol>
+        <div class="result">
+          The desk is not in the website's menu on purpose — patients should never stumble into it.
+          <b>Bookmark the <code>#desk</code> address</b> so you are not typing it every morning.
+        </div>
+        <p style="margin-top:1rem">
+          At the top right you will find <span class="btn">Password</span> to change your own
+          password (it asks for the current one first, so nobody can change it at an unattended
+          counter) and <span class="btn">Sign out</span>. Sign out at the end of your shift.
+        </p>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Once, on your machine</span><b>Turn on the chime and the alerts</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Two switches at the top right. Both start off, because a browser will not make a sound
+          or raise an alert until a person asks it to, and a chime is not always wanted in a
+          waiting room.
+        </p>
+        <ul class="plain">
+          <li><span class="btn">Chime</span> — a sound when a new booking arrives. Click it once and you will hear it immediately, which is how you know it worked.</li>
+          <li><span class="btn">Alerts</span> — a desktop alert even when the desk is behind another window. Chrome will ask permission; say yes.</li>
+        </ul>
+        <div class="result">
+          Beside them sits <span class="chip go">Live</span> or <span class="chip wait">Checking</span>.
+          <b>Live</b> means new bookings appear by themselves. <b>Checking</b> means the connection
+          dropped and the screen is re-reading every 45 seconds — it still works, just slower.
+          A desk that has quietly stopped updating looks exactly like a quiet morning.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="rule">Your day, in order</h3>
+
+    <ol class="routine">
+      <li><b>Open Today</b><span>Everything booked for today, earliest first. This is the list you work from at the counter.</span></li>
+      <li><b>Clear New requests</b><span>Bookings made online overnight. The slot is already held for them — approving simply tells the patient they are expected.</span></li>
+      <li><b>Empty To enter in Klinique</b><span>Copy each one across and tick it off. Do this early; it is the step that goes wrong when the counter gets busy.</span></li>
+      <li><b>Work through To call back</b><span>People who asked for a doctor who is not bookable online. Ring them and give them a time.</span></li>
+      <li><b>Check Follow-ups due</b><span>Patients a doctor asked to see again who have not come back. Overdue ones are at the top.</span></li>
+      <li><b>Glance at Alerts</b><span>Anything that failed to send. If the list is clean, the day is clean.</span></li>
+    </ol>
+
+    <h3 class="rule">What each tab is for</h3>
+
+    <div class="scroll">
+      <table>
+        <caption>The number on a tab is how many items are waiting in it.</caption>
+        <thead>
+          <tr><th scope="col">Tab</th><th scope="col">What is in it</th><th scope="col">What you do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="tab-name">To enter in Klinique</td><td>Bookings not yet copied into Klinique</td><td>Copy across, then tick <span class="btn">Entered in Klinique</span></td></tr>
+          <tr><td class="tab-name">Klinique</td><td>Klinique itself, opened inside this screen</td><td>Work in it as normal, or open it in a new tab</td></tr>
+          <tr><td class="tab-name">New requests</td><td>Booked online, nobody has approved yet</td><td><span class="btn">Approve</span> each one</td></tr>
+          <tr><td class="tab-name">Today</td><td>Today's appointments, cancellations removed</td><td>Mark <span class="btn">Seen</span> as patients are seen</td></tr>
+          <tr><td class="tab-name">Book for a caller</td><td>An empty booking form</td><td>Book for someone on the telephone or at the counter</td></tr>
+          <tr><td class="tab-name">To call back</td><td>People who asked to be called</td><td>Ring them, then <span class="btn">Give them a time</span></td></tr>
+          <tr><td class="tab-name">Schedules</td><td>Every doctor's days, hours, fee and room</td><td>Keep correct; open a doctor for online booking</td></tr>
+          <tr><td class="tab-name">Repeat requests</td><td>Patients asking for the same prescription again</td><td>A <b>doctor</b> decides these — see Part&nbsp;2</td></tr>
+          <tr><td class="tab-name">Follow-ups due</td><td>Patients due back within seven days</td><td>Ring them and <span class="btn">Book them in</span></td></tr>
+          <tr><td class="tab-name">Alerts</td><td>Messages the system tried to send</td><td>Check nothing failed; fix the reason</td></tr>
+          <tr><td class="tab-name">Doctor contacts</td><td>Each doctor's mobile number and consent</td><td>Save, verify, record consent</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="rule">The everyday jobs</h3>
+
+    <div class="task">
+      <header><span>New requests</span><b>Approve a booking that came in online</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Each row shows the time, the doctor, the patient's name, their mobile and the booking
+          reference. Under it, the date and the reason they gave.
+        </p>
+        <ol class="steps">
+          <li>Press <span class="btn">Approve</span>.</li>
+          <li>Go to <span class="btn">To enter in Klinique</span> and put it into Klinique.</li>
+        </ol>
+        <div class="result">
+          The slot was already held from the moment they booked, so nobody else could take it.
+          Approving does not reserve anything — it <b>tells the patient they are expected</b>.
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>To enter in Klinique</span><b>Copy a booking into Klinique</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Until Klinique give the hospital an API key, somebody types it across. This tab makes
+          that as fast as it can be.
+        </p>
+        <ol class="steps">
+          <li>Press <span class="btn">Open Klinique</span> to get the portal in another tab.</li>
+          <li>Press <span class="btn">Copy all</span> to take the whole booking as one labelled block — patient, phone, age, gender, doctor, date, time, visit type, fee, reason.</li>
+          <li>Or tap any single field to copy just that one. A tick appears when it has copied.</li>
+          <li>When it is in Klinique, press <span class="btn">Entered in Klinique</span>.</li>
+        </ol>
+        <div class="result">
+          <b>Tick it, every time.</b> The tick is the only record that a booking has been
+          transferred. Without it the only way to know is to search Klinique for each one.
+        </div>
+        <p style="margin-top:1rem">
+          When the list is empty the tab shows <b>Everything is in Klinique</b>. That is the state
+          it should be in when you go home.
+        </p>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Book for a caller</span><b>Book for someone on the telephone</b></header>
+      <div class="task-body">
+        <ol class="steps">
+          <li>Choose the <b>doctor</b>. The fee is shown beside each name.</li>
+          <li>Choose the <b>date</b>. The free slots for that doctor on that day appear underneath.</li>
+          <li>Tap a slot.</li>
+          <li>Fill in name, mobile (10 digits), age, gender and the reason for the visit.</li>
+          <li>Press <span class="btn">Book appointment</span>.</li>
+        </ol>
+        <div class="result">
+          A reference like <code>DH-KZHFK8</code> comes back. <b>Read it out to the caller</b> and
+          ask them to bring it. It is how the booking is found again at the counter.
+        </div>
+        <div class="note warn" style="margin-bottom:0">
+          <b>Only doctors with a published schedule appear here</b>
+          <p>
+            If the doctor you want is missing, they have no consulting hours set. Go to
+            <span class="btn">Schedules</span>, fill in their days and times, and press
+            <span class="btn">Save and open booking</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>To call back</span><b>Turn a callback request into an appointment</b></header>
+      <div class="task-body">
+        <p class="lead">
+          These are people who wanted a doctor who cannot yet be booked online. The row shows who
+          they want and why, with their number as a button you can tap to dial.
+        </p>
+        <ol class="steps">
+          <li>Ring the number on the row.</li>
+          <li>Press <span class="btn">Give them a time</span>. The booking form opens with their details already filled in.</li>
+          <li>Pick a date and slot, then <span class="btn">Confirm this appointment</span>.</li>
+        </ol>
+        <div class="result">
+          The doctor cannot be changed here — this <b>converts their existing request</b> rather
+          than making a second one, so they never appear twice.
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Today</span><b>Mark people as they are seen</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Only the moves that are legal from a row's current state are shown, so you cannot put an
+          appointment into a state the system will refuse.
+        </p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th scope="col">State</th><th scope="col">Means</th><th scope="col">You can</th></tr></thead>
+            <tbody>
+              <tr><td><span class="chip wait">pending</span></td><td>Booked online, not yet approved</td><td>Approve · Seen · Cancel</td></tr>
+              <tr><td><span class="chip go">confirmed</span></td><td>Approved and expected</td><td>Seen · Cancel</td></tr>
+              <tr><td><span class="chip off">requested</span></td><td>A callback request, no slot yet</td><td>Cancel</td></tr>
+              <tr><td><span class="chip done">completed</span></td><td>The patient has been seen</td><td>Nothing — it is finished</td></tr>
+              <tr><td><span class="chip stop">cancelled</span></td><td>Called off</td><td>Nothing — book a fresh one instead</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="result">
+          Cancelled appointments drop out of <b>Today</b> straight away, so the list on your screen
+          is always the people actually coming.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="rule">Keeping the roster right</h3>
+
+    <div class="task">
+      <header><span>Schedules</span><b>Make a doctor bookable online</b></header>
+      <div class="task-body">
+        <p class="lead">
+          At the top of this tab a bar reads <b>«n» of «n» doctors can be booked online</b>. Until
+          a doctor appears there, patients can only ask for a callback.
+        </p>
+        <ol class="steps">
+          <li>Find the doctor. A tag reads <span class="chip done">Bookable</span> or <span class="chip wait">Callback only</span>.</li>
+          <li>Tap the days they consult.</li>
+          <li>Fill in morning from/to and evening from/to. Leave a session blank if they do not sit then.</li>
+          <li>Enter the fee and the room.</li>
+          <li>Press <span class="btn">Save and open booking</span> — that saves <em>and</em> opens them for online booking. <span class="btn">Save</span> alone keeps them on callback only.</li>
+        </ol>
+        <div class="result">
+          If several consultants share the same hours, use the <b>bulk</b> panel above the list to
+          set them all at once rather than opening twenty rows.
+        </div>
+        <div class="note stop" style="margin-bottom:0">
+          <b>Medical registration numbers</b>
+          <p>
+            Each doctor's row has a <b>Medical registration number</b> box. Their qualifications
+            are shown publicly on the website, so the number belongs beside them. Take it from the
+            hospital's records — <b>never guess</b>. An unverified number is worse than none, which
+            is why the box is left empty rather than filled in with something plausible.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Doctor contacts</span><b>Let the system message a doctor</b></header>
+      <div class="task-body">
+        <p class="lead">
+          A doctor is only ever messaged once <b>all three</b> of these are true. Saving a number
+          alone does nothing.
+        </p>
+        <ol class="steps">
+          <li><b>Number saved</b> — type the 10-digit mobile, press <span class="btn">Save number</span>.</li>
+          <li><b>Verified</b> — confirm the number reaches the right person, then press <span class="btn">Mark verified</span>.</li>
+          <li><b>Consent recorded</b> — type how they agreed (for example <em>“agreed at HOD meeting, 4 March”</em>) and press <span class="btn">Record consent</span>.</li>
+        </ol>
+        <div class="result">
+          The tag then turns from <span class="chip wait">Not reachable</span> to
+          <span class="chip done">Reachable</span>. <span class="btn">Pause alerts</span> stops
+          messages without deleting the number — use it when a doctor is on leave.
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Alerts</span><b>Find out why a message did not go</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Each row is one message the system tried to send. <span class="btn">Send queued now</span>
+          pushes anything still waiting.
+        </p>
+        <div class="scroll">
+          <table>
+            <caption>The reason is printed on the row. Here is what to do about each one.</caption>
+            <thead><tr><th scope="col">It says</th><th scope="col">Do this</th></tr></thead>
+            <tbody>
+              <tr><td>No mobile number on file</td><td>Doctor contacts → save the number</td></tr>
+              <tr><td>Number not verified yet</td><td>Doctor contacts → <span class="btn">Mark verified</span></td></tr>
+              <tr><td>Consent not recorded</td><td>Doctor contacts → <span class="btn">Record consent</span></td></tr>
+              <tr><td>Doctor has alerts switched off</td><td>Nothing — they chose this. Ring them instead</td></tr>
+              <tr><td>NOTIFY_DESK_PHONE is not configured</td><td>Not yours to fix — pass it to whoever runs the server</td></tr>
+              <tr><td>Appointment no longer exists</td><td>Nothing — it was cancelled and deleted</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note warn" style="margin-bottom:0">
+          <b>No SMS is going out yet</b>
+          <p>
+            The hospital has no SMS gateway connected, so <b>patients are not receiving text
+            messages</b>. Everything a patient needs to know, they need to hear from you: read the
+            reference out, and confirm the date, time and doctor before they ring off.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note key">
+      <b>If you forget all of this</b>
+      <p>
+        Press <span class="btn">Show me around</span> at the top of the desk. It walks you through
+        the screen you are looking at. There is also an assistant on the desk that answers
+        questions and can jump you to the right tab.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ PART 2 ============================ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-no">Part 2</span>
+      <h2>Doctors</h2>
+    </div>
+    <p class="part-note">
+      Short, because most of your work is not here.
+    </p>
+
+    <div class="note stop">
+      <b>Your clinical work stays in Klinique</b>
+      <p>
+        Prescriptions, consultation notes and patient history are written in Klinique and only in
+        Klinique. This app deliberately has no second place to write them. Two records that can
+        disagree about a patient is a worse problem than any convenience it would buy.
+      </p>
+    </div>
+
+    <h3 class="rule">What this app does for you</h3>
+
+    <div class="task">
+      <header><span>Signing in</span><b>Your login</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Your username is <code>doctor</code> followed by your identifier — Dr Deepan G is
+          <code>doctordeepan-g</code>. Your password was given to you once when the account was
+          made; it cannot be looked up afterwards.
+        </p>
+        <ol class="steps">
+          <li>Open the website, add <code>#desk</code>, sign in.</li>
+          <li>Press <span class="btn">Password</span> at the top right and set your own password the first time you sign in.</li>
+        </ol>
+        <div class="result">
+          Lost it? Nobody can read it back to you — it is stored so that it cannot be. Ask whoever
+          runs the server to reset it (Part&nbsp;3).
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Schedules</span><b>Your consulting hours, fee and room</b></header>
+      <div class="task-body">
+        <p class="lead">
+          This is what decides whether a patient can book you online at all, and what they are
+          told they will pay.
+        </p>
+        <ul class="plain">
+          <li><b>Days and sessions</b> — patients are only offered slots inside these.</li>
+          <li><b>Fee</b> — shown to the patient before they book.</li>
+          <li><b>Room</b> — printed on their appointment slip.</li>
+          <li><b>Medical registration number</b> — shown publicly beside your qualification. Please give reception yours; most of the roster is still blank.</li>
+        </ul>
+        <div class="result">
+          If your hours change, tell reception the same day. A patient booked into a session you
+          are not sitting is the one failure this system cannot recover from by itself.
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Repeat requests</span><b>Decide a repeat prescription</b></header>
+      <div class="task-body">
+        <p class="lead">
+          A patient asking for the same medicines again. The row shows their name and number, the
+          diagnosis, what was prescribed, and anything they wrote.
+        </p>
+        <ul class="plain">
+          <li><span class="btn">Approve and re-issue</span> — issues a <b>new</b> prescription dated today. The original is left untouched.</li>
+          <li><span class="btn">Decline</span> — needs a reason typed in the note box first. <b>The patient reads that note</b>, so write it for them, not for the file.</li>
+        </ul>
+        <div class="result">
+          This sits on the reception screen, but it is a clinical decision.
+          <b>Reception must not press either button.</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Follow-ups due</span><b>Patients you asked to come back</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Everyone you asked to return who has not been seen since, due within seven days,
+          overdue at the top. Reception rings them and books them in from this list.
+        </p>
+        <div class="result">
+          The list is only as good as what was written in the prescription. If you want somebody
+          back, <b>put the return date on it</b> — that is what puts them here.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ PART 3 ============================ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-no">Part 3</span>
+      <h2>Whoever runs the server</h2>
+    </div>
+    <p class="part-note">
+      Not for the counter. These are run on the machine hosting the app, from the
+      <code>server</code> folder.
+    </p>
+
+    <h3 class="rule">Accounts</h3>
+
+    <pre><code># A reception account
+npm run create-staff -- --username reception --role staff
+
+# An account that can do everything
+npm run create-staff -- --username admin --role admin
+
+# A login for every doctor on the roster, in one pass
+npm run doctor-logins
+
+# ...and again, giving existing accounts new passwords
+npm run doctor-logins -- --reset
+
+# Somebody has lost theirs
+npm run reset-password -- --username doctordeepan-g</code></pre>
+
+    <div class="note warn">
+      <b>Every password is shown exactly once</b>
+      <p>
+        They are stored as salted hashes, so nothing can be read back afterwards. Write them down
+        as they appear, hand them out, and destroy the note. If you lose the output, reset the
+        account rather than trying to recover it.
+      </p>
+    </div>
+
+    <h3 class="rule">The database</h3>
+
+    <pre><code># Apply any new schema changes
+npm run migrate
+
+# Take a backup
+npm run backup</code></pre>
+
+    <div class="note stop">
+      <b>Back it up somewhere other than this machine</b>
+      <p>
+        Backups written beside the database are not backups. Copy them off the machine on a
+        schedule, and check once that a copy actually restores.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ TROUBLE ============================ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-no">Reference</span>
+      <h2>When something looks wrong</h2>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th scope="col">What you see</th><th scope="col">What it means</th><th scope="col">What to do</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>The tag says <span class="chip wait">Checking</span>, not <span class="chip go">Live</span></td>
+            <td>The live connection dropped. The screen is re-reading every 45 seconds.</td>
+            <td>Nothing urgent. Press <span class="btn">Refresh</span> if you are waiting on something.</td>
+          </tr>
+          <tr>
+            <td>Signing in to Klinique inside the app does not stick</td>
+            <td>The browser is blocking cookies for a site shown inside another. Safari does this by default.</td>
+            <td>Use <span class="btn">Open in a new tab</span>. It works the same and keeps you signed in.</td>
+          </tr>
+          <tr>
+            <td>A doctor is missing from the booking form</td>
+            <td>They have no consulting hours set, so there is nothing to offer.</td>
+            <td>Schedules → fill in days and times → <span class="btn">Save and open booking</span>.</td>
+          </tr>
+          <tr>
+            <td>“Nothing free on this date”</td>
+            <td>Every slot that day is taken, or the doctor does not sit that day.</td>
+            <td>Try another date, or check the doctor's days in Schedules.</td>
+          </tr>
+          <tr>
+            <td>No <span class="btn">Approve</span> button on a row</td>
+            <td>It is already approved, or already finished.</td>
+            <td>Read the tag on the row — it says which.</td>
+          </tr>
+          <tr>
+            <td>A patient says they got no message</td>
+            <td>Correct. There is no SMS gateway connected yet.</td>
+            <td>Tell them the details on the call, and read out the reference.</td>
+          </tr>
+          <tr>
+            <td>The screen is empty and will not load</td>
+            <td>The desk cannot reach the server.</td>
+            <td>Press <span class="btn">Refresh</span>. If it stays empty, the server is down — call whoever runs it.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note stop">
+      <b>Not yet true, and nobody should say it is</b>
+      <p>
+        The website does <b>not</b> claim NABH accreditation, and must not until somebody has
+        checked the entry on the register. Most doctors still have no registration number on file
+        while their qualifications are shown publicly. Both of these are for the hospital to
+        settle before the site is advertised.
+      </p>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <p>
+      <b>Deepan Hospital</b> · 50, Bishop Road, opposite M.A. Honda, Puthur, Tennur,
+      Tiruchirappalli – 620017, Tamil Nadu.
+    </p>
+    <p style="margin-top:0.6rem">
+      Written against the desk screen as it stands today. If the screen and this page disagree,
+      the screen is right and this page is out of date — say so, and it will be corrected.
+      Prints on A4, one part per page.
+    </p>
+  </footer>
+
+</div>
