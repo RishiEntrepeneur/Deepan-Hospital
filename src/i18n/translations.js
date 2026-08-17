@@ -378,11 +378,34 @@ export const translations = {
     'tab.health': 'Health',
 
     /* ---------- Opening screen ---------- */
-    'opening.title': 'Choose your language to begin',
+    'opening.title': 'Welcome to Deepan Hospital',
+    'opening.h1a': 'Transforming Healthcare,',
+    'opening.h1b': 'Restoring Mobility.',
+    'opening.lede':
+      'Multi-Specialty Hospital in Tiruchirappalli. Advanced Orthopaedics, Joint Care, Internal Medicine and Critical Care for over {years} years.',
+    'opening.scroll': 'Scroll',
+    'opening.skip': 'Skip',
+    'opening.entering': 'Taking you to the site…',
+    'opening.ch2Label': 'Orthopaedics & Joint Care',
+    'opening.ch2Title': 'Structure, put back together.',
+    'opening.ch2Body':
+      'Joint replacement, arthroscopy and fracture care led by consultants who have done it for decades — so that walking, lifting and sleeping through the night stop being things you plan around.',
+    'opening.ch3Label': 'Emergency & Critical Care',
+    'opening.ch3Title': 'Someone is awake at 3am.',
+    'opening.ch3Body':
+      'Casualty, intensive care and anaesthesia cover, round the clock. No appointment, no waiting for the morning — the number at the top of this screen is answered every hour of every day.',
+    'opening.ch4Label': 'Every major department',
+    'opening.ch4Title': 'Under one roof, in your language.',
+    'opening.ch4Body':
+      'Cardiology, neurology, nephrology, paediatrics, obstetrics and more — and every screen of this site works in English, Tamil and Hindi.',
+    'opening.closeTitle': 'Ready to see a doctor?',
+    'opening.closeBody':
+      'Pick a department, choose a time, and walk in. Booking takes about a minute.',
     'opening.book': 'Book an appointment',
     'opening.browse': 'Look around first',
     'opening.emergency': 'Medical emergency? Call {number} — we answer 24 × 7',
-    'opening.noAccount': 'Booking needs no account. An account just keeps your appointments in one place.',
+    'opening.noAccount':
+      'Booking needs no account. An account just keeps your appointments in one place.',
 
     'tour.start': 'Take a quick tour',
     'tour.skip': 'Skip',
@@ -1032,7 +1055,29 @@ export const translations = {
     'tab.health': 'நலம்',
 
     /* ---------- Opening screen ---------- */
-    'opening.title': 'தொடங்க உங்கள் மொழியைத் தேர்ந்தெடுங்கள்',
+    'opening.title': 'தீபன் மருத்துவமனைக்கு வரவேற்கிறோம்',
+    'opening.h1a': 'சிறந்த சிகிச்சை,',
+    'opening.h1b': 'மீண்டும் நடமாட்டம்.',
+    'opening.lede':
+      'திருச்சிராப்பள்ளியில் பல்துறை மருத்துவமனை. எலும்பியல், மூட்டு சிகிச்சை, பொது மருத்துவம் மற்றும் தீவிர சிகிச்சையில் {years} ஆண்டுகளுக்கும் மேலான அனுபவம்.',
+    'opening.scroll': 'கீழே செல்லுங்கள்',
+    'opening.skip': 'தவிர்',
+    'opening.entering': 'வலைத்தளத்திற்கு அழைத்துச் செல்கிறோம்…',
+    'opening.ch2Label': 'எலும்பியல் மற்றும் மூட்டு சிகிச்சை',
+    'opening.ch2Title': 'உடல் அமைப்பு, மீண்டும் சரியாக.',
+    'opening.ch2Body':
+      'மூட்டு மாற்று அறுவை சிகிச்சை, ஆர்த்ரோஸ்கோபி, எலும்பு முறிவு சிகிச்சை — பல பத்தாண்டுகள் அனுபவமுள்ள மருத்துவர்களிடம். நடப்பது, தூக்குவது, இரவு முழுவதும் நிம்மதியாகத் தூங்குவது மீண்டும் இயல்பாகும்.',
+    'opening.ch3Label': 'அவசர மற்றும் தீவிர சிகிச்சை',
+    'opening.ch3Title': 'இரவு மூன்று மணிக்கும் ஒருவர் விழித்திருக்கிறார்.',
+    'opening.ch3Body':
+      'அவசர பிரிவு, தீவிர சிகிச்சை மற்றும் மயக்க மருந்து சேவை — இரவு பகல். முன்பதிவு தேவையில்லை, காலை வரை காத்திருக்க வேண்டாம். இந்தத் திரையின் மேலே உள்ள எண் எப்போதும் பதிலளிக்கப்படும்.',
+    'opening.ch4Label': 'எல்லா முக்கியத் துறைகளும்',
+    'opening.ch4Title': 'ஒரே இடத்தில், உங்கள் மொழியில்.',
+    'opening.ch4Body':
+      'இருதயவியல், நரம்பியல், சிறுநீரகவியல், குழந்தை நலம், மகப்பேறு மற்றும் பல — இந்தத் தளத்தின் ஒவ்வொரு திரையும் தமிழ், ஆங்கிலம், இந்தி மொழிகளில் இயங்கும்.',
+    'opening.closeTitle': 'மருத்துவரைப் பார்க்கத் தயாரா?',
+    'opening.closeBody':
+      'துறையைத் தேர்வு செய்யுங்கள், நேரத்தைத் தேர்ந்தெடுங்கள், வந்துவிடுங்கள். பதிவு ஒரு நிமிடத்தில் முடியும்.',
     'opening.book': 'சந்திப்பு பதிவு செய்ய',
     'opening.browse': 'முதலில் பார்வையிட',
     'opening.emergency': 'அவசர சிகிச்சையா? {number} என்ற எண்ணை அழையுங்கள் — இரவு பகல் பதிலளிக்கிறோம்',

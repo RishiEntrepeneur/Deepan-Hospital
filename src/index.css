@@ -211,6 +211,12 @@
   .font-display {
     font-family: var(--font-display);
   }
+
+  /* Named rather than an arbitrary `animate-[…]`, so the reduced-motion block
+     below can switch it off by name like every other animation here. */
+  .animate-sweep {
+    animation: dh-sweep 2.4s ease-in-out infinite;
+  }
 }
 
 @keyframes dh-fade-up {
@@ -279,6 +285,21 @@
   }
 }
 
+/*
+ * The scroll cue on the opening screen: a light travelling along a short rule,
+ * pointing down the page. A moving hint rather than a bouncing arrow, because
+ * the opening is one continuous shot and a bouncing chevron breaks the frame.
+ */
+@keyframes dh-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .skeleton {
   background-image: linear-gradient(
     90deg,
@@ -294,7 +315,8 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-scale-in,
-  .animate-page-in {
+  .animate-page-in,
+  .animate-sweep {
     animation: none;
   }
   /* Still a placeholder, just a still one — the shimmer is the moving part. */
