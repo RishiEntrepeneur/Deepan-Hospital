@@ -1,0 +1,463 @@
+/* =====================================================================
+   Deepan Hospital — hero section
+   =====================================================================
+
+   Palette, per brief:
+     --ink    #0F172A  deep surgical blue, the type and the dark ground
+     --cyan   #0EA5E9  clinical accent, used sparingly so it stays an accent
+     --base   #F8FAFC  clinical near-white
+
+   The rule that keeps it feeling clinical rather than corporate: one accent,
+   used on the smallest elements. Colour on a hospital page should mean
+   something — the only saturated red on this screen is the emergency pulse.
+   ===================================================================== */
+
+:root {
+  --base: #f8fafc;
+  --surface: #ffffff;
+  --ink: #0f172a;
+  --ink-soft: #475569;
+  --ink-faint: #94a3b8;
+  --cyan: #0ea5e9;
+  --cyan-deep: #0284c7;
+  --teal: #0f766e;
+  --rule: #e2e8f0;
+  --urgent: #e11d48;
+
+  --shell: min(1240px, 100% - 3rem);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--base);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* The badge is opt-in — see the comment in index.html. */
+body[data-accredited='true'] [data-accreditation] {
+  display: inline-flex;
+}
+body[data-accredited='true'] [data-accreditation][hidden] {
+  display: inline-flex;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+:where(a, button):focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 0.5rem;
+}
+
+/* ---------------------------------------------------------------- header */
+.site-header {
+  position: relative;
+  z-index: 3;
+  width: var(--shell);
+  margin-inline: auto;
+  padding: 1.5rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.brand-logo {
+  display: block;
+  height: 2.9rem;
+  width: auto;
+  object-fit: contain;
+}
+
+/*
+ * The lockup already reads "DEEPAN HOSPITAL", so the typed name sits beside it
+ * only when the image is gone. script.js sets data-logo="off" on <body> if the
+ * file fails to load.
+ */
+.brand-text {
+  display: none;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+body[data-logo='off'] .brand-text {
+  display: flex;
+}
+.brand-text strong {
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.brand-text span {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+
+.header-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.header-phone:hover {
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+}
+.header-phone svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--cyan-deep);
+}
+
+/* ------------------------------------------------------------------ hero */
+.hero {
+  position: relative;
+  width: var(--shell);
+  margin-inline: auto;
+  min-height: calc(100dvh - 5.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 0 4rem;
+}
+
+/* ---- the 3D side ---- */
+.hero-visual {
+  position: relative;
+  order: 2;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-height: 78vh;
+  justify-self: end;
+}
+
+#lattice {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Set by GSAP on load; declared here so there is no flash of a full-size
+     canvas before the entry sequence starts. */
+  opacity: 0;
+}
+
+/* A soft clinical light behind the mesh, so the lattice sits in a space
+   rather than floating on flat paper. Pure CSS — cheaper than a light rig. */
+.visual-glow {
+  position: absolute;
+  inset: 6% 6% 10%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(14, 165, 233, 0.16),
+    rgba(15, 118, 110, 0.08) 45%,
+    transparent 70%
+  );
+  filter: blur(28px);
+}
+
+/* ---- the words ---- */
+.hero-content {
+  order: 1;
+  max-width: 34rem;
+}
+
+.badge {
+  display: none; /* opt-in; see index.html */
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.7rem;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.07);
+  color: var(--cyan-deep);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--cyan);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.35rem, 5.4vw, 3.9rem);
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.headline-rule {
+  display: block;
+  width: 3.25rem;
+  height: 3px;
+  margin: 1.1rem 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan), var(--teal));
+}
+
+.headline-accent {
+  display: block;
+  font-size: 0.62em;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: var(--ink-soft);
+}
+
+.subheadline {
+  margin: 1.5rem 0 0;
+  max-width: 32rem;
+  font-size: clamp(1rem, 1.6vw, 1.09rem);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- calls to action ---- */
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2.1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 0.7rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease),
+    background-color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.btn svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+.btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.75);
+}
+.btn-primary:hover {
+  background: #1e293b;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -14px rgba(15, 23, 42, 0.8);
+}
+
+.btn-ghost {
+  background: var(--surface);
+  border-color: var(--rule);
+  color: var(--ink);
+}
+.btn-ghost:hover {
+  border-color: var(--urgent);
+  color: var(--urgent);
+  transform: translateY(-2px);
+}
+
+/* The only saturated red on the page, and it means one thing. */
+.pulse-dot {
+  position: relative;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--urgent);
+}
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: pulse 2s var(--ease) infinite;
+}
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+/* ---- the three counts ---- */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.4rem;
+  margin: 2.75rem 0 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+}
+.stats div {
+  min-width: 0;
+}
+.stats dt {
+  order: 2;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+.stats dd {
+  order: 1;
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+/* ------------------------------------------------------------ responsive */
+@media (max-width: 900px) {
+  :root {
+    --shell: min(640px, 100% - 2.5rem);
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding-bottom: 3rem;
+    gap: 0.5rem;
+  }
+
+  /*
+   * The visual moves below the words on a phone. A hero whose first screen is
+   * an abstract graphic makes a patient scroll to find out where they are —
+   * the headline and the two buttons have to come first.
+   */
+  .hero-visual {
+    order: 2;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+    justify-self: center;
+    max-width: 26rem;
+  }
+
+  .hero-content {
+    order: 1;
+    max-width: none;
+    padding-top: 2rem;
+  }
+
+  .cta-row .btn {
+    flex: 1 1 14rem;
+  }
+
+  .stats {
+    gap: 1.75rem;
+  }
+  .stats dd {
+    font-size: 1.55rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .header-phone span {
+    display: none;
+  }
+  .header-phone {
+    padding: 0.55rem;
+  }
+}
+
+/* ---------------------------------------------------------------- motion */
+/*
+ * Everything moving is decoration. Someone who has asked their device for less
+ * motion — often for vestibular reasons, and plausibly while unwell — gets the
+ * finished layout immediately, with the mesh still rendered but still.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  #lattice {
+    opacity: 1;
+  }
+}
+
+/* When WebGL is unavailable the canvas is removed; the glow alone still reads
+   as a considered space rather than an empty column. */
+body[data-webgl='off'] .hero-visual {
+  aspect-ratio: 3 / 2;
+}
+body[data-webgl='off'] .visual-glow {
+  inset: 12%;
+}
