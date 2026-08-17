@@ -17,6 +17,26 @@ import { CatalogProvider } from '../src/lib/CatalogContext.jsx'
 
 installMockApi()
 
+/**
+ * Forgets that this browser has been here before.
+ *
+ * The real app shows the opening screen and the tour once per device, which is
+ * right for a patient and wrong for a preview: every published build lands on
+ * the same claude.ai origin and therefore shares one localStorage, so the flag
+ * a previous preview set makes the next one open on the bare home page. That
+ * looked exactly like the opening screen having failed to ship.
+ *
+ * Cleared at boot rather than never written, so the flags still work within a
+ * visit — dismissing the opening keeps it dismissed while you click around.
+ */
+for (const key of ['deepan_opening_seen', 'deepan_tour_seen']) {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    /* private mode — nothing was remembered to begin with */
+  }
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <LanguageProvider>
