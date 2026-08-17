@@ -48,6 +48,10 @@ const app = read(path.join(here, 'script.js'))
 const logo = fs.readFileSync(path.join(here, 'logo.png')).toString('base64')
 const three = fs.readFileSync(vendor('three/build/three.module.js')).toString('base64')
 const gsap = read(vendor('gsap/dist/gsap.min.js'))
+/* ScrollTrigger is what makes the opening scrub rather than merely animate;
+   without it every chapter would simply be visible and the mesh would sit at
+   progress 0 forever. */
+const scrollTrigger = read(vendor('gsap/dist/ScrollTrigger.min.js'))
 
 /* Body content only: whatever renders this supplies the document around it. */
 const body = html.match(/<body>([\s\S]*)<\/body>/)?.[1]
@@ -68,6 +72,7 @@ ${css}
 </style>
 ${markup}
 <script>${gsap.replace(/<\/script/gi, '<\\/script')}</script>
+<script>${scrollTrigger.replace(/<\/script/gi, '<\\/script')}</script>
 <script type="module">
   const bytes = Uint8Array.from(atob("${three}"), (c) => c.charCodeAt(0))
   const url = URL.createObjectURL(new Blob([bytes], { type: 'text/javascript' }))
@@ -77,14 +82,22 @@ ${appBody}
 `
 
 /*
- * Nothing may still be fetched. Checked on the markup only — the bundles are
- * full of URLs in strings and comments that are never requested.
+ * Nothing may still be *fetched*. Anchors are exempt: the closing chapter
+ * links into the patient site on purpose, and those are navigation, not
+ * assets — an earlier version of this check treated them as a packing failure
+ * and refused to build the page it was asked for.
+ *
+ * Checked on the markup only; the bundles are full of URLs in strings and
+ * comments that are never requested.
  */
-const leftover = out
+const markupOnly = out
   .replace(/<script[\s\S]*?<\/script>/g, '')
   .replace(/<style[\s\S]*?<\/style>/g, '')
-  .match(/(?:src|href)="(?!data:|tel:|#|\/)[^"]+"/g)
-if (leftover) throw new Error(`external references left: ${leftover.join(', ')}`)
+const fetched = [
+  ...(markupOnly.match(/\bsrc="(?!data:)[^"]+"/g) ?? []),
+  ...(markupOnly.match(/<link\b[^>]*\bhref="(?!data:)[^"]+"/g) ?? []),
+]
+if (fetched.length) throw new Error(`un-inlined assets left: ${fetched.join(', ')}`)
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true })
 fs.writeFileSync(OUT, out)

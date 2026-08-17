@@ -1,14 +1,15 @@
-# Hero section — plain HTML, CSS and JavaScript
+# Opening screen — plain HTML, CSS and JavaScript
 
-A standalone opening screen for Deepan Hospital. No build step, no framework:
-open `index.html` and it runs.
+A scroll-driven opening for Deepan Hospital, in the patient site's own palette
+and faces. No build step, no framework: open `index.html` and it runs.
 
 ```
 hero/
-├── index.html    markup, CDN links, the accreditation switch
-├── styles.css    palette, layout, responsive rules
-├── script.js     the 3D lattice, parallax, GSAP entry sequence
-└── logo.png      the hospital's lockup
+├── index.html            five chapters and the accreditation switch
+├── styles.css            the site's tokens, chapter layout, dark stretch
+├── script.js             the scrubbed 3D, chapter tweens, ground change
+├── build-standalone.mjs  packs it into one file (see below)
+└── logo.png              the hospital's lockup
 ```
 
 Serve it rather than opening the file directly — `script.js` is an ES module,
@@ -17,6 +18,27 @@ and browsers refuse modules over `file://`:
 ```bash
 cd hero && python3 -m http.server 8080     # → http://localhost:8080
 ```
+
+## How it works
+
+Scroll does not move the canvas; it moves what the canvas shows. The canvas is
+fixed behind five chapters and the page's scroll position drives everything on
+it, so a reader gets one continuous shot rather than five slides:
+
+| Scroll | What happens |
+| --- | --- |
+| 0 | A loose field of points, headline on bone |
+| →0.36 | The field draws itself into a lattice; struts fade in as it resolves |
+| 0.3–0.86 | A pulse runs up through the structure, the way a monitor trace crosses a screen |
+| 0.2–0.9 | The ground sinks to the brand's deepest teal for the clinical chapters |
+| →1 | Camera pulls back, daylight returns, and the last chapter is the way into the site |
+
+The last chapter links to `../index.html` — this screen is the front door, not
+a separate place. Everything past it is the patient app.
+
+Colour changes with the story rather than for decoration: the dark stretch
+covers "someone is awake at 3am", and the page hands you back to daylight at
+the moment it asks you to book.
 
 ## Two things to check before this goes live
 

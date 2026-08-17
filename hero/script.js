@@ -1,45 +1,40 @@
 /* =====================================================================
-   Deepan Hospital — hero: 3D lattice + entry sequence
+   Deepan Hospital — the opening, scrubbed by scroll
    =====================================================================
 
-   The 3D metaphor is a trabecular lattice: the strut-and-node structure of
-   the inside of a bone. It was chosen over a DNA helix because this hospital
-   leads with orthopaedics and joint replacement, and a helix says "genetics"
-   to anyone who reads it at all. A lattice says load, structure, repair.
+   One continuous shot behind five chapters. Scroll does not move the canvas;
+   it moves what the canvas shows. That is the whole difference between this
+   and a picture that scrolls past — the camera pushes in, a scattered cloud
+   of points draws itself into an ordered lattice, a pulse runs through it,
+   and the ground under the words turns from bone to the brand's deepest teal
+   and back.
 
-   Three constraints shaped the implementation more than the look did:
+   The metaphor is the hospital's own: orthopaedics and joint work. Structure
+   coming back together, not a generic globe of dots. Progress 0 is scattered
+   and lit like a bright clinic; progress 1 is assembled, opened out, and back
+   in daylight for the way in.
 
-     1. **It must not be the reason the page is slow.** One InstancedMesh for
-        every node and one LineSegments for every strut means two draw calls
-        for the whole structure. There is no post-processing, no shadow map
-        and no environment map: on a mid-range Android those are what cost
-        frames, and none of them earns its place here.
+   Performance, because this runs on the phone of someone in pain:
 
-     2. **It must not be the reason the page is unreadable.** Everything the
-        canvas says is said in the text beside it, the canvas is aria-hidden,
-        and if WebGL is missing or reduced motion is requested the page is
-        complete without it.
-
-     3. **Clean light, not cinematic light.** Neutral tone mapping, sRGB out.
-        ACES filmic — the usual default — rolls off highlights and pushes
-        whites grey, which on a clinical near-white page reads as dirty.
+     - Two draw calls for the structure. One Points for every node, one
+       LineSegments for every strut.
+     - Positions are lerped on the GPU-friendly path: a single typed array
+       rewritten only when scroll actually moved, not every frame.
+     - No post-processing, no shadows, no environment map.
+     - Device pixel ratio capped at 2, and rendering stops when the tab hides.
    ===================================================================== */
 
 import * as THREE from 'three'
 
-const canvas = document.getElementById('lattice')
-const visual = document.querySelector('.hero-visual')
+const canvas = document.getElementById('stage')
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+/* Site palette, so the mesh belongs to the same hospital as the buttons. */
+const TEAL = new THREE.Color('#0e6a5c')
+const TEAL_LIGHT = new THREE.Color('#72b7ab')
+const LEAF = new THREE.Color('#a6ce39')
+
 /* ------------------------------------------------------------------ text */
-/*
- * Years of service, counted rather than typed.
- *
- * The brief said "over 35 years"; the hospital was founded in 1986, which is
- * 40. Both are true, but the rest of the site prints the computed figure, and
- * a hero that disagrees with the page below it is the kind of small wrongness
- * people notice. Counting it here means it can never go stale or disagree.
- */
 function fillYears() {
   const now = new Date().getFullYear()
   for (const el of document.querySelectorAll('[data-years-since]')) {
@@ -48,12 +43,8 @@ function fillYears() {
   }
 }
 
-/* ---------------------------------------------------------------- lattice */
-/**
- * Points spread evenly over a sphere by the Fibonacci method, which gives a
- * far more even scatter than random spherical coordinates — those bunch at
- * the poles and read as a mistake.
- */
+/* -------------------------------------------------------------- geometry */
+/** Even points on a sphere. Random spherical coordinates bunch at the poles. */
 function fibonacciSphere(count, radius) {
   const points = []
   const golden = Math.PI * (3 - Math.sqrt(5))
@@ -68,244 +59,328 @@ function fibonacciSphere(count, radius) {
   return points
 }
 
-/** Every pair closer than `maxDistance`, as a flat position array for lines. */
-function strutsBetween(points, maxDistance) {
-  const positions = []
-  for (let i = 0; i < points.length; i++) {
-    for (let j = i + 1; j < points.length; j++) {
-      if (points[i].distanceTo(points[j]) > maxDistance) continue
-      positions.push(points[i].x, points[i].y, points[i].z)
-      positions.push(points[j].x, points[j].y, points[j].z)
-    }
-  }
-  return new Float32Array(positions)
+/* Deterministic pseudo-random, so every visitor sees the same opening. */
+function seeded(i) {
+  const x = Math.sin(i * 127.1) * 43758.5453
+  return x - Math.floor(x)
 }
 
-function buildScene() {
+function buildWorld() {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
     alpha: true,
     powerPreference: 'high-performance',
   })
-
-  /*
-   * Capped at 2. Above that the pixel count doubles again for a difference
-   * nobody can see, and a 3x phone screen is exactly the device least able to
-   * afford it.
-   */
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  /* Neutral, not ACES: filmic rolls whites towards grey, which on bone paper
+     reads as a dirty screen rather than as cinema. */
   renderer.toneMapping = THREE.NeutralToneMapping ?? THREE.LinearToneMapping
   renderer.toneMappingExposure = 1.05
 
   const scene = new THREE.Scene()
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200)
 
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100)
-  camera.position.set(0, 0, 9.2)
+  const group = new THREE.Group()
+  scene.add(group)
 
-  /* A key light, a cool fill from below, and a soft ambient. Three lights,
-     no shadows: enough to model a sphere, nothing that costs a pass. */
-  scene.add(new THREE.AmbientLight(0xffffff, 1.15))
-  const key = new THREE.DirectionalLight(0xffffff, 2.1)
-  key.position.set(4, 6, 5)
-  scene.add(key)
-  const fill = new THREE.DirectionalLight(0x7dd3fc, 1.1)
-  fill.position.set(-5, -3, 2)
-  scene.add(fill)
+  const COUNT = 260
+  const RADIUS = 3.4
+  const ordered = fibonacciSphere(COUNT, RADIUS)
 
-  /* The structure rides in a group so parallax can tilt the whole thing
-     without touching the camera, which would also move the glow behind it. */
-  const structure = new THREE.Group()
-  scene.add(structure)
-
-  const RADIUS = 3.1
-  const nodes = fibonacciSphere(78, RADIUS)
-
-  /* Nodes — one instanced draw call for all of them. */
-  const nodeGeometry = new THREE.IcosahedronGeometry(0.1, 1)
-  const nodeMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0ea5e9,
-    roughness: 0.28,
-    metalness: 0.08,
+  /* Where each point starts: a loose, deep cloud with no structure to it. */
+  const scattered = ordered.map((_, i) => {
+    const a = seeded(i) * Math.PI * 2
+    const b = Math.acos(seeded(i + 99) * 2 - 1)
+    /* Tight enough that the first frame is already a form.
+       An opening screen whose first paint is a scatter of dust looks broken
+       for the second before it starts assembling, and that second is the one
+       impression it gets. */
+    const r = RADIUS * (1.12 + seeded(i + 7) * 0.85)
+    return new THREE.Vector3(
+      Math.sin(b) * Math.cos(a) * r,
+      Math.sin(b) * Math.sin(a) * r * 0.6,
+      Math.cos(b) * r,
+    )
   })
-  const instances = new THREE.InstancedMesh(nodeGeometry, nodeMaterial, nodes.length)
-  const dummy = new THREE.Object3D()
-  nodes.forEach((point, i) => {
-    dummy.position.copy(point)
-    /* A little size variety, or it reads as a manufactured ball rather than
-       a grown structure. Deterministic so every load looks the same. */
-    const scale = 0.75 + ((i * 37) % 11) / 22
-    dummy.scale.setScalar(scale)
-    dummy.updateMatrix()
-    instances.setMatrixAt(i, dummy.matrix)
-  })
-  instances.instanceMatrix.needsUpdate = true
-  structure.add(instances)
 
-  /* Struts — one LineSegments for the lot. */
-  const strutGeometry = new THREE.BufferGeometry()
-  strutGeometry.setAttribute(
-    'position',
-    new THREE.BufferAttribute(strutsBetween(nodes, RADIUS * 0.62), 3),
-  )
-  structure.add(
-    new THREE.LineSegments(
-      strutGeometry,
-      new THREE.LineBasicMaterial({ color: 0x0f766e, transparent: true, opacity: 0.34 }),
-    ),
-  )
-
-  /* A slow field of motes, for depth. Points, so it is one more draw call. */
-  const moteCount = 140
-  const motePositions = new Float32Array(moteCount * 3)
-  for (let i = 0; i < moteCount; i++) {
-    /* Deterministic scatter in a shell outside the lattice. */
-    const a = i * 2.399
-    const r = RADIUS * 1.35 + ((i * 17) % 23) / 12
-    motePositions[i * 3] = Math.cos(a) * r
-    motePositions[i * 3 + 1] = ((i * 13) % 41) / 5 - 4
-    motePositions[i * 3 + 2] = Math.sin(a) * r
-  }
-  const moteGeometry = new THREE.BufferGeometry()
-  moteGeometry.setAttribute('position', new THREE.BufferAttribute(motePositions, 3))
-  const motes = new THREE.Points(
-    moteGeometry,
+  const positions = new Float32Array(COUNT * 3)
+  const colors = new Float32Array(COUNT * 3)
+  const nodeGeometry = new THREE.BufferGeometry()
+  nodeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  nodeGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  const nodes = new THREE.Points(
+    nodeGeometry,
     new THREE.PointsMaterial({
-      color: 0x38bdf8,
-      size: 0.055,
+      size: 0.105,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.95,
       sizeAttenuation: true,
+      depthWrite: false,
     }),
   )
-  scene.add(motes)
+  group.add(nodes)
 
-  return { renderer, scene, camera, structure, motes }
+  /* Struts between neighbours in the assembled form. They fade in as the
+     structure resolves, which is what makes assembly legible. */
+  const pairs = []
+  for (let i = 0; i < COUNT; i++) {
+    for (let j = i + 1; j < COUNT; j++) {
+      if (ordered[i].distanceTo(ordered[j]) < RADIUS * 0.42) pairs.push([i, j])
+    }
+  }
+  const strutPositions = new Float32Array(pairs.length * 6)
+  const strutGeometry = new THREE.BufferGeometry()
+  strutGeometry.setAttribute('position', new THREE.BufferAttribute(strutPositions, 3))
+  const strutMaterial = new THREE.LineBasicMaterial({
+    color: TEAL,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+  })
+  group.add(new THREE.LineSegments(strutGeometry, strutMaterial))
+
+  /**
+   * Rewrites every position and colour for a given scroll position.
+   *
+   * `t` is 0..1 across the whole page. Called only when scroll actually moved
+   * — at 260 points and ~700 struts this is cheap, but not free, and running
+   * it on a still page would burn a phone battery for nothing.
+   */
+  const setProgress = (t) => {
+    /* Assembly finishes early, around a third of the way down, so chapters
+       two onwards are read against a structure rather than a cloud. */
+    const assembly = Math.min(1, t / 0.36)
+    /* Starts part-formed rather than at zero, for the same reason the scatter
+       is tight: the hero is a photograph before it is an animation. */
+    const eased = 0.52 + 0.48 * assembly * assembly * (3 - 2 * assembly)
+
+    /* The pulse: a band travelling up the structure through the middle
+       chapters, the way a monitor trace crosses a screen. */
+    const pulseY = -RADIUS + ((t - 0.32) / 0.5) * (RADIUS * 2.6)
+    const pulsing = t > 0.3 && t < 0.86
+
+    for (let i = 0; i < COUNT; i++) {
+      const from = scattered[i]
+      const to = ordered[i]
+      /* Each point arrives at a slightly different moment, so the structure
+         knits together instead of snapping. */
+      const lag = 1 - seeded(i + 21) * 0.35
+      const k = Math.min(1, eased / lag)
+
+      const x = from.x + (to.x - from.x) * k
+      const y = from.y + (to.y - from.y) * k
+      const z = from.z + (to.z - from.z) * k
+      positions[i * 3] = x
+      positions[i * 3 + 1] = y
+      positions[i * 3 + 2] = z
+
+      /* Teal at rest, lifting towards the logo's lime where the pulse is. */
+      const base = k < 0.98 ? TEAL_LIGHT : TEAL
+      let r = base.r
+      let g = base.g
+      let b = base.b
+      if (pulsing) {
+        const near = 1 - Math.min(1, Math.abs(y - pulseY) / 0.85)
+        if (near > 0) {
+          const lift = near * near
+          r += (LEAF.r - r) * lift
+          g += (LEAF.g - g) * lift
+          b += (LEAF.b - b) * lift
+        }
+      }
+      colors[i * 3] = r
+      colors[i * 3 + 1] = g
+      colors[i * 3 + 2] = b
+    }
+    nodeGeometry.attributes.position.needsUpdate = true
+    nodeGeometry.attributes.color.needsUpdate = true
+
+    for (let p = 0; p < pairs.length; p++) {
+      const [i, j] = pairs[p]
+      strutPositions[p * 6] = positions[i * 3]
+      strutPositions[p * 6 + 1] = positions[i * 3 + 1]
+      strutPositions[p * 6 + 2] = positions[i * 3 + 2]
+      strutPositions[p * 6 + 3] = positions[j * 3]
+      strutPositions[p * 6 + 4] = positions[j * 3 + 1]
+      strutPositions[p * 6 + 5] = positions[j * 3 + 2]
+    }
+    strutGeometry.attributes.position.needsUpdate = true
+    /* Struts stay faint until the structure is most of the way there, or the
+       opening reads as a wireframe ball rather than as something forming. */
+    strutMaterial.opacity = 0.34 * Math.max(0, (eased - 0.68) / 0.32)
+
+    /* Camera: pushes in as it assembles, pulls back and lifts for the way in
+       so the final chapter has air around it. */
+    /* Framed, not floating: at rest the structure fills about two thirds of
+       the height, which is what makes it read as a subject rather than as
+       background noise scattered over the type. */
+    const dolly = 11.5 - eased * 3.4 + Math.max(0, t - 0.78) * 9
+    camera.position.set(0, t * 1.1 - 0.3, dolly)
+    camera.lookAt(0, 0, 0)
+  }
+
+  return { renderer, scene, camera, group, setProgress }
 }
 
 /* -------------------------------------------------------------- run loop */
-function start(world) {
-  const { renderer, scene, camera, structure, motes } = world
+function run(world) {
+  const { renderer, scene, camera, group, setProgress } = world
 
   const resize = () => {
-    const { clientWidth: w, clientHeight: h } = visual
-    if (!w || !h) return
+    const w = window.innerWidth
+    const h = window.innerHeight
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     camera.updateProjectionMatrix()
+    /* Pull the structure to one side on wide screens so it sits opposite the
+       words; centre it on a phone, where the text has its own plate. */
+    group.position.x = w > 860 ? 2.6 : 0
   }
   resize()
-  /* ResizeObserver rather than window.resize: the column changes size when the
-     layout reflows, which a window listener never hears about. */
-  new ResizeObserver(resize).observe(visual)
+  window.addEventListener('resize', resize, { passive: true })
 
-  /* Parallax target, in -1..1. Pointer only — a device that reports coarse
-     touch has no hover, and reading deviceorientation would mean asking a
-     patient for a permission prompt to tilt a decoration. */
-  const target = { x: 0, y: 0 }
-  const current = { x: 0, y: 0 }
+  /* Scroll drives everything; the pointer only nudges. */
+  let progress = 0
+  let applied = -1
+  const point = { x: 0, y: 0 }
+  const eased = { x: 0, y: 0 }
+
   if (window.matchMedia('(hover: hover)').matches && !reduceMotion) {
     window.addEventListener(
       'pointermove',
-      (event) => {
-        target.x = (event.clientX / window.innerWidth) * 2 - 1
-        target.y = (event.clientY / window.innerHeight) * 2 - 1
+      (e) => {
+        point.x = (e.clientX / window.innerWidth) * 2 - 1
+        point.y = (e.clientY / window.innerHeight) * 2 - 1
       },
       { passive: true },
     )
   }
+
+  const readScroll = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0
+  }
+  readScroll()
+  window.addEventListener('scroll', readScroll, { passive: true })
 
   const clock = new THREE.Clock()
   let frame = 0
 
   const render = () => {
     frame = requestAnimationFrame(render)
+    const dt = clock.getDelta()
     const t = clock.getElapsedTime()
 
-    if (!reduceMotion) {
-      /* Ambient self-rotation: slow enough to be noticed only if you look. */
-      structure.rotation.y = t * 0.14
-      structure.rotation.x = Math.sin(t * 0.22) * 0.06
-      motes.rotation.y = -t * 0.05
+    /* Only rebuild the geometry when the scroll position really changed. */
+    if (Math.abs(progress - applied) > 0.0005) {
+      setProgress(progress)
+      applied = progress
+    }
 
-      /*
-       * Parallax eased towards the pointer rather than tracking it. A mesh
-       * that snaps to the cursor feels like a toy; a fifteenth of the distance
-       * per frame feels like weight. Framerate-independent so it behaves the
-       * same at 60 and 120Hz.
-       */
-      const ease = 1 - Math.pow(0.001, clock.getDelta())
-      current.x += (target.x - current.x) * ease
-      current.y += (target.y - current.y) * ease
-      structure.rotation.y += current.x * 0.28
-      structure.rotation.x += current.y * 0.2
-      structure.position.x = current.x * 0.24
-      structure.position.y = -current.y * 0.18
+    if (!reduceMotion) {
+      group.rotation.y = t * 0.09 + progress * Math.PI * 1.1
+      const k = 1 - Math.pow(0.0015, dt)
+      eased.x += (point.x - eased.x) * k
+      eased.y += (point.y - eased.y) * k
+      group.rotation.x = eased.y * 0.16 - 0.05
+      group.rotation.z = eased.x * 0.06
+    } else {
+      group.rotation.y = progress * Math.PI
     }
 
     renderer.render(scene, camera)
   }
   render()
 
-  /* Stop entirely when the tab is hidden — a background tab spinning a GPU is
-     a battery complaint waiting to happen. */
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       cancelAnimationFrame(frame)
     } else {
-      clock.getDelta() /* discard the gap, or the ease jumps on return */
+      clock.getDelta()
       render()
     }
   })
 }
 
-/* --------------------------------------------------------------- entrance */
+/* ------------------------------------------------------- chapters & tone */
 /**
- * The load sequence: the canvas unfurls, then the words rise under it.
+ * Chapter copy fading through, and the ground turning over beneath it.
  *
- * Runs only after fonts are ready. Animating text before its webfont lands
- * means the fade-up plays in the fallback face and everything reflows at the
- * end — the one artefact that makes a considered entrance look cheap.
+ * The dark stretch covers the two clinical chapters and ends before the way
+ * in, so the page hands you back to daylight at the moment it asks you to do
+ * something.
  */
-function playEntrance() {
-  const targets = (name) => document.querySelectorAll(`[data-animate="${name}"]`)
+function wireChapters() {
+  const chapters = [...document.querySelectorAll('.chapter-inner')]
 
-  if (reduceMotion || typeof window.gsap === 'undefined') {
-    /* No animation: make sure nothing is left in its pre-animation state. */
-    for (const el of document.querySelectorAll('[data-animate]')) {
-      el.style.opacity = '1'
-      el.style.transform = 'none'
-    }
+  if (reduceMotion || !window.gsap || !window.ScrollTrigger) {
+    for (const el of chapters) el.style.opacity = '1'
     return
   }
 
-  const tl = window.gsap.timeline({ defaults: { ease: 'power3.out' } })
+  const { gsap, ScrollTrigger } = window
+  gsap.registerPlugin(ScrollTrigger)
 
-  tl.fromTo(
-    targets('canvas'),
-    { opacity: 0, scale: 0.88, rotate: -4 },
-    { opacity: 1, scale: 1, rotate: 0, duration: 1.25, ease: 'power2.out' },
-  )
-    .fromTo(targets('header'), { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.6 }, 0.1)
-    .fromTo(
-      [...targets('badge'), ...targets('headline'), ...targets('subhead'), ...targets('cta')],
-      { opacity: 0, y: 26 },
-      { opacity: 1, y: 0, duration: 0.7, stagger: 0.09 },
-      /* Overlaps the canvas rather than waiting for it: the brief asked for
-         "followed immediately", and a hero that makes you wait 1.2s for a
-         headline has spent its budget on the wrong thing. */
-      0.35,
+  for (const el of chapters) {
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el.parentElement,
+          start: 'top 72%',
+          end: 'bottom 40%',
+          /* Tied to the scrollbar rather than played on entry — the chapters
+             have to feel scrubbed, like the mesh behind them. */
+          scrub: 0.6,
+        },
+      },
     )
-    .fromTo(targets('stats'), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.25')
+  }
+
+  /* The ground. Two chapters dark, then back to bone. */
+  const dark = {
+    '--ground': '#052b26',
+    '--fg': '#f4f2ec',
+    '--fg-soft': '#a8d4cc',
+    '--fg-faint': '#72b7ab',
+    '--hairline': 'rgba(114, 183, 171, 0.28)',
+  }
+  const light = {
+    '--ground': '#faf9f6',
+    '--fg': '#16130f',
+    '--fg-soft': '#5b564c',
+    '--fg-faint': '#706b5e',
+    '--hairline': '#e7e3d9',
+  }
+  const applyVars = (vars) => {
+    for (const [key, value] of Object.entries(vars)) document.body.style.setProperty(key, value)
+  }
+
+  ScrollTrigger.create({
+    trigger: '[data-chapter="2"]',
+    start: 'top 60%',
+    endTrigger: '[data-chapter="5"]',
+    end: 'top 65%',
+    onToggle: ({ isActive }) => {
+      applyVars(isActive ? dark : light)
+      /* A flag rather than more variables: a handful of accents pick their
+         own colour for the dark stretch, and CSS is the right place for that. */
+      document.body.dataset.dark = String(isActive)
+    },
+  })
 }
 
 /* ------------------------------------------------------------------ boot */
 fillYears()
 
 if (canvas) {
-  /* A context test rather than a feature sniff: some devices expose WebGL and
-     then refuse to give you a context. */
   let supported = false
   try {
     supported = Boolean(
@@ -318,7 +393,7 @@ if (canvas) {
 
   if (supported) {
     try {
-      start(buildScene())
+      run(buildWorld())
     } catch (error) {
       console.warn('[hero] 3D unavailable, continuing without it:', error)
       canvas.remove()
@@ -330,10 +405,10 @@ if (canvas) {
   }
 }
 
-/* document.fonts is everywhere current, but the page must still open on a
-   browser without it rather than never animating. */
+/* Wait for the faces, or the chapters animate in the fallback and reflow at
+   the end — the one artefact that makes a considered opening look cheap. */
 if (document.fonts?.ready) {
-  document.fonts.ready.then(playEntrance)
+  document.fonts.ready.then(wireChapters)
 } else {
-  window.addEventListener('load', playEntrance)
+  window.addEventListener('load', wireChapters)
 }
