@@ -22,27 +22,37 @@ import path from 'node:path'
 /**
  * Carries the hospital's real logo into the single file.
  *
- * Logo.jsx asks for `/logo.png` and falls back to a drawn approximation when
- * the file is missing — which is what a demo with no server always gets, so the
- * one image everybody recognises was the one thing the preview got wrong.
- * Rewriting the literal to a data URI is contained to this build; the app keeps
- * its plain path and its fallback.
+ * The app asks for `/logo.png` and falls back to a drawn approximation when the
+ * file is missing — which is what a demo with no server always gets, so the one
+ * image everybody recognises was the thing the preview got wrong. Rewriting the
+ * literal to a data URI is contained to this build; the app keeps its plain
+ * path and its fallback.
+ *
+ * Every module that asks for it, not a named list of files. The first version
+ * patched Logo.jsx only, so the header showed the real lockup and the footer —
+ * which asks for the same file — quietly kept drawing the replica. A rule that
+ * has to be extended by hand each time is a rule that gets forgotten.
  */
 function inlineLogo() {
   const file = path.resolve(import.meta.dirname, 'public/logo.png')
   const LITERAL = '"/logo.png"'
+  let patched = 0
   return {
     name: 'deepan-demo-logo',
     enforce: 'pre',
     transform(code, id) {
-      if (!id.includes('components/Logo.jsx')) return null
-      if (!code.includes(LITERAL)) {
-        /* The path moved or changed quotes. Say so rather than quietly
-           shipping the fallback mark and looking like a rendering bug. */
-        this.error(`inlineLogo: ${LITERAL} not found in Logo.jsx — update the demo config`)
-      }
+      if (!id.includes('/src/') || !code.includes(LITERAL)) return null
+      patched++
       const uri = `data:image/png;base64,${fs.readFileSync(file).toString('base64')}`
-      return { code: code.replace(LITERAL, JSON.stringify(uri)), map: null }
+      return { code: code.replaceAll(LITERAL, JSON.stringify(uri)), map: null }
+    },
+    buildEnd() {
+      /* Two today: the header and the footer. Zero means the path changed and
+         the demo is about to ship the fallback mark everywhere, looking like a
+         rendering bug rather than a stale config. */
+      if (patched === 0) {
+        this.error(`inlineLogo: no module referenced ${LITERAL} — has the path changed?`)
+      }
     },
   }
 }
