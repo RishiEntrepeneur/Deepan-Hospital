@@ -377,6 +377,12 @@ export const translations = {
     'tab.appointments': 'Bookings',
     'tab.health': 'Health',
 
+    /* ---------- Message reception sends a patient ---------- */
+    'sms.confirmed':
+      '{hospital}\nAppointment confirmed.\n\nReference: {ref}\n{doctor}\n{when}\n\n{address}\n\nPlease bring the reference. To change or cancel, call {phone}.',
+    'sms.cancelled':
+      '{hospital}\nAppointment {ref} has been cancelled.\n\n{doctor}\n{when}\n\nTo book another time, call {phone}.',
+
     /* ---------- Opening screen ---------- */
     'opening.title': 'Welcome to Deepan Hospital',
     'opening.h1a': 'Transforming Healthcare,',
@@ -1053,6 +1059,12 @@ export const translations = {
     'tab.book': 'பதிவு',
     'tab.appointments': 'பதிவுகள்',
     'tab.health': 'நலம்',
+
+    /* ---------- Message reception sends a patient ---------- */
+    'sms.confirmed':
+      '{hospital}\nசந்திப்பு உறுதி செய்யப்பட்டது.\n\nகுறிப்பு எண்: {ref}\n{doctor}\n{when}\n\n{address}\n\nகுறிப்பு எண்ணை உடன் கொண்டு வாருங்கள். மாற்ற அல்லது ரத்து செய்ய {phone} ஐ அழையுங்கள்.',
+    'sms.cancelled':
+      '{hospital}\n{ref} சந்திப்பு ரத்து செய்யப்பட்டது.\n\n{doctor}\n{when}\n\nவேறு நேரம் பதிவு செய்ய {phone} ஐ அழையுங்கள்.',
 
     /* ---------- Opening screen ---------- */
     'opening.title': 'தீபன் மருத்துவமனைக்கு வரவேற்கிறோம்',

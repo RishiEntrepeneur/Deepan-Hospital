@@ -26,6 +26,7 @@ import { formatTime, todayKey } from '../lib/schedule'
 import { cx } from '../lib/cx'
 import KliniquePortal from '../components/KliniquePortal'
 import KliniqueTransfer from '../components/KliniqueTransfer'
+import TellPatient from '../components/TellPatient'
 import { useLiveDesk } from '../lib/useLiveDesk'
 import {
   alertDesk,
@@ -566,9 +567,18 @@ function BookForPatient({ doctors, onBooked, prefill, onClearPrefill }) {
 
       {error && <p role="alert" className="text-sm font-medium text-rose-700">{error}</p>}
       {done && (
-        <p className="rounded-2xl border border-mint-200 bg-mint-50 px-4 py-3 text-sm text-mint-900">
-          Booked — reference <strong className="font-mono">{done.id}</strong>. Read this out to the caller.
-        </p>
+        /* The moment reception is still on the call is the moment to send it,
+           so the button is here rather than only back on the Today list. */
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-mint-200 bg-mint-50 px-4 py-3">
+          <p className="text-sm text-mint-900">
+            Booked — reference <strong className="font-mono">{done.id}</strong>. Read this out to
+            the caller, and send it to them in writing.
+          </p>
+          <TellPatient
+            appointment={done}
+            doctorName={getDoctor(done.doctorId)?.name.en ?? done.doctorId}
+          />
+        </div>
       )}
 
       <button type="button" onClick={submit} disabled={busy || !doctorId || !slot}
@@ -816,6 +826,7 @@ function AppointmentRow({ appointment: a, onChanged }) {
         {a.patient.phone}
       </a>
       <span className="font-mono text-xs text-slate-400">{a.id}</span>
+      <TellPatient appointment={a} doctorName={getDoctor(a.doctorId)?.name.en ?? a.doctorId} />
       <StatusActions appointment={a} onChanged={onChanged} />
     </div>
   )

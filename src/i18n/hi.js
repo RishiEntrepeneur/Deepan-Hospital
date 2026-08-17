@@ -681,6 +681,12 @@ export const hi = {
   'tab.appointments': 'अपॉइंटमेंट',
   'tab.health': 'स्वास्थ्य',
 
+  /* ---------- Message reception sends a patient ---------- */
+  'sms.confirmed':
+    '{hospital}\nअपॉइंटमेंट पक्का हो गया है।\n\nसंदर्भ संख्या: {ref}\n{doctor}\n{when}\n\n{address}\n\nसंदर्भ संख्या साथ लाइए। बदलने या रद्द करने के लिए {phone} पर कॉल कीजिए।',
+  'sms.cancelled':
+    '{hospital}\nअपॉइंटमेंट {ref} रद्द कर दिया गया है।\n\n{doctor}\n{when}\n\nदूसरा समय लेने के लिए {phone} पर कॉल कीजिए।',
+
   /* ---------- Opening screen ---------- */
   'opening.title': 'दीपन अस्पताल में आपका स्वागत है',
   'opening.h1a': 'बेहतर इलाज,',
