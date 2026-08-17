@@ -82,3 +82,16 @@ silently restyles itself when a CDN ships a major release is not something a
 hospital should find out about from a patient. To self-host instead, drop both
 files in `hero/vendor/` and point the import map and the `<script>` at them.
 Nothing else changes.
+
+## One file, no network
+
+For anywhere the CDN is not an option — a page you publish, an attachment, a
+laptop with no signal at a meeting:
+
+```bash
+npm i --no-save three@0.169.0 gsap@3.12.5
+node hero/build-standalone.mjs        # → demo-dist/hero-artifact.html
+```
+
+That writes a single HTML file with both libraries and the logo inside it. The
+hero here keeps its CDN links; this is a second output, not a replacement.
