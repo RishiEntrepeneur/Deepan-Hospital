@@ -243,9 +243,62 @@
   animation: dh-scale-in 0.18s cubic-bezier(0.2, 0.6, 0.2, 1) both;
 }
 
+/*
+ * A page arriving. Deliberately quick — 0.22s — because this plays on every
+ * navigation, and anything an impatient person can outrun feels like lag
+ * rather than polish.
+ */
+@keyframes dh-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-page-in {
+  animation: dh-page-in 0.22s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+/*
+ * Skeleton placeholders.
+ *
+ * A spinner on an empty screen says "wait"; a skeleton says what is coming and
+ * roughly where, so the page appears to assemble rather than to appear. It also
+ * keeps the layout from jumping when the real content lands.
+ */
+@keyframes dh-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-slate-100) 25%,
+    var(--color-slate-200) 37%,
+    var(--color-slate-100) 63%
+  );
+  background-size: 200% 100%;
+  animation: dh-shimmer 1.4s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .animate-scale-in {
+  .animate-scale-in,
+  .animate-page-in {
+    animation: none;
+  }
+  /* Still a placeholder, just a still one — the shimmer is the moving part. */
+  .skeleton {
     animation: none;
   }
   html {

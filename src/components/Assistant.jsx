@@ -118,7 +118,13 @@ export default function Assistant({
         data-tour="assistant"
         style={keyboardInset ? { bottom: `calc(1rem + ${keyboardInset}px)` } : undefined}
         className={cx(
-          'fixed end-4 bottom-4 z-50 grid size-14 place-items-center rounded-full shadow-lg transition print-hide',
+          /*
+           * Clear of the phone's bottom nav bar, which is 4rem tall plus the
+           * home-indicator inset. At bottom-4 the button sat on top of it and,
+           * before the bar existed, on top of the hero text — the paragraph a
+           * patient reads first was underneath it.
+           */
+          'fixed end-4 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-50 grid size-14 place-items-center rounded-full shadow-lg transition active:scale-95 print-hide xl:bottom-4',
           open ? 'bg-slate-800 text-white' : 'bg-brand-600 text-white hover:bg-brand-700 hover:scale-105',
         )}
       >
@@ -135,7 +141,7 @@ export default function Assistant({
                 }
               : undefined
           }
-          className="animate-scale-in fixed inset-x-3 bottom-20 z-50 flex max-h-[70dvh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:inset-x-auto sm:end-4 sm:w-96 print-hide"
+          className="animate-scale-in fixed inset-x-3 bottom-[calc(9rem+env(safe-area-inset-bottom))] z-50 flex max-h-[65dvh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:inset-x-auto sm:end-4 sm:w-96 print-hide xl:bottom-20 xl:max-h-[70dvh]"
         >
           <div className="flex items-center gap-2.5 border-b border-slate-200 bg-brand-600 px-4 py-3 text-white">
             <Sparkles className="size-5 shrink-0" aria-hidden="true" />

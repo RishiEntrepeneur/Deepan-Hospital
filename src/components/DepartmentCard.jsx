@@ -26,7 +26,7 @@ export default function DepartmentCard({ department, onSelect, showHighlights = 
     <button
       type="button"
       onClick={() => onSelect(department)}
-      className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 text-start shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
+      className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 text-start shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md active:translate-y-0 active:scale-[0.98]"
     >
       <span
         className={cx(

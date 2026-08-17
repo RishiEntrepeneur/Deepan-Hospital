@@ -8,6 +8,9 @@ import { api, errorKeyFor } from "./lib/api";
 import { payForAppointment } from "./lib/razorpay";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import BottomNav from "./components/BottomNav";
+import AppSkeleton from "./components/AppSkeleton";
+import { cx } from "./lib/cx";
 import Toast from "./components/Toast";
 
 import Home from "./pages/Home";
@@ -270,14 +273,7 @@ export default function App() {
 
   /* ---------------- Catalogue gates the whole app ---------------- */
   if (catalog.status === "loading") {
-    return (
-      <div className="grid min-h-dvh place-items-center bg-white">
-        <LoaderCircle
-          className="size-8 animate-spin text-brand-600"
-          aria-hidden="true"
-        />
-      </div>
-    );
+    return <AppSkeleton label={t("common.loading")} />;
   }
 
   if (catalog.status === "error") {
@@ -306,7 +302,17 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-white">
+    /*
+     * The trailing padding is the height of the phone's bottom nav bar. Without
+     * it the bar floats over the last rows of the footer, which is where the
+     * address and the emergency number live.
+     */
+    <div
+      className={cx(
+        "flex min-h-dvh flex-col bg-white",
+        page !== "desk" && "pb-[calc(4rem+env(safe-area-inset-bottom))] xl:pb-0",
+      )}
+    >
       {/*
         * The desk is a staff workspace, not a page of the public site. It gets
         * a stripped header — no patient navigation, no Book button — and no
@@ -334,7 +340,12 @@ export default function App() {
         }}
       />
 
-      <main className="flex-1">
+      {/*
+        * Keyed on the page so React remounts on every navigation and the
+        * arrival animation actually replays — without the key it runs once,
+        * on first paint, and never again.
+        */}
+      <main key={page} className="animate-page-in flex-1">
         {page === "home" && (
           <Home
             onNavigate={navigate}
@@ -425,6 +436,16 @@ export default function App() {
       </main>
 
       {page !== "desk" && <Footer onNavigate={navigate} />}
+
+      {/* Phones and tablets only; the desk has a real nav and different work. */}
+      {page !== "desk" && (
+        <BottomNav
+          page={page}
+          onNavigate={navigate}
+          onBook={() => openBooking()}
+          appointmentCount={appointments.upcoming.length}
+        />
+      )}
 
       {booking && (
         <Suspense fallback={null}>

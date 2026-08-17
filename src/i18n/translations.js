@@ -368,6 +368,15 @@ export const translations = {
     'record.discharge': 'Discharge summary',
     'record.note': 'Clinical note',
     'record.vaccination': 'Vaccination',
+    'common.loading': 'Loading…',
+
+    /* ---------- Bottom navigation bar (phones) ---------- */
+    'tab.home': 'Home',
+    'tab.doctors': 'Doctors',
+    'tab.book': 'Book',
+    'tab.appointments': 'Bookings',
+    'tab.health': 'Health',
+
     /* ---------- Opening screen ---------- */
     'opening.title': 'Choose your language to begin',
     'opening.book': 'Book an appointment',
@@ -1013,6 +1022,15 @@ export const translations = {
     'record.discharge': 'வெளியேற்ற சுருக்கம்',
     'record.note': 'மருத்துவக் குறிப்பு',
     'record.vaccination': 'தடுப்பூசி',
+    'common.loading': 'ஏற்றப்படுகிறது…',
+
+    /* ---------- Bottom navigation bar (phones) ---------- */
+    'tab.home': 'முகப்பு',
+    'tab.doctors': 'மருத்துவர்',
+    'tab.book': 'பதிவு',
+    'tab.appointments': 'பதிவுகள்',
+    'tab.health': 'நலம்',
+
     /* ---------- Opening screen ---------- */
     'opening.title': 'தொடங்க உங்கள் மொழியைத் தேர்ந்தெடுங்கள்',
     'opening.book': 'சந்திப்பு பதிவு செய்ய',

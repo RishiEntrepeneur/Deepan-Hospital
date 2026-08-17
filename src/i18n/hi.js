@@ -672,6 +672,15 @@ export const hi = {
   'record.note': 'चिकित्सकीय टिप्पणी',
   'record.vaccination': 'टीकाकरण',
 
+  'common.loading': 'लोड हो रहा है…',
+
+  /* ---------- Bottom navigation bar (phones) ---------- */
+  'tab.home': 'होम',
+  'tab.doctors': 'डॉक्टर',
+  'tab.book': 'बुकिंग',
+  'tab.appointments': 'अपॉइंटमेंट',
+  'tab.health': 'स्वास्थ्य',
+
   /* ---------- Opening screen ---------- */
   'opening.title': 'शुरू करने के लिए अपनी भाषा चुनिए',
   'opening.book': 'अपॉइंटमेंट बुक करें',
