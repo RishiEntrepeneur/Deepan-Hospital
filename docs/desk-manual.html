@@ -457,7 +457,7 @@
 <div class="sheet">
 
   <header class="masthead">
-    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Desk manual · v1</span></p>
+    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Desk manual · v2</span></p>
     <h1>How to run the desk</h1>
     <p class="standfirst">
       Everything reception does on the booking system, and the few things a doctor does.
@@ -556,7 +556,7 @@
 
     <ol class="routine">
       <li><b>Open Today</b><span>Everything booked for today, earliest first. This is the list you work from at the counter.</span></li>
-      <li><b>Clear New requests</b><span>Bookings made online overnight. The slot is already held for them — approving simply tells the patient they are expected.</span></li>
+      <li><b>Clear New requests</b><span>Bookings made online overnight. The slot is already held — approving tells the patient they are expected, so send them the written confirmation at the same time.</span></li>
       <li><b>Empty To enter in Klinique</b><span>Copy each one across and tick it off. Do this early; it is the step that goes wrong when the counter gets busy.</span></li>
       <li><b>Work through To call back</b><span>People who asked for a doctor who is not bookable online. Ring them and give them a time.</span></li>
       <li><b>Check Follow-ups due</b><span>Patients a doctor asked to see again who have not come back. Overdue ones are at the top.</span></li>
@@ -575,7 +575,7 @@
           <tr><td class="tab-name">To enter in Klinique</td><td>Bookings not yet copied into Klinique</td><td>Copy across, then tick <span class="btn">Entered in Klinique</span></td></tr>
           <tr><td class="tab-name">Klinique</td><td>Klinique itself, opened inside this screen</td><td>Work in it as normal, or open it in a new tab</td></tr>
           <tr><td class="tab-name">New requests</td><td>Booked online, nobody has approved yet</td><td><span class="btn">Approve</span> each one</td></tr>
-          <tr><td class="tab-name">Today</td><td>Today's appointments, cancellations removed</td><td>Mark <span class="btn">Seen</span> as patients are seen</td></tr>
+          <tr><td class="tab-name">Today</td><td>Today's appointments, cancellations removed</td><td>Mark <span class="btn">Seen</span>; <span class="btn">Tell patient</span> sends details</td></tr>
           <tr><td class="tab-name">Book for a caller</td><td>An empty booking form</td><td>Book for someone on the telephone or at the counter</td></tr>
           <tr><td class="tab-name">To call back</td><td>People who asked to be called</td><td>Ring them, then <span class="btn">Give them a time</span></td></tr>
           <tr><td class="tab-name">Schedules</td><td>Every doctor's days, hours, fee and room</td><td>Keep correct; open a doctor for online booking</td></tr>
@@ -604,6 +604,33 @@
           The slot was already held from the moment they booked, so nobody else could take it.
           Approving does not reserve anything — it <b>tells the patient they are expected</b>.
         </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <header><span>Any appointment · after booking</span><b>Send the patient their appointment in writing</b></header>
+      <div class="task-body">
+        <p class="lead">
+          Every appointment row has a <span class="btn">Tell patient</span> button, and so does the
+          green <b>Booked</b> bar after you book for a caller — which is the best moment to use it,
+          while they are still on the line.
+        </p>
+        <ol class="steps">
+          <li>Press <span class="btn">Tell patient</span>.</li>
+          <li>Pick the language — <b>EN</b>, <b>தமிழ்</b> or <b>हिंदी</b>. It remembers your last choice.</li>
+          <li>Read the message shown, then press <span class="btn">WhatsApp</span> or <span class="btn">SMS</span>.</li>
+          <li>Your phone opens with the message already written. Press send.</li>
+        </ol>
+        <div class="result">
+          It goes <b>from your own phone</b>, not from the hospital — so there is nothing to set up
+          and nothing to pay. The patient gets the reference, the doctor, the date and time, the
+          address and the number to call, in their own language.
+        </div>
+        <p style="margin-top:1rem">
+          <span class="btn">Copy the message</span> is there for a counter machine with no WhatsApp
+          and no SIM — paste it wherever you need. A cancelled appointment sends different wording
+          automatically, so nobody is cheerfully confirmed for a visit that is not happening.
+        </p>
       </div>
     </div>
 
@@ -775,11 +802,11 @@
           </table>
         </div>
         <div class="note warn" style="margin-bottom:0">
-          <b>No SMS is going out yet</b>
+          <b>Nothing reaches a patient on its own</b>
           <p>
-            The hospital has no SMS gateway connected, so <b>patients are not receiving text
-            messages</b>. Everything a patient needs to know, they need to hear from you: read the
-            reference out, and confirm the date, time and doctor before they ring off.
+            The hospital has no SMS gateway, so <b>no message is sent automatically</b>. Use
+            <span class="btn">Tell patient</span> on the appointment row — one tap sends it from
+            your phone by WhatsApp or SMS. Read the reference out loud as well.
           </p>
         </div>
       </div>
@@ -980,8 +1007,8 @@ npm run backup</code></pre>
           </tr>
           <tr>
             <td>A patient says they got no message</td>
-            <td>Correct. There is no SMS gateway connected yet.</td>
-            <td>Tell them the details on the call, and read out the reference.</td>
+            <td>Correct. Nothing is sent automatically — there is no SMS gateway.</td>
+            <td>Open the appointment and press <span class="btn">Tell patient</span>.</td>
           </tr>
           <tr>
             <td>The screen is empty and will not load</td>

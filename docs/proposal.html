@@ -1,0 +1,423 @@
+<title>Deepan Hospital Online</title>
+
+<style>
+  /* The hospital's own tokens, so this reads as part of Deepan Hospital
+     rather than as a supplier's letterhead. Same set as the desk manual. */
+  :root {
+    --bone:      #faf9f6;
+    --paper:     #ffffff;
+    --sand:      #f4f2ec;
+    --rule:      #e7e3d9;
+    --rule-soft: #efece4;
+    --ink:       #16130f;
+    --ink-soft:  #403b33;
+    --grey:      #706b5e;
+    --teal:      #0e6a5c;
+    --teal-deep: #052b26;
+    --teal-pale: #eef6f4;
+    --teal-line: #a8d4cc;
+    --leaf:      #55731f;
+    --leaf-pale: #f2f8ea;
+    --leaf-line: #c8e0a7;
+    --amber:     #8a5a12;
+    --amber-pale:#fdf6e7;
+    --amber-line:#e8d3a3;
+
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --mono:  ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    --measure: 66ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bone: #0c1a18; --paper: #11221f; --sand: #162b27;
+      --rule: #22403a; --rule-soft: #1b332e;
+      --ink: #f2f5f2; --ink-soft: #d3ded9; --grey: #9aaba5;
+      --teal: #72b7ab; --teal-deep: #d5eae5; --teal-pale: #10302a; --teal-line: #235049;
+      --leaf: #c3dd7a; --leaf-pale: #152a17; --leaf-line: #2f4c25;
+      --amber: #e8bf7a; --amber-pale: #2c2213; --amber-line: #4d3c1d;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bone: #0c1a18; --paper: #11221f; --sand: #162b27;
+    --rule: #22403a; --rule-soft: #1b332e;
+    --ink: #f2f5f2; --ink-soft: #d3ded9; --grey: #9aaba5;
+    --teal: #72b7ab; --teal-deep: #d5eae5; --teal-pale: #10302a; --teal-line: #235049;
+    --leaf: #c3dd7a; --leaf-pale: #152a17; --leaf-line: #2f4c25;
+    --amber: #e8bf7a; --amber-pale: #2c2213; --amber-line: #4d3c1d;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bone);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet { max-width: 50rem; margin: 0 auto; padding: 3.5rem 1.5rem 6rem; }
+
+  .masthead { padding-bottom: 1.75rem; border-bottom: 2px solid var(--ink); }
+  .crest {
+    display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--grey); margin: 0 0 1.15rem;
+  }
+  .crest b { color: var(--teal); font-weight: 700; }
+  h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(2.2rem, 5.5vw, 3.2rem); line-height: 1.05;
+    letter-spacing: -0.015em; margin: 0 0 1rem; text-wrap: balance;
+  }
+  .standfirst { margin: 0; max-width: var(--measure); font-size: 1.06rem; color: var(--ink-soft); }
+
+  section { margin-top: 3.5rem; }
+  h2 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(1.5rem, 3.2vw, 2rem); line-height: 1.15;
+    letter-spacing: -0.012em; margin: 0 0 0.5rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--ink);
+  }
+  .sub { margin: 0.85rem 0 0; max-width: var(--measure); color: var(--ink-soft); }
+  p { max-width: var(--measure); }
+
+  h3.rule {
+    margin: 2.4rem 0 0.85rem;
+    font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal);
+    padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule);
+  }
+
+  /* what it does — paired, because each item is a patient side and a desk side */
+  .pairs {
+    margin-top: 1.25rem; display: grid; gap: 1px;
+    background: var(--rule); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden;
+  }
+  .pair { background: var(--paper); padding: 1.15rem 1.3rem; }
+  .pair b { display: block; font-size: 1rem; letter-spacing: -0.008em; margin-bottom: 0.25rem; }
+  .pair p { margin: 0; font-size: 0.94rem; color: var(--ink-soft); }
+
+  .facts {
+    margin-top: 1.5rem; display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1px; background: var(--rule); border: 1px solid var(--rule);
+    border-radius: 2px; overflow: hidden;
+  }
+  @media (min-width: 38rem) { .facts { grid-template-columns: repeat(4, 1fr); } }
+  .fact { background: var(--paper); padding: 1rem; }
+  .fact b {
+    display: block; font-family: var(--serif); font-size: 1.9rem; line-height: 1;
+    color: var(--teal); font-variant-numeric: tabular-nums;
+  }
+  .fact span { display: block; font-size: 0.76rem; line-height: 1.35; color: var(--grey); margin-top: 0.35rem; }
+
+  /* status list — the state IS the information here */
+  table { width: 100%; border-collapse: collapse; font-size: 0.94rem; min-width: 30rem; }
+  .scroll { overflow-x: auto; margin-top: 1.15rem; }
+  th, td { text-align: left; padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  thead th {
+    font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--grey); font-weight: 700;
+    border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+    padding: 0.15rem 0.45rem; border-radius: 2px; border: 1px solid; white-space: nowrap;
+  }
+  .chip.done { background: var(--leaf-pale); border-color: var(--leaf-line); color: var(--leaf); }
+  .chip.wait { background: var(--amber-pale); border-color: var(--amber-line); color: var(--amber); }
+
+  ol.need { list-style: none; counter-reset: n; margin: 1.15rem 0 0; padding: 0; }
+  ol.need > li {
+    counter-increment: n; position: relative;
+    padding: 0 0 1.1rem 2.5rem; border-left: 1px solid var(--rule); margin-left: 0.65rem;
+  }
+  ol.need > li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  ol.need > li::before {
+    content: counter(n); position: absolute; left: -0.68rem; top: 0;
+    width: 1.35rem; height: 1.35rem; display: grid; place-items: center;
+    background: var(--teal); color: var(--paper); border-radius: 50%;
+    font-family: var(--mono); font-size: 0.68rem; font-weight: 700;
+  }
+  ol.need b { display: block; font-size: 0.99rem; margin-bottom: 0.15rem; }
+  ol.need p { margin: 0; font-size: 0.93rem; color: var(--ink-soft); }
+
+  .note {
+    margin: 1.5rem 0 0; padding: 1.05rem 1.25rem; border-radius: 2px;
+    border: 1px solid var(--teal-line); background: var(--teal-pale);
+    color: var(--ink-soft); max-width: var(--measure);
+  }
+  .note b { display: block; color: var(--teal); margin-bottom: 0.3rem; }
+  .note p { margin: 0; max-width: none; }
+  .note.plain { border-color: var(--amber-line); background: var(--amber-pale); }
+  .note.plain b { color: var(--amber); }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 2px solid var(--ink);
+    font-size: 0.88rem; color: var(--grey);
+  }
+  footer p { max-width: var(--measure); }
+  footer .sign { color: var(--ink); font-weight: 700; }
+
+  a { color: var(--teal); text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  @media print {
+    :root,
+    :root:not([data-theme='light']),
+    :root[data-theme='dark'] {
+      --bone: #fff; --paper: #fff; --sand: #f6f5f1;
+      --ink: #000; --ink-soft: #222; --grey: #555;
+      --rule: #bbb; --rule-soft: #ddd;
+    }
+    body { font-size: 10.5pt; line-height: 1.5; }
+    .sheet { max-width: none; padding: 0; }
+    section { break-inside: avoid; }
+    h2, h3.rule { break-after: avoid; }
+    .pairs, .facts, table, .note, ol.need { break-inside: avoid; }
+    a { color: #000; text-decoration: underline; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Proposal</span></p>
+    <h1>Booking, online and in three languages.</h1>
+    <p class="standfirst">
+      A public booking page for Deepan Hospital and a reception screen behind it. It sits in front
+      of Klinique — it does not replace it, and it does not touch the clinical record. This
+      document describes what has been built, what is still needed, and what happens next.
+    </p>
+  </header>
+
+  <section>
+    <h2>The problem it solves</h2>
+    <p class="sub">
+      Today a patient who wants an appointment at Deepan Hospital has to telephone, during working
+      hours, and speak to somebody at the counter. There is no other way in. Someone deciding at
+      eleven at night, or who would rather read Tamil than speak English to a stranger, or who
+      simply cannot get through, goes to whichever hospital they can reach first.
+    </p>
+    <p>
+      Klinique holds the hospital's clinical record and does that job well, but it has no public
+      page — a patient cannot reach it. That gap is what this fills.
+    </p>
+  </section>
+
+  <section>
+    <h2>What it does</h2>
+
+    <div class="facts">
+      <div class="fact"><b>18</b><span>consultants listed</span></div>
+      <div class="fact"><b>21</b><span>departments</span></div>
+      <div class="fact"><b>3</b><span>languages, every screen</span></div>
+      <div class="fact"><b>24/7</b><span>bookings accepted</span></div>
+    </div>
+
+    <h3 class="rule">For the patient</h3>
+    <div class="pairs">
+      <div class="pair">
+        <b>Books in about a minute, with no account</b>
+        <p>
+          Choose a department or a doctor, see the real free times, book. No app to download and
+          nothing to sign up for — an account is offered, never required.
+        </p>
+      </div>
+      <div class="pair">
+        <b>Every screen in English, Tamil and Hindi</b>
+        <p>
+          Not a translated front page with English underneath: the whole site, including the
+          booking form, the fees, the departments and the appointment slip.
+        </p>
+      </div>
+      <div class="pair">
+        <b>Sees the fee before booking</b>
+        <p>
+          Each consultant's fee, days and consulting hours are shown as the hospital records them,
+          so nobody arrives expecting a different number.
+        </p>
+      </div>
+      <div class="pair">
+        <b>Gets the appointment in writing</b>
+        <p>
+          Reference, doctor, date, time and the hospital's address, sent by WhatsApp or SMS in the
+          patient's own language.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="rule">For reception</h3>
+    <div class="pairs">
+      <div class="pair">
+        <b>Bookings arrive on their screen by themselves</b>
+        <p>
+          With a chime and an on-screen alert. Nobody types anything, and no booking waits for
+          somebody to check an inbox.
+        </p>
+      </div>
+      <div class="pair">
+        <b>The slot is held the moment a patient books</b>
+        <p>
+          Two patients cannot take the same time. The database enforces it, not the screen — so it
+          holds even if two people book in the same second.
+        </p>
+      </div>
+      <div class="pair">
+        <b>Booking for a caller is faster than the register</b>
+        <p>
+          The free times for any doctor on any date, one tap to hold one, and a reference to read
+          back to the caller.
+        </p>
+      </div>
+      <div class="pair">
+        <b>A worklist for Klinique, with a tick</b>
+        <p>
+          Every booking to be entered, each field one tap to copy, and a record of which have been
+          done — so none is entered twice or missed.
+        </p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>It does not compete with Klinique</b>
+      <p>
+        There is deliberately no second place to write a prescription or a consultation note. Two
+        records that can disagree about one patient is a real danger, and avoiding it was worth
+        more than the convenience. Klinique stays the clinical record; this is the booking page in
+        front of it.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where it stands</h2>
+    <p class="sub">
+      Stated plainly, including what is not finished. Nothing below is a promise about future work.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th scope="col">Item</th><th scope="col">State</th><th scope="col">Note</th></tr></thead>
+        <tbody>
+          <tr><td>Patient booking, three languages</td><td><span class="chip done">Built</span></td><td>15 of 18 consultants bookable; the rest take callback requests</td></tr>
+          <tr><td>Reception desk</td><td><span class="chip done">Built</span></td><td>Live bookings, schedules, callbacks, follow-ups, alerts</td></tr>
+          <tr><td>Klinique worklist</td><td><span class="chip done">Built</span></td><td>Entered by hand today; see below</td></tr>
+          <tr><td>Written confirmation to patients</td><td><span class="chip done">Built</span></td><td>Sent by reception in one tap, from their own phone</td></tr>
+          <tr><td>Staff manual</td><td><span class="chip done">Written</span></td><td>Supplied with this document</td></tr>
+          <tr><td>Automatic transfer into Klinique</td><td><span class="chip wait">Needs Klinique</span></td><td>Built and ready; needs an API key or one captured form</td></tr>
+          <tr><td>Automatic SMS to patients</td><td><span class="chip wait">Needs the hospital</span></td><td>DLT registration in the hospital's name</td></tr>
+          <tr><td>Medical registration numbers</td><td><span class="chip wait">Needs the hospital</span></td><td>None of the 18 on file; shown publicly beside qualifications</td></tr>
+          <tr><td>Accreditation claim</td><td><span class="chip wait">Not made</span></td><td>Deliberately absent until the register entry is confirmed</td></tr>
+          <tr><td>Live on the internet</td><td><span class="chip wait">Not yet</span></td><td>Domain, secure hosting and off-site backups</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note plain">
+      <b>On accreditation and registration numbers</b>
+      <p>
+        The site makes no NABH claim, and every consultant's registration field has been left empty
+        rather than filled in with a plausible guess. Both are the hospital's to confirm from its
+        own records. An unverified claim on a hospital's public site is the kind of thing that is
+        cheap to avoid now and expensive to explain later.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What is needed from the hospital</h2>
+    <p class="sub">
+      Five things, none of which can be supplied from outside. The first two are what stand between
+      today and going live.
+    </p>
+
+    <ol class="need">
+      <li>
+        <b>A domain name and hosting</b>
+        <p>
+          Registered in the hospital's name, not a supplier's. Patient data and the hospital's own
+          address should never sit in somebody else's account.
+        </p>
+      </li>
+      <li>
+        <b>Medical registration numbers for all 18 consultants</b>
+        <p>From the hospital's records. These appear publicly beside each doctor's qualification.</p>
+      </li>
+      <li>
+        <b>Confirmation of the consulting hours and fees</b>
+        <p>
+          They were transcribed from the hospital's own OP list. Somebody should read them once
+          before patients start booking against them.
+        </p>
+      </li>
+      <li>
+        <b>A decision on who texts the patient</b>
+        <p>
+          Klinique's booking form can already send an SMS confirmation. If the hospital would
+          rather it did so, that is the simpler route and reception need do nothing.
+        </p>
+      </li>
+      <li>
+        <b>A named person for data questions</b>
+        <p>
+          Required under the Digital Personal Data Protection Act 2023 — a patient must have
+          somebody to write to. A name and an email address is enough.
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Next steps</h2>
+    <p class="sub">
+      Two phases. The first is short, because most of the work is done.
+    </p>
+
+    <div class="pairs">
+      <div class="pair">
+        <b>Phase one — go live</b>
+        <p>
+          Domain, secure hosting, off-site backups, the registration numbers entered, hours and
+          fees confirmed, and reception trained on the manual. The site is then open to patients.
+        </p>
+      </div>
+      <div class="pair">
+        <b>Phase two — remove the typing</b>
+        <p>
+          Bookings pass into Klinique automatically instead of being entered by hand. Needs either
+          an API key from Klinique or one booking captured from their own form. Quoted separately,
+          because it depends on what Klinique will provide.
+        </p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>Suggested first step</b>
+      <p>
+        Bring two or three departments live for a fortnight rather than the whole roster at once.
+        Reception learns the screen on a small volume, the hospital sees real bookings before
+        committing further, and the remaining departments are opened by ticking a box.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p class="sign">Prepared for Dr Deepan G, Deepan Hospital.</p>
+    <p style="margin-top:0.5rem">
+      50, Bishop Road, opposite M.A. Honda, Puthur, Tennur, Tiruchirappalli – 620017, Tamil Nadu.
+    </p>
+    <p style="margin-top:0.9rem">
+      Every figure in this document — 18 consultants, 21 departments, 15 bookable — is taken from
+      the system itself rather than estimated. Costs and timescales are for discussion and are not
+      quoted here.
+    </p>
+  </footer>
+
+</div>
