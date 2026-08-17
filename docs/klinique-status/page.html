@@ -1,0 +1,531 @@
+<title>Is Klinique Working?</title>
+
+<style>
+  /*
+   * Palette inherited from the app's own tokens rather than invented: warm
+   * bone ground, deep forest brand, hairline rules instead of shadows. The
+   * page should look like it came from the same place as the screenshots in it.
+   */
+  :root {
+    --ground: #faf9f6;
+    --surface: #ffffff;
+    --rule: #e7e3d9;
+    --ink: #1c1917;
+    --ink-soft: #57534e;
+    --ink-faint: #8a827a;
+    --brand: #0e6a5c;
+    --brand-deep: #052b26;
+    --ok: #15803d;
+    --ok-bg: #eef7f0;
+    --dormant: #b45309;
+    --dormant-bg: #fdf4e7;
+    --unknown: #57534e;
+    --unknown-bg: #f2f0ea;
+    --shot-mat: #f4f2ec;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #14130f;
+      --surface: #1d1b16;
+      --rule: #322e26;
+      --ink: #f4f2ec;
+      --ink-soft: #b8b1a6;
+      --ink-faint: #8a827a;
+      --brand: #57a894;
+      --brand-deep: #d5eae5;
+      --ok: #6ee7a4;
+      --ok-bg: #16241b;
+      --dormant: #f0b45f;
+      --dormant-bg: #2a2013;
+      --unknown: #b8b1a6;
+      --unknown-bg: #23211b;
+      --shot-mat: #23211b;
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #14130f;
+    --surface: #1d1b16;
+    --rule: #322e26;
+    --ink: #f4f2ec;
+    --ink-soft: #b8b1a6;
+    --ink-faint: #8a827a;
+    --brand: #57a894;
+    --brand-deep: #d5eae5;
+    --ok: #6ee7a4;
+    --ok-bg: #16241b;
+    --dormant: #f0b45f;
+    --dormant-bg: #2a2013;
+    --unknown: #b8b1a6;
+    --unknown-bg: #23211b;
+    --shot-mat: #23211b;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 54rem;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 5rem;
+  }
+
+  .prose {
+    max-width: 40rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    font-weight: 400;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    line-height: 1.1;
+    margin: 0.6rem 0 0;
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 3.4vw, 1.8rem);
+    line-height: 1.2;
+    margin: 0 0 0.25rem;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-family: system-ui, sans-serif;
+    font-weight: 700;
+    margin: 2rem 0 0.4rem;
+  }
+
+  p {
+    margin: 0 0 1rem;
+  }
+
+  a {
+    color: var(--brand);
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin: 0;
+  }
+
+  .lede {
+    font-size: 1.18rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 1.1rem 0 0;
+    max-width: 36rem;
+  }
+
+  .meta {
+    margin: 1.5rem 0 0;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    max-width: 36rem;
+  }
+
+  /* ---- The answer, up front ---- */
+  .verdicts {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    margin: 2.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .verdict {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 0.9rem;
+    padding: 1.1rem 1.15rem 1.25rem;
+  }
+
+  .verdict h3 {
+    margin: 0.65rem 0 0.3rem;
+    font-size: 1rem;
+  }
+
+  .verdict p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.28rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .chip::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: currentColor;
+  }
+
+  .chip-ok {
+    color: var(--ok);
+    background: var(--ok-bg);
+  }
+
+  .chip-dormant {
+    color: var(--dormant);
+    background: var(--dormant-bg);
+  }
+
+  .chip-unknown {
+    color: var(--unknown);
+    background: var(--unknown-bg);
+  }
+
+  /* ---- Sections ---- */
+  section {
+    margin: 4rem 0 0;
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ---- Screenshots ---- */
+  figure {
+    margin: 1.75rem 0 0;
+  }
+
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    background: var(--shot-mat);
+  }
+
+  figcaption {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    max-width: 40rem;
+  }
+
+  /* ---- Config table ---- */
+  .table-scroll {
+    overflow-x: auto;
+    margin: 1.5rem 0 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    min-width: 26rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.9rem 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 700;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86em;
+    background: var(--unknown-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 0.3rem;
+    /* An endpoint path has no spaces to break at, so on a narrow phone it
+       pushed the whole page sideways. Let it break anywhere it must. */
+    overflow-wrap: anywhere;
+  }
+
+  .unset {
+    color: var(--ink-faint);
+  }
+
+  /* ---- Callout ---- */
+  .callout {
+    margin: 2rem 0 0;
+    padding: 1.15rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 0.9rem;
+  }
+
+  .callout p:last-child {
+    margin-bottom: 0;
+  }
+
+  ul.tight {
+    margin: 0 0 1rem;
+    padding-left: 1.15rem;
+  }
+
+  ul.tight li {
+    margin-bottom: 0.5rem;
+  }
+
+  footer {
+    margin: 4.5rem 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    max-width: 40rem;
+  }
+</style>
+
+<div class="wrap">
+  <header class="prose">
+    <p class="eyebrow">Deepan Hospital · integration check</p>
+    <h1>Is Klinique working?</h1>
+    <p class="lede">
+      Three separate things in this app are called “Klinique”. One is running and I verified it
+      end to end; one is written but switched off on purpose; one I cannot test from here.
+    </p>
+    <p class="meta">
+      Checked against the app running locally with the hospital’s seeded roster. The screenshots
+      are the real reception desk, not mock-ups. A booking was made through the patient site to
+      produce them and deleted afterwards — the database is back to zero appointments and zero
+      patients.
+    </p>
+  </header>
+
+  <ul class="verdicts">
+    <li class="verdict">
+      <span class="chip chip-ok">Working</span>
+      <h3>The hand-off worklist</h3>
+      <p>Bookings arrive at the desk to be typed across, with a tick so none is entered twice or missed. This is what the hospital runs today.</p>
+    </li>
+    <li class="verdict">
+      <span class="chip chip-dormant">Built, switched off</span>
+      <h3>Automatic submission</h3>
+      <p>Signs in to Klinique and posts the booking itself. Every credential is unset, and the booking form was never captured.</p>
+    </li>
+    <li class="verdict">
+      <span class="chip chip-unknown">Cannot verify here</span>
+      <h3>The embedded portal</h3>
+      <p>Klinique inside a tab on the desk. The tab renders correctly; whether the frame loads depends on Klinique’s own headers.</p>
+    </li>
+  </ul>
+
+  <section>
+    <div class="section-head">
+      <h2>The hand-off worklist</h2>
+      <span class="chip chip-ok">Verified</span>
+    </div>
+
+    <div class="prose">
+      <p>
+        I booked a real appointment through the patient site. It appeared immediately on the desk
+        under <strong>To enter in Klinique</strong> as <code>DH-KZHFK8</code> — patient, phone, age,
+        gender, doctor, date, time, fee and reason, each with its own copy button, plus
+        <strong>Copy all</strong>.
+      </p>
+      <p>
+        The tick is the part that matters. Without a record of what has already been transferred,
+        the only way to know is to search Klinique for each booking one at a time, and the failure
+        that follows is a patient arriving at a clinic that never heard of them.
+      </p>
+    </div>
+
+    <figure>
+      <img alt="The reception desk showing the To enter in Klinique tab, with one booking DH-KZHFK8 laid out field by field: patient Preview Patient, phone 9876543210, age 42, gender male, doctor Dr. G. Deepan, date 2026-08-19, time 10:00, fee ₹300, reason knee pain for two weeks. Each field has a copy button, and the card has Copy all and Entered in Klinique buttons." src="{{IMG_WORKLIST}}" />
+      <figcaption>
+        A live booking on the worklist. “Entered in Klinique” marks it done and removes it from the
+        list.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Automatic submission</h2>
+      <span class="chip chip-dormant">Built, switched off</span>
+    </div>
+
+    <div class="prose">
+      <p>
+        The code signs in to Klinique the way a browser does — fetching the form, carrying its CSRF
+        token and session cookie — and posts each booking through it. 109 server tests exercise
+        that path against a mock, so the driver is proven. The vendor integration is not.
+      </p>
+      <p>Here is the current configuration, unchanged from the defaults:</p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>Value</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>KLINIQUE_MODE</code></td><td><code>manual</code></td><td>Bookings go to the worklist</td></tr>
+          <tr><td><code>KLINIQUE_BASE_URL</code></td><td class="unset">unset</td><td>Nothing to sign in to</td></tr>
+          <tr><td><code>KLINIQUE_USERNAME</code></td><td class="unset">unset</td><td>No account to act as</td></tr>
+          <tr><td><code>KLINIQUE_BOOKING_PATH</code></td><td class="unset">unset</td><td>No form to post to</td></tr>
+          <tr><td><code>KLINIQUE_FIELD_MAP</code></td><td class="unset">unset</td><td>No idea what their fields are called</td></tr>
+          <tr><td><code>KLINIQUE_DOCTOR_MAP</code></td><td class="unset">unset</td><td>No doctor could be matched</td></tr>
+          <tr><td><code>KLINIQUE_GENDER_MAP</code></td><td class="unset">unset</td><td>No gender could be coded</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Why it stays off</h3>
+    <div class="prose">
+      <p>
+        This is the hospital’s own finding, not a limitation of the code. Two live test submissions
+        were attempted and <strong>neither created anything</strong>. They showed why blind
+        automation is the wrong tool here:
+      </p>
+      <ul class="tight">
+        <li>
+          The “Quick Registration” form posts to
+          <code>/visits/create_patient_with_emergency_visit</code> — an <em>emergency-visit</em>
+          path. Using it for ordinary website bookings risks flagging every one as an emergency.
+        </li>
+        <li>
+          The correct OP-appointment route is multi-step: pick doctor and date, load slots, then
+          book. Automating it blind means reverse-engineering an AJAX flow against a live patient
+          system.
+        </li>
+        <li>
+          Each guess is a write attempt at a real patient-creation endpoint. That is not a safe
+          thing to iterate on, whatever the result.
+        </li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p>
+        <strong>If it is ever switched on, three hazards are now refusals rather than guesses.</strong>
+        A doctor missing from the map is not submitted at all — Klinique’s physician field is a
+        type-ahead over a directory far larger than Deepan’s roster, and an unknown value does not
+        reliably bounce. Gender is only ever sent as a code the hospital has stated, because that
+        form uses 1 = Female and 2 = Male, inverted from the obvious order. And the form’s
+        “text the patient” checkboxes are set to off on every submit rather than being off by
+        accident. All three are dormant today.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The embedded portal</h2>
+      <span class="chip chip-unknown">Cannot verify here</span>
+    </div>
+
+    <div class="prose">
+      <p>
+        The desk carries a <strong>Klinique</strong> tab so staff work in one window instead of two.
+        The tab itself is fine: the address, the cookie warning, <strong>Reload</strong> and
+        <strong>Open in a new tab</strong> all render and behave.
+      </p>
+      <p>
+        The frame below them is grey in this screenshot because the machine I tested on blocks
+        <code>deepan.klinique.net</code> at the network level — I tried, and was refused before
+        reaching them. So this says nothing about whether the embed works at the hospital.
+      </p>
+    </div>
+
+    <figure>
+      <img alt="The reception desk on the Klinique tab. It shows the heading Klinique, the address https://deepan.klinique.net, a Reload button, an Open in a new tab button, an amber warning that a browser blocking third-party cookies may not keep the sign-in, and below them an empty grey frame with a broken-page icon." src="{{IMG_PORTAL}}" />
+      <figcaption>
+        Everything above the frame is the app and works. The grey rectangle is the network block on
+        this test machine.
+      </figcaption>
+    </figure>
+
+    <h3>Two things can break it, neither in the hospital’s control</h3>
+    <div class="prose">
+      <ul class="tight">
+        <li>
+          <strong>Klinique’s framing headers.</strong> It currently sends no
+          <code>X-Frame-Options</code> and no <code>frame-ancestors</code>, which is the only reason
+          embedding is possible. If they ever add one, the frame goes blank with no warning.
+        </li>
+        <li>
+          <strong>Third-party cookies.</strong> Safari blocks them outright and Chrome is phasing
+          them out. Where that bites, a sign-in inside the frame will not stick — the browser is
+          enforcing that against Klinique’s origin, and no change to this app can alter it.
+        </li>
+      </ul>
+      <p>
+        Because a cross-origin frame tells you nothing about itself from the outside, there is no
+        way to detect a blank one and show a helpful error. So <strong>Open in a new tab</strong> is
+        always on screen rather than hidden behind a failure state — staff are never stuck.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>The one test worth running</h2></div>
+    <div class="prose">
+      <p>
+        Open the desk on a machine at the hospital and click the <strong>Klinique</strong> tab. If
+        the portal appears, the embed works on your network and browser. If it stays grey, use
+        <strong>Open in a new tab</strong> — it works the same and keeps staff signed in.
+      </p>
+      <p>
+        Nothing else needs deciding today. The worklist carries every booking either way, and it is
+        the path the hospital is already using.
+      </p>
+    </div>
+
+    <figure>
+      <img alt="The reception desk on the Today tab, signed in as admin, showing Live status and tabs for To enter in Klinique, Klinique, New requests, Today, Book for a caller, To call back, Schedules, Repeat requests, Follow-ups due, Alerts and Doctor contacts." src="{{IMG_DESK}}" />
+      <figcaption>The desk the two Klinique tabs live on.</figcaption>
+    </figure>
+  </section>
+
+  <footer>
+    Verified on the app as it stands, with the hospital’s seeded roster of 33 doctors. The test
+    booking used to produce these screenshots was deleted; no patient data appears anywhere on this
+    page.
+  </footer>
+</div>

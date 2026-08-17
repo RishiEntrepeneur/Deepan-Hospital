@@ -40,3 +40,6 @@ server/logs/
 
 # Built by `npm run build:demo` — a single self-contained HTML file.
 demo-dist
+
+# Screenshots for the Klinique status page — see docs/klinique-status/RETAKING.md
+docs/klinique-status/shots/
