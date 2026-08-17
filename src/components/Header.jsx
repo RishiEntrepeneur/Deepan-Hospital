@@ -114,7 +114,16 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      {/*
+        * Full width from xl rather than capped at max-w-7xl.
+        *
+        * The cap is 1280px, so a 1440px laptop got no more room than a 1280px
+        * one — and the row needs about 1330px once the nav, the three-language
+        * switcher and both buttons are laid out. It overflowed the viewport
+        * from 1280 up to roughly 1500. The rest of the page keeps the cap;
+        * only this row, which has a fixed amount to fit, gets the width.
+        */}
+      <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 xl:max-w-none xl:gap-3 xl:px-5 2xl:px-8">
         <Logo onClick={() => go('home')} className="min-w-0 flex-1 xl:flex-none" />
 
         {/*
@@ -126,7 +135,7 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
           */}
         {!deskMode && (
         <nav aria-label={t('nav.menu')} className="hidden flex-1 justify-center xl:flex">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-0.5 2xl:gap-1">
             {NAV_ITEMS.map((item) => (
               <li key={item.id}>
                 <button
@@ -135,7 +144,9 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
                   onClick={() => go(item.id)}
                   aria-current={page === item.id ? 'page' : undefined}
                   className={cx(
-                    'relative rounded-lg px-3 py-2 text-sm font-semibold whitespace-nowrap transition',
+                    /* Tighter between xl and 2xl, where the row is at its
+                       most cramped; the roomier padding returns above it. */
+                    'relative rounded-lg px-2 py-2 text-sm font-semibold whitespace-nowrap transition 2xl:px-3',
                     page === item.id
                       ? 'bg-brand-50 text-brand-700'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
@@ -162,10 +173,13 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
             * `hidden` lost and BOTH switchers rendered on a phone, squeezing
             * the logo down to a sliver.
             */}
-          <span className="hidden sm:inline-flex">
+          {/* The globe icon is the first thing to go when the row is tight:
+              three language names already say what the control is. It returns
+              at 2xl, where there is room for it. */}
+          <span className="hidden 2xl:inline-flex">
             <LanguageSwitcher />
           </span>
-          <span className="inline-flex sm:hidden">
+          <span className="inline-flex 2xl:hidden">
             <LanguageSwitcher showIcon={false} />
           </span>
 

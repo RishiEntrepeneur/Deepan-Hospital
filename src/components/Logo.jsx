@@ -54,10 +54,17 @@ export default function Logo({ compact = false, onClick, className }) {
             src="/logo.png"
             alt={t('brand.name')}
             onError={() => setArtworkFailed(true)}
-            className="h-14 w-auto shrink-0 object-contain object-left transition group-hover:scale-105 sm:h-20"
+            className="h-14 w-auto shrink-0 object-contain object-left transition group-hover:scale-105 sm:h-20 xl:h-16 2xl:h-20"
           />
           {!compact && (
-            <span className="mt-0.5 truncate text-[11px] leading-tight text-slate-500 sm:text-xs">
+            /*
+             * Hidden between xl and 2xl only. The lockup is stacked, so this
+             * line — not the artwork — is what sets the logo's width, and in
+             * that range the header row has nothing to spare. The artwork
+             * still carries the hospital's name; the tagline returns as soon
+             * as there is room for it.
+             */
+            <span className="mt-0.5 truncate text-[11px] leading-tight text-slate-500 sm:text-xs xl:hidden 2xl:block">
               {t('brand.tagline')}
             </span>
           )}

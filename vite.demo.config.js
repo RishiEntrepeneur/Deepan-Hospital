@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import fs from 'node:fs'
 import path from 'node:path'
 
 /**
@@ -17,6 +18,34 @@ import path from 'node:path'
  * accepts anything, and payment is not wired. The point is to let someone hold
  * the thing and click it without being handed a server.
  */
+
+/**
+ * Carries the hospital's real logo into the single file.
+ *
+ * Logo.jsx asks for `/logo.png` and falls back to a drawn approximation when
+ * the file is missing — which is what a demo with no server always gets, so the
+ * one image everybody recognises was the one thing the preview got wrong.
+ * Rewriting the literal to a data URI is contained to this build; the app keeps
+ * its plain path and its fallback.
+ */
+function inlineLogo() {
+  const file = path.resolve(import.meta.dirname, 'public/logo.png')
+  const LITERAL = '"/logo.png"'
+  return {
+    name: 'deepan-demo-logo',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!id.includes('components/Logo.jsx')) return null
+      if (!code.includes(LITERAL)) {
+        /* The path moved or changed quotes. Say so rather than quietly
+           shipping the fallback mark and looking like a rendering bug. */
+        this.error(`inlineLogo: ${LITERAL} not found in Logo.jsx — update the demo config`)
+      }
+      const uri = `data:image/png;base64,${fs.readFileSync(file).toString('base64')}`
+      return { code: code.replace(LITERAL, JSON.stringify(uri)), map: null }
+    },
+  }
+}
 
 /** Folds the built JS and CSS into the HTML so the result is one file. */
 function inlineEverything() {
@@ -104,7 +133,7 @@ function inlineEverything() {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), inlineEverything()],
+  plugins: [inlineLogo(), react(), tailwindcss(), inlineEverything()],
   /*
    * The project root, not demo/, even though the entry HTML lives in demo/.
    *
