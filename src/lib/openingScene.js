@@ -133,8 +133,9 @@ export function createOpeningScene(canvas) {
      * buttons and the line about not needing an account, and a lattice still
      * filling the frame draws hairlines straight through them.
      */
-    const retreat = Math.max(0, (progress - 0.74) / 0.26)
-    const dolly = 3.05 - assembly * 0.55 + retreat * retreat * 5.4
+    const raw2 = Math.min(1, Math.max(0, (progress - 0.7) / 0.22))
+    const retreat = raw2 * raw2 * (3 - 2 * raw2)
+    const dolly = 3.05 - assembly * 0.55 + retreat * 4.6
     const centreX = width > 860 ? width * 0.7 : width * 0.5
     const centreY = height * (0.5 + progress * 0.06)
 

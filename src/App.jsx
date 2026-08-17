@@ -79,17 +79,30 @@ export default function App() {
   const showConsent = auth.consentNeeded && !consentDismissed && page !== 'desk';
 
   /*
-   * The opening screen, on a first visit only.
+   * The opening screen — the hospital's front door, on every visit.
    *
    * Read synchronously in the initial state rather than set by an effect: a
    * frame of the home page appearing and then being covered by a full-screen
-   * panel is worse than either on its own. The desk is exempt — staff open this
-   * app twenty times a day and are not choosing a language each time.
+   * panel is worse than either on its own.
+   *
+   * Two exemptions, and they are the reason showing it every time is safe:
+   *
+   *   - **Anyone who arrived somewhere specific.** A link to #book, a
+   *     bookmarked doctor, a page shared over WhatsApp — that person has
+   *     already chosen where they are going, and a front door in front of it is
+   *     a door in the way. Only the site's own root gets the opening.
+   *   - **The desk.** Staff open this twenty times a day and are not choosing a
+   *     language each time.
+   *
+   * Remembered for the visit, not for the device: navigating away and back, or
+   * reloading mid-booking, must not replay it, but somebody returning tomorrow
+   * arrives through the front door again the way they would at the building.
    */
   const [openingOpen, setOpeningOpen] = useState(() => {
-    if (window.location.hash.includes("desk")) return false;
+    const hash = window.location.hash.replace(/^#\/?/, "");
+    if (hash !== "") return false;
     try {
-      return !localStorage.getItem("deepan_opening_seen");
+      return !sessionStorage.getItem("deepan_opening_seen");
     } catch {
       /* private mode: show it, and it simply offers again next time */
       return true;
@@ -99,7 +112,7 @@ export default function App() {
   const closeOpening = useCallback(() => {
     setOpeningOpen(false);
     try {
-      localStorage.setItem("deepan_opening_seen", "1");
+      sessionStorage.setItem("deepan_opening_seen", "1");
     } catch {
       /* private mode — nothing to remember it with */
     }
@@ -112,9 +125,16 @@ export default function App() {
    *
    * It waits for the opening screen to be gone. Two overlays at once is one
    * too many, and the tour points at controls the opening screen covers.
+   *
+   * It also waits for the patient to be on the home page. Every step of the
+   * tour is a home-page control, so its first step navigates there — which
+   * quietly overrode anyone who had just gone somewhere deliberately. The
+   * opening screen's privacy link was the case that exposed it: you pressed
+   * "Privacy notice", the privacy page opened, and the tour pulled you back to
+   * the home page a moment later.
    */
   useEffect(() => {
-    if (openingOpen) return undefined;
+    if (openingOpen || page !== "home") return undefined;
     try {
       if (localStorage.getItem("deepan_tour_seen")) return undefined;
     } catch {
@@ -122,7 +142,7 @@ export default function App() {
     }
     const timer = setTimeout(() => setTourOpen(true), 900);
     return () => clearTimeout(timer);
-  }, [openingOpen]);
+  }, [openingOpen, page]);
 
   /*
    * Built once per language, not once per render.
@@ -507,6 +527,10 @@ export default function App() {
             onBook={() => {
               closeOpening();
               openBooking();
+            }}
+            onPrivacy={() => {
+              closeOpening();
+              navigate("privacy");
             }}
           />
         </Suspense>

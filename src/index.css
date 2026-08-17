@@ -217,6 +217,60 @@
   .animate-sweep {
     animation: dh-sweep 2.4s ease-in-out infinite;
   }
+
+  /*
+   * The opening screen's legibility scrim — the wash of page colour that sits
+   * between the lattice and the type.
+   *
+   * Written out here rather than as Tailwind gradient utilities because the
+   * transparent end has to be *this colour at zero alpha*. Tailwind collapses
+   * both `to-transparent` and `to-slate-50/0` to `rgba(0,0,0,0)`, which is
+   * transparent black, and interpolating a near-white to transparent black
+   * runs the middle of the gradient through grey — a visible muddy band down
+   * the page, which is what it did.
+   *
+   * The channel values are the literal tokens above (--color-slate-50 and
+   * --color-brand-900). They are repeated rather than referenced because
+   * `rgb(from var(…) r g b / 0)` is relative-colour syntax, and this site is
+   * opened on Android phones old enough not to have it.
+   *
+   * Top-down on a phone, where the words sit over the structure; sideways from
+   * `sm` up, where they sit beside it.
+   */
+  .opening-scrim-light {
+    background-image: linear-gradient(
+      to bottom,
+      rgb(250 249 246 / 1),
+      rgb(250 249 246 / 0.75) 50%,
+      rgb(250 249 246 / 0.3)
+    );
+  }
+  .opening-scrim-dark {
+    background-image: linear-gradient(
+      to bottom,
+      rgb(5 43 38 / 1),
+      rgb(5 43 38 / 0.75) 50%,
+      rgb(5 43 38 / 0.3)
+    );
+  }
+  @media (width >= 40rem) {
+    .opening-scrim-light {
+      background-image: linear-gradient(
+        to right,
+        rgb(250 249 246 / 1),
+        rgb(250 249 246 / 0.8) 50%,
+        rgb(250 249 246 / 0)
+      );
+    }
+    .opening-scrim-dark {
+      background-image: linear-gradient(
+        to right,
+        rgb(5 43 38 / 1),
+        rgb(5 43 38 / 0.8) 50%,
+        rgb(5 43 38 / 0)
+      );
+    }
+  }
 }
 
 @keyframes dh-fade-up {

@@ -5,6 +5,7 @@ import { HOSPITAL } from '../data/hospital'
 import { LANGUAGES } from '../i18n/translations'
 import { createOpeningScene } from '../lib/openingScene'
 import { cx } from '../lib/cx'
+import BrandMark from './BrandMark'
 
 /**
  * The opening screen — one continuous shot, scrubbed by scroll.
@@ -34,11 +35,12 @@ import { cx } from '../lib/cx'
  *     chapters, no animation, no auto-entry — because a sequence that moves
  *     under you is exactly what that setting is asking us not to do.
  */
-export default function Opening({ onEnter, onBook }) {
+export default function Opening({ onEnter, onBook, onPrivacy }) {
   const { t, lang, setLang } = useLanguage()
   const scrollRef = useRef(null)
   const canvasRef = useRef(null)
   const [entering, setEntering] = useState(false)
+  const [artworkFailed, setArtworkFailed] = useState(false)
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -190,16 +192,14 @@ export default function Opening({ onEnter, onBook }) {
         the mesh draws hairlines through the type, and the three languages fail
         differently — Tamil and Devanagari carry more of their meaning below the
         baseline, so a line crossing there costs more than it does in Latin.
-        Sideways on a wide screen, where the text sits left of the structure;
-        top-down on a phone, where it sits over it.
+        The gradient itself is in index.css — see .opening-scrim-light, which
+        explains why it cannot be written with Tailwind's gradient utilities.
       */}
       <div
         aria-hidden="true"
         className={cx(
-          'absolute inset-0 z-[5] transition-colors duration-700',
-          dark
-            ? 'bg-gradient-to-b from-brand-900 via-brand-900/75 to-brand-900/30 sm:bg-gradient-to-r sm:from-brand-900 sm:via-brand-900/80 sm:to-transparent'
-            : 'bg-gradient-to-b from-slate-50 via-slate-50/75 to-slate-50/30 sm:bg-gradient-to-r sm:from-slate-50 sm:via-slate-50/80 sm:to-transparent',
+          'absolute inset-0 z-[5]',
+          dark ? 'opening-scrim-dark' : 'opening-scrim-light',
         )}
       />
 
@@ -285,6 +285,23 @@ export default function Opening({ onEnter, onBook }) {
         <section className={section}>
           <div className="mx-auto w-full max-w-5xl">
             <div className="max-w-xl">
+              {/*
+                The hospital's own lockup, not a typed wordmark. This is the
+                first thing a patient sees of the place, and the mark on the
+                sign outside the building is what tells them they are in the
+                right one. Falls back to the drawn approximation the rest of
+                the site uses if the artwork is ever missing.
+              */}
+              {artworkFailed ? (
+                <BrandMark className="mb-7 size-12 sm:size-14" />
+              ) : (
+                <img
+                  src="/logo.png"
+                  alt={t('brand.name')}
+                  onError={() => setArtworkFailed(true)}
+                  className="mb-7 h-14 w-auto object-contain object-left sm:h-20"
+                />
+              )}
               <h1 className="font-display text-4xl leading-[1.05] tracking-tight sm:text-6xl">
                 {t('opening.h1a')}
                 <em className={cx('block not-italic', dark ? 'text-brand-300' : 'text-brand-600')}>
@@ -360,6 +377,36 @@ export default function Opening({ onEnter, onBook }) {
               </div>
 
               <p className="mt-6 text-xs text-slate-500">{t('opening.noAccount')}</p>
+
+              {/*
+                Who this is, where it is, and what happens to what you type.
+                On the opening rather than only in the footer because this is
+                the screen that asks a patient to hand over a name, a number
+                and a reason for coming in — the DPDP Act calls for the notice
+                at the point of collection, not three pages later.
+
+                Every line here is drawn from the same reviewed strings the
+                footer uses. Nothing about accreditation appears: the NABH
+                claim stays off the site until the register entry is confirmed,
+                and an opening screen is the worst possible place to put an
+                unverified one.
+              */}
+              <div className="mt-8 border-t border-slate-200 pt-4 text-xs leading-relaxed text-slate-500">
+                <p className="font-semibold text-slate-600">{t('brand.name')}</p>
+                <p className="mt-1 max-w-md">{t('contact.addressLine')}</p>
+                <p className="mt-3 max-w-md">{t('footer.disclaimer')}</p>
+                <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <button
+                    type="button"
+                    onClick={onPrivacy}
+                    className="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-800"
+                  >
+                    {t('privacy.title')}
+                  </button>
+                  <span aria-hidden="true">·</span>
+                  <span>{t('footer.rights', { year: new Date().getFullYear() })}</span>
+                </p>
+              </div>
             </div>
           </div>
         </section>
