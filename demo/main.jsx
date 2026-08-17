@@ -30,10 +30,23 @@ installMockApi()
  * visit — dismissing the opening keeps it dismissed while you click around.
  */
 for (const key of ['deepan_opening_seen', 'deepan_tour_seen']) {
-  try {
-    localStorage.removeItem(key)
-  } catch {
-    /* private mode — nothing was remembered to begin with */
+  /*
+   * Both stores, because the app does not use one.
+   *
+   * The opening screen is remembered for the *visit* (sessionStorage) so that
+   * reloading mid-booking does not replay it, while the tour is remembered for
+   * the *device* (localStorage). Clearing only localStorage here left the
+   * opening suppressed for the entire life of a browser tab: it played once,
+   * and every reload after that went straight to the home page. Nothing looked
+   * broken, which is why it survived — a demo that quietly stops showing its
+   * opening reads as a demo that never had one.
+   */
+  for (const store of [localStorage, sessionStorage]) {
+    try {
+      store.removeItem(key)
+    } catch {
+      /* private mode — nothing was remembered to begin with */
+    }
   }
 }
 
