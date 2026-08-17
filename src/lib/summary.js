@@ -6,6 +6,19 @@ import { formatDateLong, formatFee, formatTime } from './schedule'
  * Shared by the on-screen summary, the text download and the print view.
  */
 export function summaryRows(appointment, { t, tl, lang }) {
+  /*
+   * Both lookups can miss, and this screen is the wrong place to find out.
+   *
+   * It renders after the booking is made — the slot held, the patient told
+   * they are expected — so an unguarded `department.name` here throws during
+   * render and takes the whole confirmation down, leaving somebody who has
+   * successfully booked staring at a blank panel with no reference number.
+   * A catalogue that has not finished loading, or an appointment carrying a
+   * doctor no longer on the roster, is enough to cause it.
+   *
+   * A row that reads "—" is a small blemish. A white screen at the end of a
+   * booking is the patient ringing reception to ask whether it worked.
+   */
   const doctor = getDoctor(appointment.doctorId)
   const department = getDepartment(appointment.departmentId)
   const gender = GENDERS.find((g) => g.value === appointment.patient.gender)
@@ -30,9 +43,12 @@ export function summaryRows(appointment, { t, tl, lang }) {
     { label: t('field.age'), value: String(appointment.patient.age) },
     { label: t('field.gender'), value: gender ? t(gender.labelKey) : '—' },
     { label: t('field.phone'), value: appointment.patient.phone },
-    { label: t('field.department'), value: tl(department.name) },
-    { label: t('field.doctor'), value: `${tl(doctor.name)} · ${tl(doctor.specialization)}` },
-    ...(doctor.room ? [{ label: t('doctors.room'), value: doctor.room }] : []),
+    { label: t('field.department'), value: department ? tl(department.name) : '—' },
+    {
+      label: t('field.doctor'),
+      value: doctor ? `${tl(doctor.name)} · ${tl(doctor.specialization)}` : '—',
+    },
+    ...(doctor?.room ? [{ label: t('doctors.room'), value: doctor.room }] : []),
     {
       label: t('field.date'),
       value: appointment.date ? formatDateLong(appointment.date, lang) : t('appt.callbackPending'),

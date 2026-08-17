@@ -26,7 +26,23 @@ import { handleDesk, seedDeskDemo } from './desk-api.js'
 
 const DEMO_PATIENT = { name: 'Demo Patient', phone: '9876500000' }
 
-/* Bookings made during this visit. Reset by a reload — deliberately. */
+/*
+ * Bookings made during this visit. Reset by a reload — deliberately.
+ *
+ * Three prefixes share this list and none may collide: the desk seeds
+ * `DH-DEMO01`–`05` so the reception screen has something to show, the desk
+ * creates `DH-DESK…` when staff book for a caller, and a patient booking on
+ * the site gets `DH-WEB…`.
+ *
+ * They collided once, and the symptom was alarming: a patient booking was
+ * numbered from 1 like the seeds, so it minted `DH-DEMO01` — a reference
+ * already held by a seeded record — and the confirmation screen looked that
+ * one up and showed a stranger's name, age, phone number and reason for visit
+ * back to whoever had just booked. Nothing had leaked, the two records simply
+ * shared an id, but on a hospital's screen there is no innocent reading of it.
+ * Distinct prefixes make it impossible by construction rather than by counting
+ * carefully.
+ */
 const appointments = []
 let signedIn = false
 let nextRef = 1
@@ -130,27 +146,74 @@ async function handle(method, path, search, body) {
   if (path === '/appointments' && method === 'GET') {
     return json({ appointments: [...appointments].reverse() })
   }
-  if (path === '/appointments' && method === 'POST') {
-    const clash = appointments.some(
-      (a) => a.doctorId === body?.doctorId && a.date === body?.date && a.slot === body?.slot,
-    )
-    if (clash) {
-      return fail(409, 'SLOT_TAKEN', 'Someone has just taken that time. Please pick another.')
-    }
+  /*
+   * Every route the booking flow can take, not just the signed-in one.
+   *
+   * This mock originally answered `/appointments` alone — the path used when a
+   * patient is signed in. But booking needs no account, so the ordinary journey
+   * posts to `/appointments/guest`, which fell through to a 404 and surfaced as
+   * "Something went wrong. Please try again." on the last step of the demo. The
+   * real server has all of these; only the mock was short, so the product was
+   * fine and the preview was broken — the worse way round, because the preview
+   * is what people judge it by.
+   */
+  const bookingPaths = ['/appointments', '/appointments/guest', '/appointments/callback']
+  if (bookingPaths.includes(path) && method === 'POST') {
+    const isCallback = path.endsWith('/callback')
     const doctor = catalog.doctors.find((d) => d.id === body?.doctorId)
+
+    /* A callback holds no slot, so it cannot clash with anything. */
+    if (!isCallback) {
+      const clash = appointments.some(
+        (a) => a.doctorId === body?.doctorId && a.date === body?.date && a.slot === body?.slot,
+      )
+      if (clash) {
+        return fail(409, 'SLOT_TAKEN', 'Someone has just taken that time. Please pick another.')
+      }
+    }
+
     const created = {
-      id: `DH-DEMO${pad(nextRef++)}`,
+      id: `DH-WEB${pad(nextRef++)}`,
       ...body,
+      /* The real server derives this from the doctor; without it the
+         confirmation summary looks up an undefined department. */
+      departmentId: body?.departmentId ?? doctor?.departmentId ?? null,
       doctorName: doctor?.name?.en ?? null,
-      status: 'confirmed',
-      kind: 'slot',
+      status: isCallback ? 'requested' : 'confirmed',
+      kind: isCallback ? 'callback' : 'slot',
       paymentStatus: 'counter',
-      fee: doctor?.fee ?? null,
+      fee: isCallback ? null : (doctor?.fee ?? null),
       createdAt: new Date().toISOString(),
     }
     appointments.push(created)
-    signedIn = true
+    /* A guest booking creates no account, so it must not appear to sign anyone
+       in — that is the whole point of the guest route. */
+    if (path === '/appointments') signedIn = true
     return json({ appointment: created }, 201)
+  }
+
+  /* Finding a booking again with its reference and phone number. */
+  if (path === '/appointments/lookup' && method === 'POST') {
+    const found = appointments.find(
+      (a) =>
+        a.id.toUpperCase() === String(body?.reference ?? '').trim().toUpperCase() &&
+        String(a.patient?.phone ?? a.phone ?? '') === String(body?.phone ?? '').trim(),
+    )
+    if (!found) {
+      return fail(404, 'NOT_FOUND', 'No booking matches that reference and number.')
+    }
+    return json({ appointment: found })
+  }
+
+  if (path === '/appointments/lookup/cancel' && method === 'POST') {
+    const found = appointments.find(
+      (a) => a.id.toUpperCase() === String(body?.reference ?? '').trim().toUpperCase(),
+    )
+    if (!found) {
+      return fail(404, 'NOT_FOUND', 'No booking matches that reference and number.')
+    }
+    found.status = 'cancelled'
+    return json({ appointment: found })
   }
 
   const cancel = path.match(/^\/appointments\/([^/]+)\/cancel$/)
@@ -160,7 +223,34 @@ async function handle(method, path, search, body) {
     return found ? json({ appointment: found }) : fail(404, 'NOT_FOUND', 'No such appointment.')
   }
 
-  return null
+  /*
+   * Paying at the counter — which is what every demo booking does, and the
+   * step the flow ends on. Without this the last press of the booking journey
+   * failed, which is the worst possible place for a demo to break.
+   */
+  if (path === '/payments/counter' && method === 'POST') {
+    const found = appointments.find((a) => a.id === body?.appointmentId)
+    if (!found) return fail(404, 'NOT_FOUND', 'No such appointment.')
+    found.paymentStatus = 'counter'
+    return json({ appointment: found })
+  }
+
+  /* Online payment needs a real gateway. Say so rather than half-doing it. */
+  if (path === '/payments/order' || path === '/payments/verify') {
+    return fail(501, 'DEMO_ONLY', 'Paying online needs the real server. Choose "Pay at the counter".')
+  }
+
+  /*
+   * Anything this mock does not implement.
+   *
+   * Returning null here meant the request fell through to a 404 and the app
+   * showed its catch-all "Something went wrong. Please try again." — which is
+   * honest about a real server and misleading about this one, where nothing
+   * went wrong at all: the demo simply has no server behind that feature. A
+   * named message points whoever hits it at the cause in one reading instead
+   * of sending them hunting for a bug that does not exist.
+   */
+  return fail(501, 'DEMO_ONLY', `This part needs the real server (${method} ${path}).`)
 }
 
 export function installMockApi() {
