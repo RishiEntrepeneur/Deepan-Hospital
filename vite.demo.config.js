@@ -176,6 +176,12 @@ export default defineConfig({
   },
   define: {
     /*
+     * The demo opens on the opening screen every single time — see App.jsx.
+     * A build-time constant rather than a runtime flag, so no amount of stale
+     * browser storage can suppress the one thing a preview exists to show.
+     */
+    'import.meta.env.VITE_ALWAYS_OPENING': JSON.stringify('true'),
+    /*
      * With dynamic imports inlined there is nothing left to preload, but the
      * bundler still emits its __VITE_PRELOAD__ placeholder in a few places and
      * nothing replaces it — the page then dies on load with an undefined

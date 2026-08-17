@@ -41,11 +41,19 @@ for (const key of ['deepan_opening_seen', 'deepan_tour_seen']) {
    * broken, which is why it survived — a demo that quietly stops showing its
    * opening reads as a demo that never had one.
    */
-  for (const store of [localStorage, sessionStorage]) {
+  for (const name of ['localStorage', 'sessionStorage']) {
+    /*
+     * The store is reached inside the try, not named in an array outside it.
+     *
+     * Chrome throws on merely *touching* window.localStorage in a third-party
+     * frame with storage blocked — which is what an artifact is — so building
+     * `[localStorage, sessionStorage]` threw at module scope, before any
+     * catch, and took the whole app down before React started.
+     */
     try {
-      store.removeItem(key)
+      window[name].removeItem(key)
     } catch {
-      /* private mode — nothing was remembered to begin with */
+      /* private mode or a blocked frame — nothing was remembered anyway */
     }
   }
 }

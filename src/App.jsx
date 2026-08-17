@@ -100,6 +100,21 @@ export default function App() {
    */
   const [openingOpen, setOpeningOpen] = useState(() => {
     const hash = window.location.hash.replace(/^#\/?/, "");
+    /* Staff are exempt everywhere. Nobody opening the desk for the twentieth
+       time today wants a title sequence in front of it. */
+    if (hash === "desk") return false;
+    /*
+     * The demo always opens on the opening screen.
+     *
+     * A preview exists to be shown, usually more than once and often after
+     * somebody has already clicked into the site — so the rules that are right
+     * for a patient (once a visit, and never in front of a deep link) are
+     * exactly wrong here. This is switched on only by the demo build, so the
+     * real site keeps its own behaviour; and it is a build-time constant, so
+     * the check below cannot be defeated by a stale flag in a browser store,
+     * which is how it went missing before.
+     */
+    if (import.meta.env.VITE_ALWAYS_OPENING === "true") return true;
     if (hash !== "") return false;
     try {
       return !sessionStorage.getItem("deepan_opening_seen");
