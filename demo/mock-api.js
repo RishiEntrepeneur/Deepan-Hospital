@@ -22,6 +22,7 @@
  * page; there is nothing to leave.
  */
 import catalog from './catalog.json'
+import { handleDesk, seedDeskDemo } from './desk-api.js'
 
 const DEMO_PATIENT = { name: 'Demo Patient', phone: '9876500000' }
 
@@ -86,6 +87,20 @@ const fail = (status, code, message) => json({ error: { code, message } }, statu
 
 /** Answers one API call, or returns null to mean "not something the demo does". */
 async function handle(method, path, search, body) {
+  /*
+   * The desk first. It shares the bookings and the slot calculator with the
+   * patient side deliberately — a booking made on the public site has to turn
+   * up on the desk, which is most of what there is to demonstrate.
+   */
+  const desk = handleDesk(method, path, search, body, {
+    catalog,
+    appointments,
+    availability,
+    json,
+    fail,
+  })
+  if (desk) return desk
+
   if (path === '/health') return json({ ok: true, env: 'demo', payments: 'none' })
   if (path === '/catalog') return json(catalog)
 
@@ -126,7 +141,7 @@ async function handle(method, path, search, body) {
     const created = {
       id: `DH-DEMO${pad(nextRef++)}`,
       ...body,
-      doctorName: doctor?.name ?? null,
+      doctorName: doctor?.name?.en ?? null,
       status: 'confirmed',
       kind: 'slot',
       paymentStatus: 'counter',
@@ -149,6 +164,7 @@ async function handle(method, path, search, body) {
 }
 
 export function installMockApi() {
+  seedDeskDemo(catalog, appointments)
   const realFetch = globalThis.fetch.bind(globalThis)
 
   globalThis.fetch = async (input, init = {}) => {
