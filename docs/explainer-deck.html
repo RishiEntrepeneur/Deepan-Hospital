@@ -180,17 +180,45 @@
   </div></section>
 
   <section class="slide"><span class="num">07</span><div class="inner">
+    <p class="kicker">The same three pieces, working</p>
+    <h2>Follow one booking, start to finish</h2>
+    <div class="grid g2">
+      <div class="cell"><p class="who">11pm</p><h3>She opens the site on her phone</h3><p>Her phone downloads the website — pictures, words and buttons. It holds no records at all.</p></div>
+      <div class="cell"><p class="who">Step two</p><h3>She taps Orthopaedics</h3><p>Her phone cannot answer “which times is Dr Deepan free on Thursday?” by itself, so it asks the server.</p></div>
+      <div class="cell"><p class="who">Step three</p><h3>The server looks in the diary</h3><p>It finds the free twenty-minute slots for that doctor on that day, and sends the list back.</p></div>
+      <div class="cell"><p class="who">Step four</p><h3>She picks 10:30</h3><p>She types her name, age, number and reason, and presses <em>Hold this slot</em>.</p></div>
+      <div class="cell"><p class="who">Step five</p><h3>The server checks again</h3><p>Is that slot still free, is that a real ten-digit number. Only then does it write the booking down and send back a reference — DH-WEB01.</p></div>
+      <div class="cell"><p class="who">Step six</p><h3>A chime sounds at reception</h3><p>The booking is on their screen. Nobody typed it, and it took her under a minute.</p></div>
+    </div>
+    <div class="note">The diary itself refuses two bookings for the same doctor at the same minute — so even two people tapping in the same second cannot double-book.</div>
+  </div></section>
+
+  <section class="slide"><span class="num">08</span><div class="inner">
     <p class="kicker">In plain words</p>
     <h2>What each piece actually is</h2>
     <div class="rows">
       <div class="row"><b>The website</b><p>Built with React. It is only pictures and words — it holds no records and cannot be trusted with any, because it runs on the patient's own phone where anybody could change it.</p></div>
-      <div class="row"><b>The server</b><p>Built with Node and Express. It is the only thing allowed to say yes. Every rule lives here: is that slot free, is that a real phone number, is this person really staff.</p></div>
+      <div class="row"><b>The server</b><p>Built with Node and Express. It is the only thing allowed to say yes. Every rule lives here — so even if somebody tampered with the website on their own phone, they would get no further than the counter.</p></div>
       <div class="row"><b>The database</b><p>SQLite — a single file on the server's disk. Small, fast, nothing extra to run or pay for. It is copied automatically every six hours.</p></div>
     </div>
     <p class="foot">All three are free and open source. There is no licence to renew and no company that can raise a price later — adding the 26th doctor costs nothing.</p>
   </div></section>
 
-  <section class="slide"><span class="num">08</span><div class="inner">
+  <section class="slide"><span class="num">09</span><div class="inner">
+    <p class="kicker">A word that means two things</p>
+    <h2>Have we built a server? Yes — and not yet</h2>
+    <div class="split">
+      <div class="panel mine"><h3>Built — the program</h3>
+        <p style="font-size:.93rem;color:#403b33;margin:0 0 .7rem">Twenty-nine files, about 6,500 lines, and 109 tests that pass. It handles accounts, the doctor catalogue, appointments, payments, the reception desk and its own backups.</p>
+        <p style="font-size:.93rem;font-weight:700;color:var(--teal);margin:0">This is finished. It runs today.</p></div>
+      <div class="panel todo"><h3>Not yet — the machine</h3>
+        <p style="font-size:.93rem;color:#403b33;margin:0 0 .7rem">A rented computer in Mumbai or Bengaluru for the program to live on, so it is running at three in the morning when somebody books. Roughly ₹6,000 – ₹18,000 a year, plus about ₹1,000 for the domain.</p>
+        <p style="font-size:.93rem;font-weight:700;color:var(--amber);margin:0">Until this is done, it only runs when somebody starts it.</p></div>
+    </div>
+    <p class="foot">And there is no second machine for the database. It is one file sitting beside the program, so the whole hospital runs on one small computer — most systems need a separate database server, which doubles the bill and adds another thing that can fail at two in the morning.</p>
+  </div></section>
+
+  <section class="slide"><span class="num">10</span><div class="inner">
     <p class="kicker">The data</p>
     <h2>Where the records live, and who can reach them</h2>
     <div class="grid g2">
@@ -201,7 +229,7 @@
     </div>
   </div></section>
 
-  <section class="slide"><span class="num">09</span><div class="inner">
+  <section class="slide"><span class="num">11</span><div class="inner">
     <p class="kicker">The important one</p>
     <h2>It does not replace Klinique</h2>
     <div class="split">
@@ -219,7 +247,7 @@
     <div class="note">There is deliberately no second place to write a prescription. Two records that can disagree about one patient is a real danger, and avoiding it was worth more than the convenience.</div>
   </div></section>
 
-  <section class="slide"><span class="num">10</span><div class="inner">
+  <section class="slide"><span class="num">12</span><div class="inner">
     <p class="kicker">Where it stands</p>
     <h2>What is finished and what is not</h2>
     <div class="split">
@@ -239,7 +267,7 @@
     <p class="foot">212 automated tests run on every change, so a fix in one place cannot quietly break another.</p>
   </div></section>
 
-  <section class="slide"><span class="num">11</span><div class="inner">
+  <section class="slide"><span class="num">13</span><div class="inner">
     <p class="kicker">What happens next</p>
     <h2>Two steps to being live</h2>
     <ol class="steps">
@@ -248,7 +276,7 @@
     </ol>
   </div></section>
 
-  <section class="slide dark"><span class="num">12</span><div class="inner">
+  <section class="slide dark"><span class="num">14</span><div class="inner">
     <h2 style="color:#fff;font-size:clamp(2rem,5.5vw,3.4rem)">It is built.<br>It is not live yet.</h2>
     <p class="lede">Everything a patient and the reception desk need is finished and tested. What is left is a domain, a server in India, and the hospital confirming its own details.</p>
     <div class="stats">
