@@ -1,0 +1,282 @@
+<title>Deepan Hospital Explained</title>
+
+<style>
+  :root{
+    --deep:#052b26; --teal:#0e6a5c; --teal2:#72b7ab; --pale:#eef6f4;
+    --bone:#faf9f6; --sand:#f4f2ec; --ink:#16130f; --grey:#706b5e;
+    --leaf:#a6ce39; --rule:#e7e3d9; --amber:#8a5a12; --amber-pale:#fdf6e7;
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--deep);color:var(--ink);font-family:var(--sans)}
+
+  .deck{scroll-snap-type:y mandatory;overflow-y:auto;height:100dvh}
+  .slide{
+    scroll-snap-align:start;min-height:100dvh;display:flex;align-items:center;
+    padding:clamp(1.5rem,5vw,4rem);background:var(--bone);position:relative;
+  }
+  .slide.dark{background:var(--deep);color:#fff}
+  .inner{width:100%;max-width:64rem;margin:0 auto}
+
+  .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--teal);margin:0 0 .7rem}
+  .dark .kicker{color:var(--leaf)}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1.03;
+    letter-spacing:-.02em;margin:0 0 1.2rem;text-wrap:balance}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.1;
+    letter-spacing:-.015em;margin:0 0 1.4rem;text-wrap:balance}
+  p{margin:0 0 1rem;max-width:60ch;line-height:1.6;font-size:clamp(.95rem,1.5vw,1.05rem)}
+  .lede{font-size:clamp(1.05rem,1.9vw,1.25rem);color:#403b33}
+  .dark .lede{color:var(--teal2)}
+
+  .num{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey);position:absolute;top:1.5rem;right:1.75rem}
+  .dark .num{color:#5d7c76}
+
+  .grid{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden;margin-top:1.5rem}
+  .g2{grid-template-columns:1fr}
+  @media(min-width:44rem){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+  .cell{background:#fff;padding:1.15rem 1.3rem}
+  .cell h3{margin:0 0 .35rem;font-size:1.02rem;font-weight:700;letter-spacing:-.01em}
+  .cell p{margin:0;font-size:.92rem;color:#403b33}
+  .cell .who{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem}
+
+  ol.steps{list-style:none;counter-reset:s;margin:1.5rem 0 0;padding:0}
+  ol.steps li{counter-increment:s;position:relative;padding:0 0 1.15rem 3rem;
+    border-left:1px solid var(--rule);margin-left:.85rem}
+  ol.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+  ol.steps li::before{content:counter(s);position:absolute;left:-.85rem;top:-.1rem;
+    width:1.7rem;height:1.7rem;display:grid;place-items:center;border-radius:50%;
+    background:var(--teal);color:#fff;font-family:var(--mono);font-size:.8rem;font-weight:700}
+  ol.steps b{display:block;font-size:1.05rem}
+  ol.steps span{display:block;font-size:.9rem;color:var(--grey);margin-top:.15rem}
+
+  .flow{display:grid;gap:.75rem;margin-top:1.75rem;grid-template-columns:1fr}
+  @media(min-width:52rem){.flow{grid-template-columns:repeat(4,1fr)}}
+  .node{background:#0a3a33;border:1px solid var(--teal);border-radius:4px;padding:1.1rem 1.15rem;position:relative}
+  .node:first-child{background:#0c2621;border-color:#1e4a43}
+  .node h3{margin:0 0 .3rem;font-family:var(--serif);font-weight:400;font-size:1.3rem;color:#fff}
+  .node .role{font-size:.78rem;font-weight:700;color:var(--leaf);margin:0 0 .5rem;line-height:1.35}
+  .node p{margin:0;font-size:.85rem;color:var(--teal2)}
+  /* The flow is the point of this slide, so the arrows have to be legible at
+     the back of a room, not a two-pixel tick between cards. */
+  @media(min-width:52rem){
+    .node:not(:last-child)::before{content:'';position:absolute;top:calc(50% - 1.5px);right:-.78rem;
+      width:.62rem;height:3px;background:var(--leaf);border-radius:2px}
+    .node:not(:last-child)::after{content:'';position:absolute;top:calc(50% - 5px);right:-.82rem;
+      border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--leaf)}
+  }
+  .said{margin-top:1.5rem;padding:1rem 1.25rem;background:#0a3a33;border:1px solid #1e4a43;border-radius:4px;
+    font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.8vw,1.2rem);color:#fff;text-align:center}
+
+  .rows{margin-top:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+  .row{display:grid;gap:.3rem;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:1.05rem 1.25rem}
+  @media(min-width:44rem){.row{grid-template-columns:11rem 1fr;gap:1.25rem;align-items:start}}
+  .row b{font-family:var(--serif);font-weight:400;font-size:1.25rem;color:var(--teal)}
+  .row p{margin:0;font-size:.93rem;color:#403b33}
+
+  .split{display:grid;gap:1rem;margin-top:1.5rem;grid-template-columns:1fr}
+  @media(min-width:44rem){.split{grid-template-columns:1fr 1fr}}
+  .panel{border-radius:4px;padding:1.25rem 1.4rem;border:1px solid var(--rule)}
+  .panel.mine{background:var(--pale);border-color:var(--teal2)}
+  .panel.theirs{background:var(--sand)}
+  .panel.todo{background:var(--amber-pale);border-color:#e8d3a3}
+  .panel h3{margin:0 0 .7rem;font-family:var(--serif);font-weight:400;font-size:1.45rem}
+  .panel.todo h3{color:var(--amber)}
+  .panel.mine h3{color:var(--teal)}
+  .panel ul{margin:0;padding-left:1.1rem}
+  .panel li{margin:.4rem 0;font-size:.93rem;color:#403b33}
+
+  .stats{display:flex;flex-wrap:wrap;gap:2rem;margin-top:2rem}
+  .stat b{display:block;font-family:var(--serif);font-size:clamp(2.2rem,5vw,3rem);line-height:1;color:var(--leaf)}
+  .stat span{display:block;font-size:.85rem;color:var(--teal2);margin-top:.35rem}
+
+  .note{margin-top:1.5rem;padding:1rem 1.25rem;border-radius:4px;background:var(--deep);color:#fff;
+    font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.7vw,1.15rem);text-align:center;line-height:1.5}
+  .foot{margin-top:1.4rem;font-size:.88rem;font-style:italic;color:var(--grey)}
+
+  .hint{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:5;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:#fff;background:rgba(5,43,38,.82);border:1px solid rgba(255,255,255,.22);
+    padding:.4rem .8rem;border-radius:99px;backdrop-filter:blur(6px)}
+  @media print{.hint{display:none}.slide{min-height:auto;break-after:page;padding:0 0 2rem}}
+</style>
+
+<div class="deck">
+
+  <section class="slide dark"><div class="inner">
+    <p class="kicker">For Appa</p>
+    <h1>Deepan Hospital,<br>online</h1>
+    <p class="lede">What I have built, who it is for, and how it works.</p>
+    <p style="color:#9fb8b2;font-size:.95rem">A booking page for patients, and a reception screen behind it.</p>
+    <div class="stats">
+      <div class="stat"><b>18</b><span>consultants</span></div>
+      <div class="stat"><b>21</b><span>departments</span></div>
+      <div class="stat"><b>3</b><span>languages</span></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><span class="num">02</span><div class="inner">
+    <p class="kicker">The problem</p>
+    <h2>Right now there is only one way in</h2>
+    <p class="lede">To get an appointment at Deepan Hospital today, a patient has to telephone, during working hours, and speak to somebody at the counter. There is no other way.</p>
+    <div class="grid g2">
+      <div class="cell"><h3>8am – 8pm</h3><p>The counter is not open at night or on a Sunday afternoon.</p></div>
+      <div class="cell"><h3>One caller at a time</h3><p>A second caller hears an engaged tone and rings somebody else.</p></div>
+      <div class="cell"><h3>One language</h3><p>Whoever picks up decides which language the call happens in.</p></div>
+      <div class="cell"><h3>Nothing in writing</h3><p>The patient has to remember the time, the doctor and the floor.</p></div>
+    </div>
+    <div class="note">Somebody decides at eleven at night that they need a doctor. They go to whichever hospital they can actually reach — and it is not the one whose phone is switched off.</div>
+  </div></section>
+
+  <section class="slide"><span class="num">03</span><div class="inner">
+    <p class="kicker">Who it is for</p>
+    <h2>Three groups of people use it</h2>
+    <div class="grid g3">
+      <div class="cell"><p class="who">Patients</p><h3>Anyone in Trichy with a phone</h3>
+        <p>They book their own appointment, at any hour, in English, Tamil or Hindi. No account, and no app to install.</p></div>
+      <div class="cell"><p class="who">Reception</p><h3>The people at the counter</h3>
+        <p>Bookings appear on their screen by themselves, with a chime. They also book for callers and send each patient the details in writing.</p></div>
+      <div class="cell"><p class="who">Doctors</p><h3>The 18 consultants</h3>
+        <p>They keep their consulting hours, fee and room correct. Their clinical work stays in Klinique — this does not touch it.</p></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><span class="num">04</span><div class="inner">
+    <p class="kicker">What it does — for a patient</p>
+    <h2>A patient books in about a minute</h2>
+    <ol class="steps">
+      <li><b>Opens the website on a phone</b><span>It appears in their own language, without being asked.</span></li>
+      <li><b>Picks a department or a doctor</b><span>The fee and the consulting hours are shown before they choose.</span></li>
+      <li><b>Picks a free time</b><span>Only times that doctor actually sits are offered.</span></li>
+      <li><b>Gets a reference</b><span>Reception sends it to them on WhatsApp, in their language.</span></li>
+    </ol>
+    <div class="note">A patient never has to sign up, remember a password or download anything. Every extra step is somebody who gives up halfway.</div>
+  </div></section>
+
+  <section class="slide"><span class="num">05</span><div class="inner">
+    <p class="kicker">What it does — for the desk</p>
+    <h2>Reception stops answering the same call</h2>
+    <div class="grid g2">
+      <div class="cell"><h3>Bookings arrive on their own</h3><p>With a chime and an alert. Nobody types anything, and nothing waits in an inbox.</p></div>
+      <div class="cell"><h3>The slot is held instantly</h3><p>Two patients cannot take the same time. The database refuses it — not the screen.</p></div>
+      <div class="cell"><h3>Booking for a caller is faster</h3><p>Free times for any doctor on any day, one tap, and a reference to read back.</p></div>
+      <div class="cell"><h3>The patient gets it in writing</h3><p>One tap sends the appointment by WhatsApp in the patient's own language.</p></div>
+    </div>
+  </div></section>
+
+  <section class="slide dark"><span class="num">06</span><div class="inner">
+    <p class="kicker">How it works</p>
+    <h2 style="color:#fff">Three pieces, and a phone</h2>
+    <div class="flow">
+      <div class="node"><h3>The phone</h3><p class="role">A patient in Trichy</p><p>Any browser. Nothing to install.</p></div>
+      <div class="node"><h3>The website</h3><p class="role">What they see and touch</p><p>Pages, the booking form, three languages.</p></div>
+      <div class="node"><h3>The server</h3><p class="role">A small computer that never sleeps</p><p>Decides who gets which slot. Checks everything.</p></div>
+      <div class="node"><h3>The database</h3><p class="role">One file that remembers</p><p>Every appointment, doctor, fee and hour.</p></div>
+    </div>
+    <div class="said">The website is the shopfront. The server is the person behind the counter who checks the diary. The database is the diary itself.</div>
+  </div></section>
+
+  <section class="slide"><span class="num">07</span><div class="inner">
+    <p class="kicker">In plain words</p>
+    <h2>What each piece actually is</h2>
+    <div class="rows">
+      <div class="row"><b>The website</b><p>Built with React. It is only pictures and words — it holds no records and cannot be trusted with any, because it runs on the patient's own phone where anybody could change it.</p></div>
+      <div class="row"><b>The server</b><p>Built with Node and Express. It is the only thing allowed to say yes. Every rule lives here: is that slot free, is that a real phone number, is this person really staff.</p></div>
+      <div class="row"><b>The database</b><p>SQLite — a single file on the server's disk. Small, fast, nothing extra to run or pay for. It is copied automatically every six hours.</p></div>
+    </div>
+    <p class="foot">All three are free and open source. There is no licence to renew and no company that can raise a price later — adding the 26th doctor costs nothing.</p>
+  </div></section>
+
+  <section class="slide"><span class="num">08</span><div class="inner">
+    <p class="kicker">The data</p>
+    <h2>Where the records live, and who can reach them</h2>
+    <div class="grid g2">
+      <div class="cell"><h3>Inside India</h3><p>The server should sit in Mumbai or Bangalore. It is Indian patients' health data under the DPDP Act 2023, and keeping it in the country avoids the whole question.</p></div>
+      <div class="cell"><h3>In the hospital's own account</h3><p>The domain, the server and the backups registered to Deepan Hospital — not to me. A supplier holding a hospital's patient data is a problem for both sides.</p></div>
+      <div class="cell"><h3>Copied off the machine</h3><p>A backup is written every six hours. Those copies must also be pulled somewhere else — a backup on the same disk is no protection against that disk failing.</p></div>
+      <div class="cell"><h3>Nothing at risk today</h3><p>The database holds the doctor roster and no real patients. Everything so far has been built and tested without a single patient record in it.</p></div>
+    </div>
+  </div></section>
+
+  <section class="slide"><span class="num">09</span><div class="inner">
+    <p class="kicker">The important one</p>
+    <h2>It does not replace Klinique</h2>
+    <div class="split">
+      <div class="panel mine"><h3>This app</h3><ul>
+        <li>The public booking page</li>
+        <li>Departments, doctors, fees, free times</li>
+        <li>The reception screen</li>
+        <li>Sends the patient their appointment</li></ul></div>
+      <div class="panel theirs"><h3>Klinique</h3><ul>
+        <li>The clinical record</li>
+        <li>Prescriptions and consultation notes</li>
+        <li>Patient history</li>
+        <li>What the doctors already use every day</li></ul></div>
+    </div>
+    <div class="note">There is deliberately no second place to write a prescription. Two records that can disagree about one patient is a real danger, and avoiding it was worth more than the convenience.</div>
+  </div></section>
+
+  <section class="slide"><span class="num">10</span><div class="inner">
+    <p class="kicker">Where it stands</p>
+    <h2>What is finished and what is not</h2>
+    <div class="split">
+      <div class="panel mine"><h3>Built and tested</h3><ul>
+        <li>Patient booking, three languages</li>
+        <li>The reception desk</li>
+        <li>Written confirmation to patients</li>
+        <li>The worklist for Klinique</li>
+        <li>A printed manual for the staff</li></ul></div>
+      <div class="panel todo"><h3>Still needed</h3><ul>
+        <li>A domain and hosting in India</li>
+        <li>Registration numbers for all 18 doctors</li>
+        <li>Hours and fees confirmed by the hospital</li>
+        <li>Automatic transfer into Klinique</li>
+        <li>Automatic SMS — needs DLT paperwork</li></ul></div>
+    </div>
+    <p class="foot">212 automated tests run on every change, so a fix in one place cannot quietly break another.</p>
+  </div></section>
+
+  <section class="slide"><span class="num">11</span><div class="inner">
+    <p class="kicker">What happens next</p>
+    <h2>Two steps to being live</h2>
+    <ol class="steps">
+      <li><b>Go live — four to six weeks</b><span>A domain and a server in India, the registration numbers entered, hours and fees confirmed, reception trained on the manual. Start with two or three departments rather than all 21 — the rest open by ticking a box.</span></li>
+      <li><b>Remove the typing — after Klinique replies</b><span>Bookings pass into Klinique by themselves instead of being copied across by hand. It needs either an access key from Klinique or one booking captured from their own form.</span></li>
+    </ol>
+  </div></section>
+
+  <section class="slide dark"><span class="num">12</span><div class="inner">
+    <h2 style="color:#fff;font-size:clamp(2rem,5.5vw,3.4rem)">It is built.<br>It is not live yet.</h2>
+    <p class="lede">Everything a patient and the reception desk need is finished and tested. What is left is a domain, a server in India, and the hospital confirming its own details.</p>
+    <div class="stats">
+      <div class="stat"><b>18</b><span>consultants listed</span></div>
+      <div class="stat"><b>21</b><span>departments</span></div>
+      <div class="stat"><b>3</b><span>languages, every screen</span></div>
+      <div class="stat"><b>212</b><span>tests passing</span></div>
+    </div>
+  </div></section>
+
+</div>
+<p class="hint">Scroll or press ↓</p>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')]
+  const deck = document.querySelector('.deck')
+  addEventListener('keydown', e => {
+    const dir = {ArrowDown:1, PageDown:1, ' ':1, ArrowRight:1, ArrowUp:-1, PageUp:-1, ArrowLeft:-1}[e.key]
+    if (!dir) return
+    e.preventDefault()
+    const top = deck.scrollTop
+    const here = slides.findIndex(s => s.offsetTop > top + 8)
+    const next = dir > 0 ? (here === -1 ? slides.length - 1 : here)
+                         : Math.max(0, slides.findLastIndex(s => s.offsetTop < top - 8))
+    slides[Math.max(0, Math.min(slides.length - 1, next))].scrollIntoView({behavior:'smooth'})
+  })
+  const hint = document.querySelector('.hint')
+  deck.addEventListener('scroll', () => {
+    if (deck.scrollTop > 40) hint.style.display = 'none'
+  }, {passive:true, once:true})
+</script>
