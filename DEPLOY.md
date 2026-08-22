@@ -4,6 +4,45 @@ So patients can reach it from anywhere, not just the machine it's built on.
 
 ---
 
+## The short answer: what to buy
+
+Two things, and nothing else.
+
+**1. A VPS — a plain Linux computer you rent.** Not "web hosting", not
+"WordPress hosting", not a website builder. Those run PHP and cannot run this
+app at all. The words to look for are **VPS**, **Droplet**, **Instance** or
+**Compute** — anything that gives you SSH and root.
+
+> **The one to pick if you don't want to think about it:** a **DigitalOcean
+> Droplet** in the **Bangalore** region, the smallest size with **1 GB of RAM**,
+> running **Ubuntu**. Roughly ₹500–700 a month. AWS Lightsail (Mumbai) and
+> Akamai/Linode (Mumbai) are equally fine.
+
+**2. A domain name** — around ₹1,000 a year for a `.in`. Buy it from anywhere
+reputable; it does not have to be the same company as the server.
+
+**That is the whole shopping list.** You do not need: a database plan (this app
+keeps its data in a file), an SSL certificate (Let's Encrypt is free and
+automatic), a control panel, a "site builder", or any add-on the checkout page
+offers you.
+
+### Two rules about buying it
+
+- **Wait until the hospital has said yes.** There is nothing to run yet, and a
+  server sitting idle still bills every month.
+- **Buy it in the hospital's name, on the hospital's card** — the server will
+  hold patient records, and those should never sit in a personal account. If
+  you are arranging it for them, have them pay, or pass the cost through at
+  exactly what it cost.
+
+### If somebody is buying this for you
+
+Show them this: *"I need a small Ubuntu VPS with 1 GB of RAM in an Indian
+region, with SSH access. Not shared hosting or WordPress hosting."* Any hosting
+company will understand that sentence.
+
+---
+
 ## First, the important bit — what kind of host this needs
 
 This app is **a live server with a database**, not a static website. It runs
