@@ -457,7 +457,7 @@
 <div class="sheet">
 
   <header class="masthead">
-    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Desk manual · v2</span></p>
+    <p class="crest"><b>Deepan Hospital</b><span>Tiruchirappalli</span><span>Desk manual · v3</span></p>
     <h1>How to run the desk</h1>
     <p class="standfirst">
       Everything reception does on the booking system, and the few things a doctor does.
@@ -952,19 +952,43 @@ npm run reset-password -- --username doctordeepan-g</code></pre>
       </p>
     </div>
 
+    <h3 class="rule">Before the hospital goes live</h3>
+
+    <pre><code># Who still has no medical registration number, and a form to hand over
+npm run reg-numbers
+
+# ...and loading the filled-in form back
+npm run reg-numbers -- --import doctors-registration.csv</code></pre>
+
+    <div class="note warn">
+      <b>The server will not start until setup passwords are changed</b>
+      <p>
+        An account still on the password printed when it was created —
+        <code>admin</code> especially — stops a production server from booting at
+        all. Reset it, then <b>sign in once and set your own</b>; only that last
+        step clears it. Every other account nobody has changed is named in a
+        warning at startup.
+      </p>
+    </div>
+
     <h3 class="rule">The database</h3>
 
     <pre><code># Apply any new schema changes
 npm run migrate
 
-# Take a backup
-npm run backup</code></pre>
+# Take a backup now
+npm run backup
+
+# Copy the backups off this machine (set up rclone once first — the
+# instructions are at the top of the script)
+BACKUP_REMOTE=offsite:deepan-backups ./scripts/backup-offsite.sh</code></pre>
 
     <div class="note stop">
       <b>Back it up somewhere other than this machine</b>
       <p>
-        Backups written beside the database are not backups. Copy them off the machine on a
-        schedule, and check once that a copy actually restores.
+        Backups written beside the database are not backups. Put
+        <code>backup-offsite.sh</code> on a nightly cron, and check once that a copy actually
+        restores — a backup nobody has restored is a belief, not a backup.
       </p>
     </div>
   </section>
