@@ -220,6 +220,13 @@ export function errorKeyFor(error) {
     CLAIM_PROOF_REQUIRED: 'error.claimProofRequired',
     PHONE_TAKEN: 'error.phoneTaken',
     WEAK_PASSWORD: 'error.weakPassword',
+    /*
+     * Only the single-file demo can raise this — it answers routes the real
+     * server has and the mock does not. Mapped so it reads as "this part needs
+     * the real server" rather than the catch-all "something went wrong", which
+     * is alarming, uninformative, and in a demo simply untrue.
+     */
+    DEMO_ONLY: 'error.demoOnly',
   }
   return map[error?.code] ?? 'error.generic'
 }

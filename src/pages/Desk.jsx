@@ -459,6 +459,11 @@ function BookForPatient({ doctors, onBooked, prefill, onClearPrefill }) {
   }, [doctorId, date])
 
   const submit = async () => {
+    const digits = form.phone.replace(/[\s-]/g, '').replace(/^\+91/, '')
+    if (!isConversion && !INDIAN_MOBILE.test(digits)) {
+      setError('That is not an Indian mobile number. The hospital can only book against a 10-digit Indian mobile starting 6–9.')
+      return
+    }
     setBusy(true); setError(null)
     try {
       const payload = {
@@ -548,9 +553,19 @@ function BookForPatient({ doctors, onBooked, prefill, onClearPrefill }) {
         <div className="grid gap-2 rounded-2xl border border-slate-200 bg-white p-4 sm:grid-cols-2">
           <input className={inputClass} placeholder="Patient name" value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <input className={inputClass} placeholder="Mobile (10 digits)" inputMode="numeric" maxLength={10}
+          {/*
+            Keeps exactly what was typed.
+            This used to strip everything but digits and take the first ten,
+            which quietly turned a foreign number into a plausible Indian one:
+            "+44 7911 123456" was stored as "4479111234". Ten digits, looks
+            right, belongs to nobody — and reception only finds out when the
+            patient does not answer. Now the field shows what was entered and
+            says plainly when it is not a number this app can use.
+          */}
+          <input className={inputClass} placeholder="Mobile (10 digits, India)" inputMode="tel" maxLength={16}
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
+            aria-invalid={form.phone !== '' && !INDIAN_MOBILE.test(form.phone.replace(/[\s-]/g, '').replace(/^\+91/, ''))}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           <input className={inputClass} type="number" placeholder="Age" value={form.age}
             onChange={(e) => setForm({ ...form, age: e.target.value })} />
           <select className={inputClass} value={form.gender}
@@ -833,6 +848,11 @@ function AppointmentRow({ appointment: a, onChanged }) {
 }
 
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+/* The same rule the server enforces, so the desk cannot submit what the API
+   will refuse. Indian mobiles only — a number outside that set is a real
+   limitation to state, not something to bend a foreign number into. */
+const INDIAN_MOBILE = /^[6-9]\d{9}$/
 
 
 /**

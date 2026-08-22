@@ -537,8 +537,16 @@ export const translations = {
       'I can start that for you. Tell me the problem — say “fever”, “tooth pain” or “chest pain” — and I’ll point you to the right department, or just open the booking form.',
     'ai.language':
       'The whole app works in English, Tamil and Hindi. Use the EN / தமிழ் / हिंदी switch at the top to change at any time — your choice is remembered. If you would rather listen than read, the speaker button reads the page aloud in whichever language you have chosen.',
+    /*
+     * Careful wording. The old line promised "the right doctor" for anything
+     * the symptom list knew about — including clinics the hospital has no
+     * consultant for at all, such as dental. A patient in pain then rang
+     * reception, was told the hospital does not do that, and had lost an hour.
+     * This neither promises the service nor denies it: reception knows, and
+     * casualty is the answer if waiting is not safe.
+     */
     'ai.departmentNotOnline':
-      'The hospital treats that, but it has no online clinic for it — those consultations are arranged by reception. Call {reception} and they will fix a time with the right doctor.\n\nIf it is urgent, do not wait for an appointment: come straight to casualty.',
+      'That is not one of the clinics you can book on this site. Reception will tell you whether the hospital can see you for it, and fix a time if so — call {reception}.\n\nIf it is urgent, do not wait for an appointment: come straight to casualty.',
     'ai.fallback':
       'I didn’t catch that. I can help with: finding a doctor or department, consulting timings, fees and payment, cancelling or rescheduling, and explaining medical terms.\n\nTry naming a symptom or a term.',
     'ai.notAdvice':
@@ -594,6 +602,7 @@ export const translations = {
     'pay.counterRecorded': 'Noted — pay at the billing counter.',
 
     'error.network': 'Could not reach the hospital server. Check your connection and try again.',
+    'error.demoOnly': 'This part needs the real server — it is not wired up in this preview.',
     'error.generic': 'Something went wrong. Please try again.',
     'error.slotTaken': 'Someone just took that slot. Please pick another time.',
     'error.signInRequired': 'Please sign in first.',
@@ -1221,7 +1230,7 @@ export const translations = {
     'ai.language':
       'செயலி முழுவதும் தமிழ், ஆங்கிலம், இந்தி ஆகிய மூன்று மொழிகளிலும் இயங்கும். மேலே உள்ள EN / தமிழ் / हिंदी பொத்தானால் எப்போது வேண்டுமானாலும் மாற்றலாம் — உங்கள் தேர்வு நினைவில் வைக்கப்படும். படிப்பதற்குப் பதிலாகக் கேட்க விரும்பினால், ஒலிபெருக்கிப் பொத்தானை அழுத்தினால் நீங்கள் தேர்ந்தெடுத்த மொழியில் பக்கத்தை வாசித்துக் காட்டும்.',
     'ai.departmentNotOnline':
-      'மருத்துவமனையில் அதற்குச் சிகிச்சை உண்டு, ஆனால் ஆன்லைனில் பதிவு செய்ய முடியாது — அந்தச் சந்திப்புகளை ரிசெப்ஷன் ஏற்பாடு செய்கிறது. {reception} ஐ அழைத்தால் சரியான மருத்துவரிடம் நேரம் ஒதுக்குவார்கள்.\n\nஅவசரம் என்றால் காத்திருக்க வேண்டாம் — நேரடியாக அவசரப் பிரிவுக்கு வாருங்கள்.',
+      'இந்த இணையதளத்தில் பதிவு செய்யக்கூடிய பிரிவுகளில் இது இல்லை. மருத்துவமனையில் இதற்குச் சிகிச்சை உண்டா என்பதை வரவேற்பு பிரிவு தெரிவிக்கும், இருந்தால் நேரமும் ஒதுக்கித் தரும் — {reception} ஐ அழையுங்கள்.\n\nஅவசரமானால் சந்திப்புக்குக் காத்திருக்க வேண்டாம்: நேராக அவசர சிகிச்சைப் பிரிவுக்கு வாருங்கள்.',
     'ai.fallback':
       'அது புரியவில்லை. மருத்துவர் அல்லது துறையைக் கண்டறிதல், ஆலோசனை நேரம், கட்டணம், ரத்து அல்லது நேரம் மாற்றுதல், மருத்துவச் சொற்களை விளக்குதல் — இவற்றில் உதவ முடியும்.\n\nஒரு அறிகுறியையோ சொல்லையோ கூறிப் பாருங்கள்.',
     'ai.notAdvice':
@@ -1276,6 +1285,7 @@ export const translations = {
     'pay.counterRecorded': 'குறித்துக் கொள்ளப்பட்டது — கட்டண மையத்தில் செலுத்தவும்.',
 
     'error.network': 'மருத்துவமனை சேவையகத்தை அடைய முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
+    'error.demoOnly': 'இந்தப் பகுதிக்கு உண்மையான சர்வர் தேவை — இந்த முன்னோட்டத்தில் அது இணைக்கப்படவில்லை.',
     'error.generic': 'ஏதோ தவறு நடந்துவிட்டது. மீண்டும் முயற்சிக்கவும்.',
     'error.slotTaken': 'அந்த நேரத்தை வேறு ஒருவர் இப்போதுதான் பதிவு செய்துவிட்டார். வேறு நேரத்தைத் தேர்வு செய்யவும்.',
     'error.signInRequired': 'முதலில் உள்நுழையவும்.',
