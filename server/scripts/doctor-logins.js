@@ -38,7 +38,10 @@ const insert = db.prepare(`
   INSERT INTO staff (id, username, full_name, password_hash, password_salt, role, doctor_id, created_at)
   VALUES (?, ?, ?, ?, ?, 'staff', ?, ?)
 `)
-const update = db.prepare('UPDATE staff SET password_hash = ?, password_salt = ? WHERE id = ?')
+/* Prints the password, so it is not owner-set — see reset-staff-password.js. */
+const update = db.prepare(
+  'UPDATE staff SET password_hash = ?, password_salt = ?, password_changed_at = NULL WHERE id = ?',
+)
 const endSessions = db.prepare("DELETE FROM sessions WHERE subject_id = ? AND subject_type = 'staff'")
 
 const created = []

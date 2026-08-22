@@ -54,7 +54,17 @@ if (password.length < 12) {
 }
 
 const salt = randomSalt()
-db.prepare('UPDATE staff SET password_hash = ?, password_salt = ? WHERE id = ?').run(
+/*
+ * Clears password_changed_at deliberately.
+ *
+ * This script prints the new password, so it lands in a terminal, a
+ * screenshot, or the message it is sent in. Until the owner signs in and sets
+ * their own, it is not a credential a production server should accept — and
+ * preflight refuses to boot on a setup account in that state.
+ */
+db.prepare(
+  'UPDATE staff SET password_hash = ?, password_salt = ?, password_changed_at = NULL WHERE id = ?',
+).run(
   hashSecret(password, salt),
   salt,
   staff.id,

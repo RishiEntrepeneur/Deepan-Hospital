@@ -26,10 +26,34 @@ export function preflight() {
 
     // Accounts created during development, with passwords that were printed
     // to a terminal, must not survive into production.
-    const staff = db.prepare("SELECT username FROM staff WHERE active = 1").all()
-    const suspicious = staff.filter((s) => ['admin', 'test', 'demo'].includes(s.username))
-    if (suspicious.length > 0) {
-      warn.push(`Default-looking staff accounts still active: ${suspicious.map((s) => s.username).join(', ')}`)
+    const staff = db.prepare('SELECT username, password_changed_at FROM staff WHERE active = 1').all()
+    const untouched = staff.filter((s) => !s.password_changed_at)
+
+    /*
+     * A setup account whose password has never been changed is fatal, not a
+     * warning. That password was printed to a terminal, and is therefore in
+     * somebody's scrollback or in the message where it was handed over — which
+     * is not a credential that should reach a database of patients.
+     *
+     * Only the setup names are fatal. A hospital may genuinely have a person
+     * called `admin`, and blocking their boot forever over a name would be
+     * hostile; every other unchanged password is a warning naming the account,
+     * so it can be chased rather than guessed at.
+     */
+    const defaults = untouched.filter((s) => ['admin', 'test', 'demo'].includes(s.username))
+    if (defaults.length > 0) {
+      fatal.push(
+        `Setup account${defaults.length > 1 ? 's' : ''} still on the password printed at creation: ` +
+          `${defaults.map((s) => s.username).join(', ')}. ` +
+          'Run `npm run reset-password -- --username <name>` and sign in once to change it.',
+      )
+    }
+    const stale = untouched.filter((s) => !['admin', 'test', 'demo'].includes(s.username))
+    if (stale.length > 0) {
+      warn.push(
+        `${stale.length} staff account${stale.length > 1 ? 's have' : ' has'} never changed the password ` +
+          `issued at creation: ${stale.map((s) => s.username).join(', ')}`,
+      )
     }
     if (staff.length === 0) warn.push('No staff accounts exist — nobody can reach the desk.')
   }

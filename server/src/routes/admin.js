@@ -937,11 +937,16 @@ adminRouter.post(
     }
 
     const salt = randomSalt()
-    db.prepare('UPDATE staff SET password_hash = ?, password_salt = ? WHERE id = ?').run(
-      hashSecret(next, salt),
-      salt,
-      staff.id,
-    )
+    /*
+     * Stamping password_changed_at is the point of this route, not a detail.
+     * It is the only place a staff password is set by the person who owns it
+     * rather than generated and printed to a terminal, so it is the only place
+     * that can honestly say the credential has never been on a screen. The
+     * reset script deliberately clears it again — see preflight.
+     */
+    db.prepare(
+      'UPDATE staff SET password_hash = ?, password_salt = ?, password_changed_at = ? WHERE id = ?',
+    ).run(hashSecret(next, salt), salt, nowIso(), staff.id)
 
     /*
      * Every session for this account is destroyed, including this one — then a

@@ -148,7 +148,19 @@ provider). More steps, but yours entirely.
 - [ ] The site is served over **HTTPS** (both options above do this).
 - [ ] The **database disk persists** across restarts (Render disk / the VPS's own disk).
 - [ ] **Admin and every staff password reset** from the development ones.
-- [ ] A copy of `server/data/deepan.db` is taken **off the server** regularly.
+      The server refuses to start in production while a setup account (`admin`,
+      `test`, `demo`) is still on the password printed when it was created, and
+      warns about every other account nobody has changed. Reset with
+      `npm run reset-password -- --username <name>`, then sign in once and set
+      your own — only that last step clears it.
+- [ ] **Registration numbers entered for every consultant.** `npm run reg-numbers`
+      lists who is missing one and writes a form to hand to whoever holds the
+      records; `npm run reg-numbers -- --import <file>` loads it back. It
+      refuses a mobile number or a piece of the qualification, which are the
+      two things that actually get typed into that column by mistake.
+- [ ] A copy of `server/data/deepan.db` is taken **off the server** regularly,
+      with `server/scripts/backup-offsite.sh` on a nightly cron — see the header
+      of that file for the one-time rclone setup.
       The app already writes its own backups every 6 hours to `server/backups/`
       (`BACKUP_EVERY_HOURS`, `BACKUP_KEEP`), but those sit on the same disk as
       the database — which is no protection at all against the disk being the

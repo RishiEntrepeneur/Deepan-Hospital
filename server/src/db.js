@@ -37,6 +37,17 @@ export function migrate() {
 function addColumns() {
   const additions = [
     ['staff', 'doctor_id', 'TEXT REFERENCES doctors(id)'],
+    /*
+     * When this account's password was last changed by its owner.
+     *
+     * Null means it is still the one printed to a terminal when the account
+     * was created — which is the password sitting in somebody's scrollback, in
+     * a screenshot, or in the chat where it was handed over. Preflight uses
+     * this to refuse a production boot on a default account, because checking
+     * the username alone cannot tell a dangerous `admin` from a hospital that
+     * simply calls its administrator `admin`.
+     */
+    ['staff', 'password_changed_at', 'TEXT'],
     ['departments', 'block', "TEXT NOT NULL DEFAULT ''"],
     ['departments', 'floor', "TEXT NOT NULL DEFAULT ''"],
     ['departments', 'directions_en', "TEXT NOT NULL DEFAULT ''"],
