@@ -1,0 +1,68 @@
+Deepan Hospital — how to put it on the internet
+================================================
+
+USE THE DROPLET, NOT APP PLATFORM.
+
+App Platform wipes its disk on every deploy. The database is a file on that
+disk, so every appointment, patient and schedule change is DELETED the next
+time you deploy. Fine for a demo. Not safe for real patients.
+
+The droplet keeps its disk. That is the one to use.
+
+
+THE WHOLE THING, IN THREE STEPS
+--------------------------------
+
+1.  Point your domain at the droplet.
+
+    At Namecheap: Domain List -> Manage -> Advanced DNS.
+    Delete the "URL Redirect" or parking record that is already there.
+    Add two records:
+
+        Type: A Record   Host: @     Value: YOUR_DROPLET_IP   TTL: Automatic
+        Type: A Record   Host: www   Value: YOUR_DROPLET_IP   TTL: Automatic
+
+    Wait about 10 minutes.
+
+2.  Send this folder to the droplet. On your own PC, in PowerShell, in the
+    folder where you unzipped this:
+
+        scp -r . root@YOUR_DROPLET_IP:/root/deepan
+
+3.  Log in to the droplet and run one command:
+
+        ssh root@YOUR_DROPLET_IP
+        apt install -y unzip rsync
+        cd /root/deepan
+        bash deploy.sh yourdomain.in
+
+    That is it. It installs everything, turns on the firewall, starts the app,
+    gets a free HTTPS certificate, and prints your two logins.
+
+    Write the logins down. They are shown once.
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+    systemctl restart deepan               restart it
+    journalctl -u deepan -n 40 --no-pager  see what it said
+
+Running deploy.sh again is safe. It never touches the database.
+
+
+WHAT IS IN THIS FOLDER
+----------------------
+    deploy.sh        the one command above
+    package.json     start script
+    csp.js           security rules shared by the site and the server
+    dist/            the built website (already built)
+    server/src/      the server: index.js, routes/, lib/, middleware/
+    server/scripts/  setup and maintenance commands
+
+
+BEFORE REAL PATIENTS USE IT
+---------------------------
+Sign in and change both passwords. The server lists them as warnings every
+time it starts until you do.
+
+Then work through the checklist in DEPLOY.md.
