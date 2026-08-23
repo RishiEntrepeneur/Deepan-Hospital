@@ -60,53 +60,6 @@ export const config = {
     convenienceFee: Number(process.env.CONVENIENCE_FEE ?? 20),
   },
 
-  speech: {
-    /*
-     * Reading the page aloud, for patients who would rather listen than read.
-     *
-     * Two backends, and the app works with neither configured:
-     *
-     *   - **ElevenLabs**, when a key is set here. Better voices, and markedly
-     *     better Tamil and Hindi than most devices manage on their own.
-     *   - **The browser's own speech**, otherwise. Free, instant, works
-     *     offline, and already installed on nearly every phone. This is what
-     *     runs today, and it is a perfectly serviceable answer.
-     *
-     * The key stays on this server. A TTS key in front-end code is a key
-     * anyone can read out of the page source and spend the hospital's money
-     * with — the front end never sees it and cannot.
-     *
-     * Because ElevenLabs bills per character, generated audio is cached on
-     * disk by content hash. The same twenty page headings read a thousand
-     * times cost twenty generations, not a thousand.
-     */
-    provider: process.env.ELEVENLABS_API_KEY ? 'elevenlabs' : 'browser',
-    apiKey: process.env.ELEVENLABS_API_KEY,
-    /*
-     * Model and voices are left undefined on purpose.
-     *
-     * When they are unset the server asks ElevenLabs which models exist, which
-     * languages each covers, and which voices this account holds — then picks.
-     * Hardcoding IDs meant guessing at facts ElevenLabs publishes, and a
-     * guess that is wrong or stale fails silently: the patient just hears the
-     * robotic browser voice again. See lib/elevenlabs.js.
-     *
-     * Set any of these to override the automatic choice.
-     */
-    model: process.env.ELEVENLABS_MODEL,
-    voices: {
-      en: process.env.ELEVENLABS_VOICE_EN,
-      ta: process.env.ELEVENLABS_VOICE_TA ?? process.env.ELEVENLABS_VOICE_EN,
-      hi: process.env.ELEVENLABS_VOICE_HI ?? process.env.ELEVENLABS_VOICE_EN,
-    },
-    /** Longest passage that will be spoken in one request, in characters. */
-    maxChars: Number(process.env.SPEECH_MAX_CHARS ?? 800),
-    /** Where generated audio is cached. Safe to delete; it refills. */
-    cacheDir: process.env.SPEECH_CACHE_DIR ?? path.join(here, '..', 'data', 'speech'),
-    /** Cached clips kept. Each is a few tens of KB. */
-    cacheMax: Number(process.env.SPEECH_CACHE_MAX ?? 2000),
-  },
-
   notify: {
     /*
      * Notifications are delivered in-app to the reception desk feed.

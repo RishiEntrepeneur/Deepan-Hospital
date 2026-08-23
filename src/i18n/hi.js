@@ -122,7 +122,6 @@ export const hi = {
   'services.doctorsInDeptOne': '1 डॉक्टर',
   'services.viewDoctors': 'डॉक्टर देखें',
   'booking.noDoctorsInDept': 'इस विभाग में अभी कोई डॉक्टर सूचीबद्ध नहीं है।',
-  'doctor.listenSummary': 'डॉक्टर का विवरण सुनें',
 
   /* ---------- Doctor profile ---------- */
   'doctor.notFound': 'यह डॉक्टर सूची में नहीं हैं।',
@@ -628,9 +627,6 @@ export const hi = {
   'privacy.consentLater': 'अभी नहीं',
 
   /* ---------- Read aloud ---------- */
-  'speech.listen': 'इसे सुनें',
-  'speech.stop': 'पढ़ना बंद करें',
-  'speech.unavailable': 'यह उपकरण इसे पढ़कर नहीं सुना सकता।',
 
   /* ---------- Triage (booking form) ---------- */
   'triage.urgentTitle': 'इसमें तुरंत इलाज की ज़रूरत हो सकती है — अपॉइंटमेंट का इंतज़ार न करें',

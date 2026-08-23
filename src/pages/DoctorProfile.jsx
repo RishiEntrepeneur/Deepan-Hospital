@@ -24,7 +24,6 @@ import { formatFee, formatTime, telHref } from '../lib/schedule'
 import { useCatalog } from '../lib/useCatalog'
 import { visitTotal } from '../lib/payment'
 import Photo from '../components/Photo'
-import SpeakButton from '../components/SpeakButton'
 
 function Row({ icon: Icon, label, children }) {
   if (!children) return null
@@ -101,30 +100,6 @@ export default function DoctorProfile({ doctorId, onBook, onNavigate }) {
     },
   ].filter(Boolean)
 
-  /*
-   * What the listen button reads.
-   *
-   * Composed rather than scraped off the page, because reading the layout
-   * aloud — "Department. Cardiology. Consulting days. Mon dot Wed" — is a poor
-   * listen. This is the same facts as a sentence, which is what someone who
-   * cannot read the page actually needs, and it deliberately stops at the
-   * facts the hospital has published.
-   */
-  const spokenSummary = [
-    `${tl(doctor.name)}. ${tl(doctor.specialization)}.`,
-    department ? `${t('doctor.department')}: ${tl(department.name)}.` : '',
-    days.length > 0
-      ? `${t('doctor.consultingDays')}: ${days.map((d) => tl(d.long ?? d.short)).join(', ')}. ` +
-        sessions.map((s) => `${s.label} ${formatTime(s.from)} – ${formatTime(s.to)}`).join('. ')
-      : t('doctor.timingsNotPublished'),
-    doctor.room ? `${t('doctor.room')} ${doctor.room}.` : '',
-    doctor.fee != null
-      ? `${t('pay.consultationFee')}: ${formatFee(doctor.fee, lang)}.`
-      : t('pay.feeNotPublished'),
-    bookable ? '' : t('doctor.callbackOnly'),
-  ]
-    .filter(Boolean)
-    .join(' ')
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
@@ -154,7 +129,6 @@ export default function DoctorProfile({ doctorId, onBook, onNavigate }) {
             <h1 className="min-w-0 flex-1 text-2xl text-slate-900 sm:text-3xl">
               {tl(doctor.name)}
             </h1>
-            <SpeakButton text={spokenSummary} label={t('doctor.listenSummary')} />
           </div>
           <p className="mt-1 text-base font-semibold text-brand-700">
             {tl(doctor.specialization)}

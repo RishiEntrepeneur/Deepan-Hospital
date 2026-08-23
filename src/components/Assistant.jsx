@@ -4,7 +4,6 @@ import { useLanguage } from '../i18n/context'
 import { answer, greeting } from '../lib/assistant'
 import { deskAnswer, deskGreeting } from '../lib/deskAssistant'
 import { cx } from '../lib/cx'
-import SpeakButton from './SpeakButton'
 
 const telHref = (number) => `tel:${number.replace(/[^\d+]/g, '')}`
 
@@ -183,7 +182,6 @@ export default function Assistant({
                  */}
                 {message.from !== 'user' && !isDesk && (
                   <div className="mt-1.5">
-                    <SpeakButton text={message.text} size="sm" />
                   </div>
                 )}
 

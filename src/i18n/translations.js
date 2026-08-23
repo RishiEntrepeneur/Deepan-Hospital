@@ -127,9 +127,6 @@ export const translations = {
 
     /* ---------- Services page ---------- */
     /* ---------- Read aloud ---------- */
-    'speech.listen': 'Listen to this',
-    'speech.stop': 'Stop reading',
-    'speech.unavailable': 'This device cannot read it aloud.',
     /* ---------- What the fee includes ---------- */
     'fee.plusCaseSheet': 'Plus case sheet — {first} first visit, {review} review',
     'fee.payShort': 'First visit {first} · Review {review}',
@@ -473,7 +470,6 @@ export const translations = {
     'doctor.callbackOnly': 'Callback only',
     'doctor.requestCallback': 'Request a call back',
     'doctor.callReception': 'Call reception',
-    'doctor.listenSummary': 'Listen to this doctor’s details',
     'doctor.specialist': 'Specialist',
     'doctor.superSpecialist': 'Super-specialist',
     'doctor.yearsExperience': '{count} years’ experience',
@@ -824,9 +820,6 @@ export const translations = {
 
     /* ---------- Services page ---------- */
     /* ---------- Read aloud ---------- */
-    'speech.listen': 'இதைக் கேளுங்கள்',
-    'speech.stop': 'வாசிப்பதை நிறுத்து',
-    'speech.unavailable': 'இந்தச் சாதனத்தில் வாசித்துக் காட்ட முடியவில்லை.',
     /* ---------- What the fee includes ---------- */
     'fee.plusCaseSheet': 'கூடுதலாக கோப்புக் கட்டணம் — முதல் வருகை {first}, மறுபரிசோதனை {review}',
     'fee.payShort': 'முதல் வருகை {first} · மறுபரிசோதனை {review}',
@@ -1169,7 +1162,6 @@ export const translations = {
     'doctor.callbackOnly': 'அழைப்பு மட்டும்',
     'doctor.requestCallback': 'திரும்ப அழைக்கக் கோருங்கள்',
     'doctor.callReception': 'வரவேற்பை அழைக்க',
-    'doctor.listenSummary': 'மருத்துவர் விவரங்களைக் கேளுங்கள்',
     'doctor.specialist': 'சிறப்பு நிபுணர்',
     'doctor.superSpecialist': 'உயர் சிறப்பு நிபுணர்',
     'doctor.yearsExperience': '{count} ஆண்டுகள் அனுபவம்',

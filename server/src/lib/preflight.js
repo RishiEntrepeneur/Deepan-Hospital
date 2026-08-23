@@ -66,11 +66,6 @@ export function preflight() {
    * guests now — no account, no code, no gateway — so there is nothing to
    * deliver and nothing to warn about. Reception sees arrivals on the desk.
    */
-  if (config.speech.provider !== 'elevenlabs') {
-    warn.push(
-      "ELEVENLABS_API_KEY is not set — read-aloud uses the device's own voice, which sounds robotic. See SPEECH-SETUP.md.",
-    )
-  }
   /*
    * Klinique session mode. Say plainly which of three states it is in, because
    * "half configured" looks exactly like "working" until a booking is made.
