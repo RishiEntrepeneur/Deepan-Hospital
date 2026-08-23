@@ -139,16 +139,27 @@ const ROWS = [
   },
 ]
 
-/** On the sheet but not on the roster — reported, never invented. */
-const NOT_IN_APP = [
-  'DR.DEBORAH ROSELIN',
-  'DR.DEVIKA SUDHAGER MBBS DGO',
-  'DR.G.BHARANI DHARAN M.S., M.Ch.',
-  'DR.G.K.S.SUDHAGER SUNDARARAJAN MD',
-  'DR.NEETHU MBBS, DCH',
-  'DR.NITHYA DURAISAMY MBBS, DCH, DNB(PAED)',
-  'DR.P.NIVEDHA MD',
+/*
+ * On the sheet but not on the roster — checked against the database, not
+ * remembered in a list here.
+ *
+ * It used to be a hardcoded array, which went stale the moment
+ * `add-op-doctors` created these seven: the run then finished by announcing
+ * seven doctors were missing while they sat in the table it had just read.
+ * A report that is wrong about the thing it is reporting is worse than no
+ * report, because somebody acts on it.
+ */
+const SHEET_ONLY = [
+  ['deborah-roselin', 'DR.DEBORAH ROSELIN'],
+  ['devika-sudhager', 'DR.DEVIKA SUDHAGER MBBS DGO'],
+  ['bharani-dharan-g', 'DR.G.BHARANI DHARAN M.S., M.Ch.'],
+  ['sudhager-sundararajan-gks', 'DR.G.K.S.SUDHAGER SUNDARARAJAN MD'],
+  ['neethu', 'DR.NEETHU MBBS, DCH'],
+  ['nithya-duraisamy', 'DR.NITHYA DURAISAMY MBBS, DCH, DNB(PAED)'],
+  ['nivedha-p', 'DR.P.NIVEDHA MD'],
 ]
+const onRoster = db.prepare('SELECT 1 FROM doctors WHERE id = ?')
+const NOT_IN_APP = SHEET_ONLY.filter(([id]) => !onRoster.get(id)).map(([, name]) => name)
 
 const dry = process.argv.includes('--dry')
 
@@ -229,7 +240,36 @@ for (const entry of ROWS) {
 console.log()
 if (missing.length) console.warn(`  ? not found on the roster: ${missing.join(', ')}`)
 console.log(`  ${dry ? 'would update' : 'updated'} ${changed} doctor(s)`)
-console.log(`\n  On the sheet but NOT in the app (${NOT_IN_APP.length}) — each needs a department before it can be added:`)
-for (const name of NOT_IN_APP) console.log(`    ${name}`)
+
+/*
+ * The sheet's last column, reported rather than applied.
+ *
+ * Three rows carry "5 DAYS NO FEES" where the others carry consulting days.
+ * Read the obvious way it means a review inside five days is free — but the
+ * app charges real money against whatever is in here, and "the obvious way" is
+ * not good enough to bill a patient on. Nobody involved in building this asked
+ * the hospital what it means, so it is printed at every run instead of being
+ * quietly encoded as a discount that may not exist.
+ *
+ * To act on it: confirm the rule with the hospital, then model it properly —
+ * it is a time-based waiver, which the fee columns cannot express.
+ */
+const SHEET_NOTES_NOT_MODELLED = [
+  ['devika-sudhager', 'Dr. Devika Sudhager', '5 DAYS NO FEES'],
+  ['kawin-g', 'Dr. G. Kawin', '5 DAYS NO FEES'],
+  ['gunasekaran-r', 'Dr. R. Gunasekaran', '5 DAYS NO FEES'],
+]
+console.log(`\n  On the sheet but NOT applied (${SHEET_NOTES_NOT_MODELLED.length}) — confirm with the hospital:`)
+for (const [, name, note] of SHEET_NOTES_NOT_MODELLED) {
+  console.log(`    ${name.padEnd(24)} "${note}"`)
+}
+console.log('    Read as "a review within 5 days is free", but not encoded as one:')
+console.log('    the app bills from these fields, and a guessed discount is a wrong bill.')
+if (NOT_IN_APP.length) {
+  console.log(`\n  On the sheet but NOT in the app (${NOT_IN_APP.length}) — run \`npm run add-op-doctors\`:`)
+  for (const name of NOT_IN_APP) console.log(`    ${name}`)
+} else {
+  console.log('\n  Every doctor on the sheet is on the roster.')
+}
 if (dry) console.log('\n  (dry run — nothing changed)')
 console.log()
