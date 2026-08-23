@@ -15,6 +15,7 @@ import {
 } from './middleware/base.js'
 import { authRouter } from './routes/auth.js'
 import { catalogRouter } from './routes/catalog.js'
+import { doctorRouter } from './routes/doctors.js'
 import { appointmentsRouter, settlePastAppointments } from './routes/appointments.js'
 import { paymentsRouter, webhookHandler } from './routes/payments.js'
 import { adminRouter } from './routes/admin.js'
@@ -53,6 +54,8 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/auth', authRouter)
 app.use('/api', catalogRouter)
+// After catalogRouter, which owns /doctors/:id/availability.
+app.use('/api/doctors', doctorRouter)
 app.use('/api/appointments', appointmentsRouter)
 app.use('/api/payments', paymentsRouter)
 app.use('/api/admin', adminRouter)

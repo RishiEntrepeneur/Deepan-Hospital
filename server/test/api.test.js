@@ -1682,3 +1682,90 @@ describe('reception device tokens', () => {
     assert.equal(res.status, 401, 'a revoked token still worked')
   })
 })
+
+/* ------------------------------------------------------------------ */
+
+describe('the doctor list', () => {
+  it('lists the active consultants without signing in', async () => {
+    const res = await call('anon', '/doctors')
+    assert.equal(res.status, 200)
+    assert.ok(Array.isArray(res.json.doctors), 'no doctors array came back')
+    assert.ok(res.json.doctors.length > 0, 'the hospital listed nobody')
+    assert.equal(res.json.count, res.json.doctors.length)
+  })
+
+  it('agrees with the catalogue, which is the same data by another door', async () => {
+    const list = await call('anon', '/doctors')
+    const catalog = await call('anon', '/catalog')
+    assert.deepEqual(
+      list.json.doctors.map((d) => d.id).sort(),
+      catalog.json.doctors.map((d) => d.id).sort(),
+    )
+  })
+
+  it('filters to one department', async () => {
+    const all = await call('anon', '/doctors')
+    const target = all.json.doctors[0].departmentId
+    const res = await call('anon', `/doctors?department=${encodeURIComponent(target)}`)
+    assert.equal(res.status, 200)
+    assert.ok(res.json.doctors.length > 0)
+    assert.ok(res.json.doctors.every((d) => d.departmentId === target))
+  })
+
+  it('returns an empty list for a department that does not exist, not a 404', async () => {
+    // A stale dropdown must show "none found", not blank the page.
+    const res = await call('anon', '/doctors?department=department-of-magic')
+    assert.equal(res.status, 200)
+    assert.deepEqual(res.json.doctors, [])
+  })
+
+  it('searches by name and by specialisation', async () => {
+    const all = await call('anon', '/doctors')
+    const one = all.json.doctors[0]
+    const word = one.name.en.split(' ').filter((w) => w.length > 3)[0]
+
+    const res = await call('anon', `/doctors?q=${encodeURIComponent(word.toLowerCase())}`)
+    assert.equal(res.status, 200)
+    assert.ok(res.json.doctors.some((d) => d.id === one.id), 'a doctor could not find themselves')
+  })
+
+  it('can narrow to the ones actually open for online booking', async () => {
+    const res = await call('anon', '/doctors?bookable=true')
+    assert.equal(res.status, 200)
+    assert.ok(res.json.doctors.every((d) => d.bookingMode === 'live'))
+  })
+
+  it('opens one doctor with their department attached', async () => {
+    const all = await call('anon', '/doctors')
+    const one = all.json.doctors[0]
+
+    const res = await call('anon', `/doctors/${one.id}`)
+    assert.equal(res.status, 200)
+    assert.equal(res.json.doctor.id, one.id)
+    assert.equal(res.json.department.id, one.departmentId)
+  })
+
+  it('404s on a doctor who is not there', async () => {
+    const res = await call('anon', '/doctors/nobody-by-that-name')
+    assert.equal(res.status, 404)
+    assert.equal(res.json.error.code, 'DOCTOR_NOT_FOUND')
+  })
+
+  it('does not shadow the availability route that lives in the catalogue', async () => {
+    const all = await call('anon', '/doctors')
+    const one = all.json.doctors[0]
+    const res = await call('anon', `/doctors/${one.id}/availability?date=2026-01-01`)
+    assert.equal(res.status, 200)
+    assert.equal(res.json.doctorId, one.id)
+    assert.ok('slots' in res.json, 'the profile route swallowed /availability')
+  })
+
+  it('never leaks a column a patient has no business seeing', async () => {
+    const res = await call('anon', '/doctors')
+    for (const doctor of res.json.doctors) {
+      for (const banned of ['active', 'created_at', 'updated_at', 'sort_order']) {
+        assert.ok(!(banned in doctor), `${banned} reached the browser`)
+      }
+    }
+  })
+})
