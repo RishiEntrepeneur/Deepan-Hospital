@@ -32,7 +32,9 @@ export default function LanguageSwitcher({ className, showIcon = true }) {
             title={option.name}
             onClick={() => setLang(option.code)}
             className={cx(
-              'rounded-lg px-3 py-1 text-sm font-semibold transition',
+              // min-h-11: 44px, the smallest a thumb reliably hits. Was 28px, which is
+              // fine for a mouse and awkward for the patients this is built for.
+              'inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold transition',
               active
                 ? 'bg-brand-600 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-white hover:text-brand-700',

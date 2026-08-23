@@ -149,7 +149,9 @@ export default function App() {
    * the home page a moment later.
    */
   useEffect(() => {
-    if (openingOpen || page !== "home") return undefined;
+    // `booking` too: the offer fires on a timer, so a patient who went
+    // straight to Book could have the tour open itself on top of the wizard.
+    if (openingOpen || page !== "home" || booking) return undefined;
     try {
       if (localStorage.getItem("deepan_tour_seen")) return undefined;
     } catch {
@@ -157,7 +159,7 @@ export default function App() {
     }
     const timer = setTimeout(() => setTourOpen(true), 900);
     return () => clearTimeout(timer);
-  }, [openingOpen, page]);
+  }, [openingOpen, page, booking]);
 
   /*
    * Built once per language, not once per render.
@@ -206,6 +208,19 @@ export default function App() {
   }, []);
 
   const openBooking = useCallback((options = {}) => {
+    /*
+     * Put the tour away first.
+     *
+     * The tour is a full-screen overlay that spotlights home-page controls,
+     * and the booking modal is another one on top of it — so opening a booking
+     * mid-tour left a tour card floating over the wizard, pointing at a Book
+     * button the modal was covering. Whoever opens the booking form has
+     * already found the thing the tour was explaining.
+     *
+     * Not marked as seen: they did not decline it, so it is offered again on
+     * their next visit.
+     */
+    setTourOpen(false);
     setBooking({
       departmentId: "",
       doctorId: "",
@@ -496,6 +511,10 @@ export default function App() {
             initialDoctorId={booking.doctorId ?? ""}
             rescheduleOf={booking.rescheduleOf ?? null}
             currentUser={auth.user}
+            onSignIn={() => {
+              closeBooking();
+              navigate("account");
+            }}
             payments={catalog.payments}
             booking={catalog.booking}
           />
@@ -536,7 +555,20 @@ export default function App() {
       {/* Last, so it covers everything, and lazy so it costs nothing on the
           visits — almost all of them — where it never appears. */}
       {openingOpen && (
-        <Suspense fallback={null}>
+        /*
+         * The fallback is a full-screen sheet in the opening's own colour, not
+         * null.
+         *
+         * With `null` the home page was the first thing painted and the
+         * opening dropped over it a moment later, once its chunk arrived —
+         * which read as the site loading one page and then jumping to another.
+         * Covering the viewport for those frames means the first thing anyone
+         * sees is the colour the opening is about to draw on, so the lattice
+         * simply fades up on a screen that was already the right shade.
+         */
+        <Suspense
+          fallback={<div aria-hidden="true" className="fixed inset-0 z-50 bg-slate-50" />}
+        >
           <Opening
             onEnter={closeOpening}
             onBook={() => {

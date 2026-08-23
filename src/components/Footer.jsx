@@ -55,7 +55,7 @@ export default function Footer({ onNavigate }) {
               </p>
               <p className="flex gap-2.5">
                 <Mail className="mt-0.5 size-4 shrink-0 text-brand-400" aria-hidden="true" />
-                <a href={`mailto:${HOSPITAL.email}`} className="hover:text-white">
+                <a href={`mailto:${HOSPITAL.email}`} className="inline-flex min-h-11 items-center hover:text-white">
                   {HOSPITAL.email}
                 </a>
               </p>
@@ -73,7 +73,7 @@ export default function Footer({ onNavigate }) {
                   <button
                     type="button"
                     onClick={() => onNavigate(item.id)}
-                    className="transition hover:text-white"
+                    className="inline-flex min-h-11 items-center transition hover:text-white"
                   >
                     {t(item.labelKey)}
                   </button>
@@ -84,7 +84,7 @@ export default function Footer({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => onNavigate('privacy')}
-                  className="transition hover:text-white"
+                  className="inline-flex min-h-11 items-center transition hover:text-white"
                 >
                   {t('nav.privacy')}
                 </button>
@@ -103,7 +103,7 @@ export default function Footer({ onNavigate }) {
                   <button
                     type="button"
                     onClick={() => onNavigate('services')}
-                    className="text-start transition hover:text-white"
+                    className="inline-flex min-h-11 items-center text-start transition hover:text-white"
                   >
                     {tl(dept.name)}
                   </button>
@@ -122,7 +122,10 @@ export default function Footer({ onNavigate }) {
                 <Phone className="mt-0.5 size-4 shrink-0 text-rose-400" aria-hidden="true" />
                 <span>
                   <span className="block text-xs text-slate-400">{t('contact.emergencyNumber')}</span>
-                  <a href={telHref(HOSPITAL.emergencyPhone)} className="font-semibold text-white">
+                  <a
+                    href={telHref(HOSPITAL.emergencyPhone)}
+                    className="inline-flex min-h-11 items-center font-semibold text-white"
+                  >
                     {HOSPITAL.emergencyPhone}
                   </a>
                 </span>

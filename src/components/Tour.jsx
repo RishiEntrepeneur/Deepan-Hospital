@@ -112,9 +112,27 @@ export default function Tour({ steps: allSteps, open, onClose, onNavigate }) {
       if (cancelled) return
       const element = findTarget(target)
       if (element) {
-        element.scrollIntoView({ block: 'center', behavior: 'smooth' })
-        // Let the smooth scroll settle before measuring.
-        timer = setTimeout(() => !cancelled && measure(), 320)
+        /*
+         * Measure first, scroll second.
+         *
+         * Measuring only after a 320ms timer meant Next did nothing visible
+         * for a third of a second and then everything moved at once — the tour
+         * felt like it was thinking. Measuring straight away moves the
+         * spotlight and card on the click; the scroll listener above already
+         * tracks the target through the smooth scroll, so the follow-up
+         * measure is only a backstop for scrolls that end somewhere the
+         * listener did not report.
+         */
+        measure()
+
+        const box = element.getBoundingClientRect()
+        const alreadyVisible = box.top >= 0 && box.bottom <= window.innerHeight
+        // Scrolling a target that is already fully on screen costs an
+        // animation and buys nothing.
+        if (!alreadyVisible) {
+          element.scrollIntoView({ block: 'center', behavior: 'smooth' })
+          timer = setTimeout(() => !cancelled && measure(), 320)
+        }
         return
       }
       attempts += 1
@@ -177,18 +195,42 @@ export default function Tour({ steps: allSteps, open, onClose, onNavigate }) {
    * below the fold where nobody could read or dismiss it.
    */
   const GAP = PADDING + 10
+
+  /*
+   * The card is as wide as it can be, up to 340px — not always 340px.
+   *
+   * A fixed 340 needs 364px of screen once both 12px margins are counted, so
+   * on a 320px phone `window.innerWidth - 352` came out to -32 and the
+   * Math.min below drove the card that far off the left edge: the step number,
+   * the heading's first characters and the left edge of the Skip button were
+   * all cut off, on the one screen a first-time visitor cannot avoid. Nothing
+   * scrolled sideways to reveal them, so it read as a design that simply had
+   * its text chopped.
+   */
+  const CARD_WIDTH = Math.min(340, window.innerWidth - 24)
+
   const cardStyle = (() => {
-    if (!rect) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+    if (!rect) {
+      return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: CARD_WIDTH }
+    }
 
     const room = { below: window.innerHeight - rect.bottom, above: rect.top }
-    const left = Math.min(Math.max(12, rect.left + rect.width / 2 - 170), window.innerWidth - 352)
+    // max() last, so the 12px left margin wins on a screen too narrow for the
+    // preferred position rather than being overridden by it.
+    const left = Math.max(
+      12,
+      Math.min(
+        rect.left + rect.width / 2 - CARD_WIDTH / 2,
+        window.innerWidth - CARD_WIDTH - 12,
+      ),
+    )
 
     // Anchoring to `bottom` when going above is what makes this safe: the
     // browser keeps the whole card on screen without anyone measuring it.
     if (room.below > 240 || room.below >= room.above) {
-      return { top: Math.min(rect.bottom + GAP, window.innerHeight - 12), left, maxHeight: `calc(100dvh - ${Math.round(rect.bottom + GAP + 12)}px)` }
+      return { top: Math.min(rect.bottom + GAP, window.innerHeight - 12), left, width: CARD_WIDTH, maxHeight: `calc(100dvh - ${Math.round(rect.bottom + GAP + 12)}px)` }
     }
-    return { bottom: Math.min(window.innerHeight - rect.top + GAP, window.innerHeight - 12), left, maxHeight: `calc(${Math.round(rect.top - GAP - 12)}px)` }
+    return { bottom: Math.min(window.innerHeight - rect.top + GAP, window.innerHeight - 12), left, width: CARD_WIDTH, maxHeight: `calc(${Math.round(rect.top - GAP - 12)}px)` }
   })()
 
   return (
@@ -226,7 +268,7 @@ export default function Tour({ steps: allSteps, open, onClose, onNavigate }) {
       <div
         ref={cardRef}
         tabIndex={-1}
-        style={{ position: 'fixed', width: 340, ...cardStyle }}
+        style={{ position: 'fixed', ...cardStyle }}
         className="animate-scale-in overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl outline-none"
       >
         <div className="flex items-start justify-between gap-3">

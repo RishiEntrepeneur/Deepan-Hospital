@@ -175,7 +175,7 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
             <button
               type="button"
               onClick={() => onNavigate('services')}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
             >
               {t('action.viewAll')}
               <ArrowRight className="size-4" aria-hidden="true" />
@@ -228,7 +228,7 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
             <button
               type="button"
               onClick={() => onNavigate('doctors')}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
             >
               {t('action.viewAll')}
               <ArrowRight className="size-4" aria-hidden="true" />

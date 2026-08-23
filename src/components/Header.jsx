@@ -81,7 +81,7 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
               data-tour="emergency"
               href={telHref(HOSPITAL.emergencyPhone)}
               title={t('action.callNow')}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-2.5 py-0.5 font-semibold whitespace-nowrap transition hover:bg-white/25"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-white/15 px-2.5 py-0.5 font-semibold whitespace-nowrap transition hover:bg-white/25"
             >
               <Phone className="size-3" aria-hidden="true" />
               <span>{HOSPITAL.emergencyPhone}</span>
@@ -327,7 +327,7 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
-            className="grid size-10 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100 xl:hidden"
+            className="grid size-11 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100 xl:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>

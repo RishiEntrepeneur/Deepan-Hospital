@@ -214,7 +214,7 @@ export default function DoctorCard({ doctor, onBook, onOpen, compact = false }) 
         <button
           type="button"
           onClick={() => onBook(doctor)}
-          className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700"
         >
           <CalendarPlus className="size-4" aria-hidden="true" />
           {doctor.bookingMode === 'live' ? t('action.bookShort') : t('action.requestShort')}

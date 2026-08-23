@@ -42,6 +42,8 @@ export default function StepPatientDetails({
   dateKey,
   slot,
   isCallback = false,
+  isGuest = false,
+  onSignIn,
   prefilled = false,
   onSwitchDoctor,
   visitCharges,
@@ -71,6 +73,32 @@ export default function StepPatientDetails({
 
   return (
     <div className="space-y-6">
+      {/*
+        Say out loud that no account is needed.
+        
+        The booking already worked without one — it silently used the guest
+        route — but nothing on screen said so, and a form asking for a name, an
+        age and a phone number reads like the start of a sign-up. Somebody who
+        does not want an account had no way to know they were not making one.
+      */}
+      {isGuest && !prefilled && (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-bold text-slate-900">{t('booking.guestTitle')}</p>
+            {onSignIn && (
+              <button
+                type="button"
+                onClick={onSignIn}
+                className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-800"
+              >
+                {t('booking.guestSignIn')}
+              </button>
+            )}
+          </div>
+          <p className="mt-0.5 text-sm text-slate-600">{t('booking.guestBody')}</p>
+        </div>
+      )}
+
       {/* What they're booking */}
       <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
         <p className="text-xs font-bold tracking-wide text-brand-700 uppercase">

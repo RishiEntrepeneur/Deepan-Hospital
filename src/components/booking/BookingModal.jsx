@@ -36,6 +36,7 @@ export default function BookingModal({
   initialDoctorId = '',
   rescheduleOf = null,
   currentUser = null,
+  onSignIn,
   payments,
   booking,
 }) {
@@ -135,11 +136,23 @@ export default function BookingModal({
     setErrors({})
   }, [])
 
+  /*
+   * Choosing a doctor, or a time, moves on by itself.
+   *
+   * Picking the only thing on the screen and then hunting for a Next button is
+   * a step of work that carries no decision. The two places it applies are the
+   * ones where a tap IS the answer to the question the step asked — the doctor,
+   * and the slot. Everything else on the way through has more than one field,
+   * so it still advances on Next.
+   *
+   * Back still works from either, so an accidental tap costs one press to undo.
+   */
   const selectDoctor = useCallback((id) => {
     setDoctorId(id)
     setDateKey('')
     setSlot('')
     setErrors((prev) => ({ ...prev, doctorId: undefined }))
+    setStepIndex((i) => i + 1)
   }, [])
 
   const selectDate = useCallback((key) => {
@@ -148,10 +161,16 @@ export default function BookingModal({
     setErrors((prev) => ({ ...prev, date: undefined }))
   }, [])
 
-  const selectSlot = useCallback((value) => {
-    setSlot(value)
-    setErrors((prev) => ({ ...prev, slot: undefined }))
-  }, [])
+  const selectSlot = useCallback(
+    (value) => {
+      setSlot(value)
+      setErrors((prev) => ({ ...prev, slot: undefined }))
+      // Not while rescheduling: there the slot is the whole change, and it is
+      // confirmed on this same screen rather than leading anywhere.
+      if (!isReschedule) setStepIndex((i) => i + 1)
+    },
+    [isReschedule],
+  )
 
   /*
    * A catalogue refresh can switch online payment off mid-flow. Selecting a
@@ -440,6 +459,8 @@ export default function BookingModal({
           dateKey={dateKey}
           slot={slot}
           isCallback={isCallback}
+          isGuest={!currentUser}
+          onSignIn={onSignIn}
           prefilled={Boolean(currentUser?.fullName)}
         />
       )}

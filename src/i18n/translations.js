@@ -168,6 +168,10 @@ export const translations = {
     'booking.step1': 'Department & Doctor',
     'booking.step2': 'Date & Time',
     'booking.step3': 'Patient Details',
+    'booking.guestTitle': 'Booking as a guest',
+    'booking.guestBody':
+      'You do not need an account. Enter the details below and we will give you a reference number to check or cancel the appointment.',
+    'booking.guestSignIn': 'Sign in instead',
     'booking.step4': 'Payment',
     'booking.step5': 'Confirmation',
     'booking.prefilled': 'Filled in from your account — edit if this visit is for someone else.',
@@ -861,6 +865,10 @@ export const translations = {
     'booking.step1': 'துறை மற்றும் மருத்துவர்',
     'booking.step2': 'தேதி மற்றும் நேரம்',
     'booking.step3': 'நோயாளி விவரங்கள்',
+    'booking.guestTitle': 'விருந்தினராகப் பதிவு',
+    'booking.guestBody':
+      'கணக்கு தேவையில்லை. கீழே விவரங்களை நிரப்புங்கள்; சந்திப்பைப் பார்க்க அல்லது ரத்து செய்ய ஒரு குறிப்பு எண் தருவோம்.',
+    'booking.guestSignIn': 'கணக்கில் நுழைய',
     'booking.step4': 'கட்டணம்',
     'booking.step5': 'உறுதிப்படுத்தல்',
     'booking.prefilled': 'உங்கள் கணக்கிலிருந்து நிரப்பப்பட்டது — வேறு நபருக்கு எனில் மாற்றவும்.',

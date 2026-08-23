@@ -155,6 +155,10 @@ export const hi = {
   'booking.step1': 'विभाग और डॉक्टर',
   'booking.step2': 'तारीख़ और समय',
   'booking.step3': 'मरीज़ का विवरण',
+  'booking.guestTitle': 'अतिथि के रूप में बुकिंग',
+  'booking.guestBody':
+    'खाते की ज़रूरत नहीं है। नीचे विवरण भरें — अपॉइंटमेंट देखने या रद्द करने के लिए हम आपको एक रेफरेंस नंबर देंगे।',
+  'booking.guestSignIn': 'इसके बजाय साइन इन करें',
   'booking.step4': 'भुगतान',
   'booking.step5': 'पुष्टि',
   'booking.selectDepartment': 'विभाग चुनें',
