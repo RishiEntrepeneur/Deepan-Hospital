@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CalendarPlus, ChevronDown, CircleUser, Copy, LogOut, Menu, Phone, Stethoscope, X } from 'lucide-react'
 import { useLanguage } from '../i18n/context'
 import { HOSPITAL } from '../data/hospital'
@@ -12,6 +12,7 @@ import LanguageSwitcher from './LanguageSwitcher'
 export default function Header({ page, onNavigate, onBook, appointmentCount, user, staff, onSignOut, onStaffSignOut, deskMode = false }) {
   const { t } = useLanguage()
   const [open, setOpen] = useState(false)
+  const menuZone = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -35,12 +36,26 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
     return () => clearTimeout(timer)
   }, [copied])
 
-  // Escape and a click anywhere else close it — a menu that can only be
-  // dismissed by hitting the same button again feels stuck.
+  /*
+   * Escape, or a click OUTSIDE the menu, closes it.
+   *
+   * "Outside" is the whole fix. This listener runs in the capture phase on
+   * `document`, so it fired before the click ever reached the item that was
+   * clicked — React unmounted the panel on the state change and the item's own
+   * onClick never ran. Every entry in the menu was dead: My account, Sign out,
+   * Go to the desk, Sign out of the desk. The trigger was caught by it too,
+   * so pressing the button a second time set the state false and then the
+   * toggle flipped it straight back to true, and the menu would not close
+   * either.
+   *
+   * Skipping clicks inside the trigger-and-panel wrapper fixes both: items run
+   * their handlers and close the menu themselves, and the trigger toggles.
+   */
   useEffect(() => {
     if (!menuOpen) return undefined
     const dismiss = (event) => {
       if (event.type === 'keydown' && event.key !== 'Escape') return
+      if (event.type === 'click' && menuZone.current?.contains(event.target)) return
       setMenuOpen(false)
     }
     document.addEventListener('keydown', dismiss)
@@ -165,7 +180,7 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
         </nav>
         )}
 
-        <div className="relative flex items-center gap-2">
+        <div ref={menuZone} className="relative flex items-center gap-2">
           {/*
             * Wrapped rather than given `hidden` directly: LanguageSwitcher
             * hardcodes `inline-flex`, and two display utilities on one element

@@ -256,7 +256,8 @@ export default function BookingModal({
     setServerErrorKey(null)
     try {
       if (methodId === 'counter') {
-        setResult(await onPayCounter(result.id))
+        // The phone the booking was made with: a guest's only proof of it.
+        setResult(await onPayCounter(result.id, result.patient?.phone))
       } else {
         const paid = await payForAppointment(result, {
           name: result.patient.name,

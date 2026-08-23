@@ -77,7 +77,7 @@ export function useAppointments(isSignedIn) {
   )
 
   const payAtCounter = useCallback(
-    async (id) => upsert((await api.payments.counter(id)).appointment),
+    async (id, phone) => upsert((await api.payments.counter(id, phone)).appointment),
     [upsert],
   )
 

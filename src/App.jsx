@@ -266,8 +266,8 @@ export default function App() {
   );
 
   const payCounter = useCallback(
-    async (id) => {
-      const appointment = await appointments.payAtCounter(id);
+    async (id, phone) => {
+      const appointment = await appointments.payAtCounter(id, phone);
       setToast(t("pay.counterRecorded"));
       return appointment;
     },

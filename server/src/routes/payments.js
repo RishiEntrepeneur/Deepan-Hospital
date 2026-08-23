@@ -3,7 +3,7 @@ import { config } from '../config.js'
 import { db, nowIso } from '../db.js'
 import { hmacHex, safeEqualHex, uuid } from '../lib/crypto.js'
 import { audit } from '../lib/audit.js'
-import { badRequest, conflict, forbidden, notFound } from '../lib/validate.js'
+import { badRequest, conflict, forbidden, notFound, normalisePhone } from '../lib/validate.js'
 import { asyncRoute } from '../middleware/base.js'
 import { rateLimit } from '../lib/rateLimit.js'
 import { loadSession, requirePatient } from '../middleware/session.js'
@@ -22,6 +22,7 @@ export const paymentsRouter = express.Router()
 const payLimiter = rateLimit({ limit: 20, windowMs: 5 * 60 * 1000, code: 'PAYMENT_RATE_LIMITED' })
 
 const oneAppointment = db.prepare('SELECT * FROM appointments WHERE id = ?')
+const guestOwned = db.prepare('SELECT * FROM appointments WHERE id = ? AND patient_phone = ?')
 const insertPayment = db.prepare(`
   INSERT INTO payments (id, appointment_id, provider, provider_order_id, amount, currency, status, method, created_at)
   VALUES (?, ?, ?, ?, ?, 'INR', ?, ?, ?)
@@ -68,6 +69,33 @@ const ownedOr403 = (req, id) => {
   return row
 }
 
+/*
+ * The same appointment, reached by whichever proof the caller has.
+ *
+ * A signed-in patient is identified by their session. A guest has no session
+ * by design — the whole point of guest booking — and proves it the way the
+ * lookup route already does: the reference plus the phone number it was booked
+ * with. Both are needed, and the reference is random rather than sequential,
+ * so knowing one does not get you the other.
+ *
+ * Without this the payment step demanded a sign-in from someone who had just
+ * been told they did not need an account, one screen after their slot had
+ * already been held. The booking existed; the patient simply could not finish
+ * the flow that created it.
+ */
+const payableOr403 = (req, id) => {
+  if (req.patient) return ownedOr403(req, id)
+
+  const phone = normalisePhone(req.body?.phone)
+  if (!phone) throw forbidden('SIGN_IN_REQUIRED')
+
+  const row = guestOwned.get(id, phone)
+  // Deliberately the same error whether the reference is wrong or the phone
+  // is: a different answer for each would let someone test references.
+  if (!row) throw notFound('APPOINTMENT_NOT_FOUND')
+  return row
+}
+
 /* ------------------------------------------------------------------ *
  * POST /payments/counter — settle at the billing desk
  * ------------------------------------------------------------------ */
@@ -75,9 +103,10 @@ paymentsRouter.post(
   '/counter',
   payLimiter,
   loadSession,
-  requirePatient,
+  // No requirePatient: a guest settles at the counter too, and proves the
+  // booking is theirs with the phone number they made it with.
   asyncRoute(async (req, res) => {
-    const appointment = ownedOr403(req, String(req.body?.appointmentId ?? ''))
+    const appointment = payableOr403(req, String(req.body?.appointmentId ?? ''))
     /*
      * The old check read `openPaymentFor(...)?.status === 'paid'`, but that
      * query only selects 'created' and 'pending' rows — so it could never be
@@ -98,7 +127,7 @@ paymentsRouter.post(
 
     audit({
       actorType: 'patient',
-      actorId: req.patient.id,
+      actorId: req.patient?.id ?? null,
       action: 'payment.counter_selected',
       entity: 'appointment',
       entityId: appointment.id,

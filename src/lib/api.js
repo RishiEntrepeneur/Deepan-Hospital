@@ -180,7 +180,14 @@ export const api = {
   },
 
   payments: {
-    counter: (appointmentId) => request('/payments/counter', { method: 'POST', body: { appointmentId } }),
+    /*
+     * `phone` is how a guest proves the booking is theirs — they have no
+     * session, so the server matches the reference against the number the
+     * appointment was made with. Signed-in patients are identified by their
+     * cookie and the field is ignored.
+     */
+    counter: (appointmentId, phone) =>
+      request('/payments/counter', { method: 'POST', body: { appointmentId, phone } }),
     createOrder: (appointmentId) => request('/payments/order', { method: 'POST', body: { appointmentId } }),
     verify: (payload) => request('/payments/verify', { method: 'POST', body: payload }),
   },
