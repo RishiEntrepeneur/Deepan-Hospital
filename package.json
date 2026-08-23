@@ -1,0 +1,35 @@
+{
+  "name": "deepan-hospital-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --watch src/index.js",
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "migrate": "node --env-file-if-exists=.env scripts/migrate.js",
+    "seed": "node --env-file-if-exists=.env scripts/seed.js",
+    "create-staff": "node --env-file-if-exists=.env scripts/create-staff.js",
+    "backup": "node --env-file-if-exists=.env scripts/backup.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "reset-password": "node --env-file-if-exists=.env scripts/reset-staff-password.js",
+    "doctor-logins": "node --env-file-if-exists=.env scripts/doctor-logins.js",
+    "seed-hindi": "node --env-file-if-exists=.env scripts/seed-hindi.js",
+    "voices": "node --env-file-if-exists=.env scripts/voices.js",
+    "import-op-list": "node --env-file-if-exists=.env scripts/import-op-list.js",
+    "add-op-doctors": "node --env-file-if-exists=.env scripts/add-op-list-doctors.js",
+    "pentest": "node scripts/pentest.js",
+    "device": "node --env-file-if-exists=.env scripts/device.js",
+    "klinique-capture": "node scripts/klinique-capture.js",
+    "klinique-test": "node --env-file-if-exists=.env scripts/klinique-test.js",
+    "klinique-login": "node scripts/klinique-login.js",
+    "prepare-handover": "node --env-file-if-exists=.env scripts/prepare-handover.js",
+    "klinique-doctors": "node --env-file-if-exists=.env scripts/klinique-doctors.js",
+    "reg-numbers": "node --env-file-if-exists=.env scripts/reg-numbers.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
