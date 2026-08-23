@@ -27,7 +27,8 @@
     "klinique-login": "node scripts/klinique-login.js",
     "prepare-handover": "node --env-file-if-exists=.env scripts/prepare-handover.js",
     "klinique-doctors": "node --env-file-if-exists=.env scripts/klinique-doctors.js",
-    "reg-numbers": "node --env-file-if-exists=.env scripts/reg-numbers.js"
+    "reg-numbers": "node --env-file-if-exists=.env scripts/reg-numbers.js",
+    "hide-incomplete": "node --env-file-if-exists=.env scripts/hide-incomplete-doctors.js"
   },
   "dependencies": {
     "express": "^5.1.0"
