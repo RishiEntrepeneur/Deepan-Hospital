@@ -21,6 +21,7 @@ import { paymentsRouter, webhookHandler } from './routes/payments.js'
 import { adminRouter } from './routes/admin.js'
 import { clinicalRouter } from './routes/clinical.js'
 import { reviewsRouter } from './routes/reviews.js'
+import { attachmentsRouter } from './routes/attachments.js'
 import { loadDevice } from './lib/devices.js'
 import { startNotificationWorker } from './lib/notify.js'
 import { startBackups } from './lib/backup.js'
@@ -45,6 +46,10 @@ app.use(sameOriginOnly)
 // The webhook signature covers the exact bytes Razorpay sent, so this route
 // must see the raw body — it is mounted before the JSON parser.
 app.post('/api/payments/webhook', express.raw({ type: '*/*', limit: '256kb' }), webhookHandler)
+
+// Before express.json: an upload is raw bytes, and the JSON parser would
+// otherwise refuse an 8 MB photograph against its 128 kb limit.
+app.use('/api/attachments', attachmentsRouter)
 
 app.use(express.json({ limit: '128kb' }))
 

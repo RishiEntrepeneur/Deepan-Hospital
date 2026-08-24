@@ -6,6 +6,7 @@ import { assessReason } from '../../lib/triage'
 import { formatDateLong, formatFee, formatTime, telHref } from '../../lib/schedule'
 import { visitTotal } from '../../lib/payment'
 import { cx } from '../../lib/cx'
+import AttachmentPicker from './AttachmentPicker'
 
 function Field({ label, error, hint, children, htmlFor }) {
   const { t } = useLanguage()
@@ -47,6 +48,8 @@ export default function StepPatientDetails({
   prefilled = false,
   onSwitchDoctor,
   visitCharges,
+  attachments = [],
+  onAttachmentsChange,
 }) {
   const { t, tl, lang } = useLanguage()
 
@@ -367,6 +370,12 @@ export default function StepPatientDetails({
               </div>
             )}
           </Field>
+
+          {onAttachmentsChange && (
+            <div className="mt-5 border-t border-slate-200 pt-5">
+              <AttachmentPicker files={attachments} onChange={onAttachmentsChange} />
+            </div>
+          )}
         </div>
       </div>
     </div>

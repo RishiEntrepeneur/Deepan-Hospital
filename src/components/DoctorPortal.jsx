@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { useCatalog } from '../lib/useCatalog'
 import { getDoctor } from '../data/hospital'
 import { cx } from '../lib/cx'
+import AttachmentStrip from './AttachmentStrip'
 
 /**
  * The doctor portal — a consultant's own day, and nothing more.
@@ -181,6 +182,7 @@ function Row({ appt }) {
         </span>
       </div>
       {p.reason && <p className="mt-1.5 text-sm text-slate-700">{p.reason}</p>}
+      <AttachmentStrip attachments={appt.attachments} />
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
         <a href={`tel:${p.phone}`} className="inline-flex items-center gap-1.5 hover:text-brand-700">
           <Phone className="size-3.5" aria-hidden="true" />

@@ -1,6 +1,7 @@
 import { config } from '../config.js'
 import { db, nowIso } from '../db.js'
 import { audit } from './audit.js'
+import { removeFile } from './attachments.js'
 
 /**
  * Retention and erasure.
@@ -27,6 +28,41 @@ export function runRetention() {
   // Spent or expired one-time codes have no purpose the moment they are used.
   run('otp', "DELETE FROM otp_codes WHERE expires_at < ?", nowIso())
   run('sessions', 'DELETE FROM sessions WHERE expires_at < ?', nowIso())
+
+  /*
+   * Uploads that never became a booking.
+   *
+   * Somebody picked a photograph of a wound, thought better of it and closed
+   * the tab. The file is on disk with nothing pointing at it, so it is deleted
+   * outright after a day — an unattached medical image is pure liability.
+   */
+  const orphans = db
+    .prepare("SELECT id, stored_name FROM attachments WHERE appointment_id IS NULL AND created_at < ?")
+    .all(cutoff(1))
+  for (const row of orphans) {
+    removeFile(row.stored_name)
+    db.prepare('DELETE FROM attachments WHERE id = ?').run(row.id)
+  }
+  if (orphans.length) removed.orphan_attachments = orphans.length
+
+  /*
+   * The files belonging to bookings about to be deleted. Their rows carry a
+   * foreign key to appointments, so they have to go first — and the bytes on
+   * disk have to go with them, or the folder fills with images nothing in the
+   * database can account for.
+   */
+  const doomed = db
+    .prepare(
+      `SELECT a.id, a.stored_name FROM attachments a
+       JOIN appointments p ON p.id = a.appointment_id
+       WHERE p.status = 'cancelled' AND p.updated_at < ?`,
+    )
+    .all(cutoff(config.privacy.cancelledDays))
+  for (const row of doomed) {
+    removeFile(row.stored_name)
+    db.prepare('DELETE FROM attachments WHERE id = ?').run(row.id)
+  }
+  if (doomed.length) removed.attachments = doomed.length
 
   run(
     'cancelled_appointments',
@@ -60,6 +96,12 @@ export function runRetention() {
     // patient's own words, so it goes with them, and its FK would block the
     // delete besides.
     db.prepare('DELETE FROM reviews WHERE patient_id = ?').run(row.id)
+    for (const file of db
+      .prepare('SELECT id, stored_name FROM attachments WHERE patient_id = ?')
+      .all(row.id)) {
+      removeFile(file.stored_name)
+      db.prepare('DELETE FROM attachments WHERE id = ?').run(file.id)
+    }
     db.prepare('DELETE FROM patients WHERE id = ?').run(row.id)
   }
   if (erasable.length) removed.erased_patients = erasable.length

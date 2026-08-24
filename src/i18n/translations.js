@@ -744,6 +744,17 @@ export const translations = {
     'reviews.chooseRating': 'Please choose a star rating.',
     'reviews.close': 'Close',
 
+    /* ---------- Attachments ---------- */
+    'attach.label': 'Add a photo or report (optional)',
+    'attach.hint': 'A photo of the problem, a lab report or an old prescription helps the doctor before you arrive. JPG, PNG or PDF, up to 4 files.',
+    'attach.add': 'Add a file',
+    'attach.sending': 'Sending\u2026',
+    'attach.remove': 'Remove {name}',
+    'attach.remaining': '{n} more allowed',
+    'attach.full': 'That is the maximum.',
+    'attach.failed': 'That file could not be sent. Please try another.',
+    'attach.forDoctor': 'Sent by the patient',
+
     /* ---------- Captcha ---------- */
     'captcha.label': 'Just checking you are a person',
     'captcha.hint': 'Answer the sum so we know you are not a computer.',
@@ -1461,6 +1472,17 @@ export const translations = {
     'reviews.errorGeneric': 'மன்னிக்கவும், உங்கள் கருத்தைச் சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
     'reviews.chooseRating': 'தயவுசெய்து ஒரு நட்சத்திர மதிப்பீட்டைத் தேர்ந்தெடுக்கவும்.',
     'reviews.close': 'மூடு',
+
+    /* ---------- Attachments ---------- */
+    'attach.label': 'புகைப்படம் அல்லது அறிக்கை சேர்க்கவும் (விரும்பினால்)',
+    'attach.hint': 'பிரச்சினையின் புகைப்படம், ஆய்வக அறிக்கை அல்லது பழைய மருந்துச்சீட்டு மருத்துவருக்கு முன்கூட்டியே உதவும். JPG, PNG அல்லது PDF, அதிகபட்சம் 4 கோப்புகள்.',
+    'attach.add': 'கோப்பு சேர்க்கவும்',
+    'attach.sending': 'அனுப்புகிறது\u2026',
+    'attach.remove': '{name} ஐ நீக்கவும்',
+    'attach.remaining': 'மேலும் {n} சேர்க்கலாம்',
+    'attach.full': 'இதுவே அதிகபட்சம்.',
+    'attach.failed': 'அந்தக் கோப்பை அனுப்ப முடியவில்லை. வேறொன்றை முயற்சிக்கவும்.',
+    'attach.forDoctor': 'நோயாளி அனுப்பியது',
 
     /* ---------- Captcha ---------- */
     'captcha.label': 'நீங்கள் ஒரு நபர் என்பதைச் சரிபார்க்கிறோம்',

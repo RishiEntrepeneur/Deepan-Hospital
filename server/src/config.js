@@ -13,6 +13,19 @@ export const config = {
   /** Where the SQLite file lives. Override with DATABASE_FILE. */
   databaseFile: process.env.DATABASE_FILE ?? path.join(here, '..', 'data', 'deepan.db'),
 
+  /*
+   * Where a patient's uploaded photos and reports are written.
+   *
+   * Beside the database rather than inside the code folder, for the same
+   * reason: a deploy replaces the code wholesale, and a patient's wound
+   * photograph must not be something a routine update can delete. Defaults to
+   * an `uploads` folder next to the database file so it inherits whatever the
+   * server was pointed at.
+   */
+  uploadDir:
+    process.env.UPLOAD_DIR ??
+    path.join(path.dirname(process.env.DATABASE_FILE ?? path.join(here, '..', 'data', 'deepan.db')), 'uploads'),
+
   /** Browsers allowed to call the API with credentials. */
   corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:5173')
     .split(',')

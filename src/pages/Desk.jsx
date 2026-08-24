@@ -28,6 +28,7 @@ import { cx } from '../lib/cx'
 import KliniquePortal from '../components/KliniquePortal'
 import DoctorPortal from '../components/DoctorPortal'
 import ReviewModeration from '../components/ReviewModeration'
+import AttachmentStrip from '../components/AttachmentStrip'
 import KliniqueTransfer from '../components/KliniqueTransfer'
 import TellPatient from '../components/TellPatient'
 import { useLiveDesk } from '../lib/useLiveDesk'
@@ -1640,9 +1641,12 @@ export default function Desk({ onSignedOut }) {
               pending.map((a) => (
                 <div key={a.id}>
                   <AppointmentRow appointment={a} onChanged={replaceAppointment} />
-                  <p className="px-4 pb-3 -mt-1 text-xs text-slate-500">
-                    {a.date} · {a.patient.reason || 'No reason given'}
-                  </p>
+                  <div className="px-4 pb-3 -mt-1">
+                    <p className="text-xs text-slate-500">
+                      {a.date} · {a.patient.reason || 'No reason given'}
+                    </p>
+                    <AttachmentStrip attachments={a.attachments} />
+                  </div>
                 </div>
               ))
             )}

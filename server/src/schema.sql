@@ -481,3 +481,42 @@ CREATE TABLE IF NOT EXISTS reviews (
 -- newest-first. One index by status covers both.
 CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_reviews_doctor ON reviews(doctor_id, status);
+
+/* ------------------------------------------------------------------ *
+ * Attachments — the photograph or report a patient sends with a booking
+ * ------------------------------------------------------------------ *
+ * A rash, a swelling, an old prescription, a lab report. The consultant reads
+ * these before the patient sits down, which is the whole point of allowing
+ * them.
+ *
+ * The bytes live on disk (config.uploadDir), not in this database: SQLite would
+ * hold them fine, but every backup would then carry every photograph, and the
+ * backup file is the thing most likely to be copied somewhere careless.
+ *
+ * A row is created by the upload, before the appointment exists — a patient
+ * picks the photo while filling the form, and may never press Book. So
+ * appointment_id is null until the booking succeeds, and the retention job
+ * removes anything still unattached after a day, file included.
+ *
+ * token_hash is how the uploader proves the file is theirs when attaching it.
+ * Only the SHA-256 is kept, exactly as for sessions; the raw token exists once,
+ * in the reply to the upload.
+ * ------------------------------------------------------------------ */
+CREATE TABLE IF NOT EXISTS attachments (
+  id             TEXT PRIMARY KEY,
+  appointment_id TEXT REFERENCES appointments(id),
+  patient_id     TEXT REFERENCES patients(id),
+  token_hash     TEXT NOT NULL,
+  kind           TEXT NOT NULL CHECK (kind IN ('image', 'pdf')),
+  mime           TEXT NOT NULL,
+  byte_size      INTEGER NOT NULL,
+  original_name  TEXT NOT NULL DEFAULT '',
+  stored_name    TEXT NOT NULL UNIQUE,
+  created_at     TEXT NOT NULL,
+  ip             TEXT
+);
+
+-- Attaching reads by appointment; the retention sweep reads the unattached.
+CREATE INDEX IF NOT EXISTS idx_attachments_appointment ON attachments(appointment_id);
+CREATE INDEX IF NOT EXISTS idx_attachments_orphan ON attachments(created_at)
+  WHERE appointment_id IS NULL;

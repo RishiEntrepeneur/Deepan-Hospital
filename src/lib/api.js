@@ -157,6 +157,35 @@ export const api = {
     saveMyDoctor: (body) => request('/admin/me/doctor', { method: 'PATCH', body }),
   },
 
+  /**
+   * Photographs and reports sent with a booking.
+   *
+   * The body is the file itself, not JSON and not a form: the server reads raw
+   * bytes and checks them against the type before writing anything. `request`
+   * is bypassed for the same reason — it assumes a JSON body.
+   */
+  attachments: {
+    upload: async (file, signal) => {
+      const res = await fetch(`${BASE}/attachments`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': file.type, 'X-File-Name': file.name },
+        body: file,
+        signal,
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        const error = new Error(data?.error?.message ?? 'That file could not be sent.')
+        error.code = data?.error?.code ?? 'UPLOAD_FAILED'
+        throw error
+      }
+      return data
+    },
+    /** Where to point an <img> or a link, for a file the viewer may read. */
+    url: (id, token) =>
+      `${BASE}/attachments/${encodeURIComponent(id)}${token ? `?token=${encodeURIComponent(token)}` : ''}`,
+  },
+
   /** Patient reviews. The list is public; leaving one needs a patient session. */
   reviews: {
     list: (signal) => request('/reviews', { signal }),

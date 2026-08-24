@@ -15,6 +15,7 @@ import StepPayment from './StepPayment'
 import StepConfirmation from './StepConfirmation'
 import { validatePatient, validateSchedule, validateSelection } from './validation'
 
+/* Files uploaded while this booking is being filled in, claimed on submit. */
 const EMPTY_PATIENT = { name: '', age: '', phone: '', gender: '', reason: '', visitType: '' }
 
 /**
@@ -49,6 +50,7 @@ export default function BookingModal({
   const [dateKey, setDateKey] = useState('')
   const [slot, setSlot] = useState('')
   const [patient, setPatient] = useState(EMPTY_PATIENT)
+  const [attachments, setAttachments] = useState([])
   /*
    * Which payment methods actually work right now. Razorpay is only wired up
    * when the hospital has supplied keys; without them the online option is
@@ -202,6 +204,7 @@ export default function BookingModal({
             doctorId: doctor.id,
             visitType: patient.visitType || undefined,
             patient: patientPayload(),
+            attachments: attachments.map(({ id, token }) => ({ id, token })),
           })
         : await onBook(
             {
@@ -210,6 +213,7 @@ export default function BookingModal({
               slot,
               visitType: patient.visitType,
               patient: patientPayload(),
+              attachments: attachments.map(({ id, token }) => ({ id, token })),
             },
             // No account: App routes this to the guest endpoint instead.
             { asGuest: !currentUser },
@@ -232,8 +236,9 @@ export default function BookingModal({
     // when only the visit type changes — and a stale one is the wrong price.
     // currentUser decides guest vs signed-in booking, so a stale value would
     // send a signed-in patient down the guest route and lose the link to
-    // their account.
-  }, [isCallback, onRequestCallback, onBook, doctor, dateKey, slot, patientPayload, patient.visitType, currentUser, steps])
+    // their account. attachments is listed for the same reason: a stale empty
+    // array would silently drop the photographs the patient just uploaded.
+  }, [isCallback, onRequestCallback, onBook, doctor, dateKey, slot, patientPayload, patient.visitType, currentUser, steps, attachments])
 
   const applyReschedule = useCallback(async () => {
     setBusy(true)
@@ -455,6 +460,8 @@ export default function BookingModal({
           }}
           patient={patient}
           onChange={setPatient}
+          attachments={attachments}
+          onAttachmentsChange={setAttachments}
           errors={errors}
           doctor={doctor}
           dateKey={dateKey}

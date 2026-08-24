@@ -18,6 +18,7 @@ import { pushAppointment } from '../lib/klinique.js'
 import { daysFromToday, sessionOfSlot, validateBookingRequest } from '../lib/slots.js'
 import { approvalReason, statusForNewBooking } from '../lib/deskHours.js'
 import { publish, subscribe } from '../lib/events.js'
+import { attachToAppointment, attachmentsFor } from './attachments.js'
 import { asyncRoute } from '../middleware/base.js'
 import { loadSession, requirePatient, requireStaff } from '../middleware/session.js'
 
@@ -81,6 +82,10 @@ export function presentAppointment(row) {
       gender: row.patient_gender,
       reason: row.reason,
     },
+    // Photographs and reports the patient sent with the booking. Metadata
+    // only — the bytes are fetched one at a time, and only by someone
+    // entitled to see them.
+    attachments: attachmentsFor(row.id),
     payment: payment
       ? {
           status: payment.status,
@@ -216,6 +221,13 @@ appointmentsRouter.post(
       if (isSlotTakenError(error)) throw conflict('SLOT_TAKEN', 'That time has just been taken.')
       throw error
     }
+
+    /*
+     * Claim the photographs uploaded while the form was being filled in. Each
+     * is presented with the token issued at upload, so a booking cannot adopt
+     * a file somebody else sent.
+     */
+    attachToAppointment(req.body?.attachments, id, req.patient?.id ?? null)
 
     const created = presentAppointment(oneAppointment.get(id))
     audit({
@@ -368,6 +380,13 @@ appointmentsRouter.post(
     notify({ event: 'appointment.booked', recipientType: 'doctor', recipientId: doctor.id, appointmentId: id })
     notify({ event: 'appointment.booked', recipientType: 'desk', appointmentId: id })
 
+    /*
+     * Claim the photographs uploaded while the form was being filled in. Each
+     * is presented with the token issued at upload, so a booking cannot adopt
+     * a file somebody else sent.
+     */
+    attachToAppointment(req.body?.attachments, id, req.patient?.id ?? null)
+
     const created = presentAppointment(oneAppointment.get(id))
     // Wakes up any desk with the live feed open.
     publish('appointment.created', deskView(created, doctor))
@@ -434,6 +453,13 @@ appointmentsRouter.post(
     // The desk must act on these — nobody else will.
     notify({ event: 'appointment.callback', recipientType: 'desk', appointmentId: id })
     notify({ event: 'appointment.callback', recipientType: 'doctor', recipientId: doctor.id, appointmentId: id })
+
+    /*
+     * Claim the photographs uploaded while the form was being filled in. Each
+     * is presented with the token issued at upload, so a booking cannot adopt
+     * a file somebody else sent.
+     */
+    attachToAppointment(req.body?.attachments, id, req.patient?.id ?? null)
 
     const created = presentAppointment(oneAppointment.get(id))
     publish('appointment.callback', deskView(created, doctor))
