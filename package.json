@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
+    "build": "oxlint src --deny no-undef && vite build",
+    "lint": "oxlint src",
     "preview": "vite preview",
     "i18n:check": "node scripts/i18n-check.js",
     "test": "vitest run",

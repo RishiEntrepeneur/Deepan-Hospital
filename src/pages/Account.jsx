@@ -11,7 +11,7 @@ import {
 import { useLanguage } from '../i18n/context'
 import { GENDERS } from '../data/hospital'
 import { api, errorKeyFor } from '../lib/api'
-import { rememberedPhone } from '../lib/rememberedPhone'
+import { rememberedPhone, rememberPhone } from '../lib/rememberedPhone'
 import CaptchaField from '../components/CaptchaField'
 import { cx } from '../lib/cx'
 

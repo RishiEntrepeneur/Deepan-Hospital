@@ -22,7 +22,7 @@ import {
   TriangleAlert,
 } from 'lucide-react'
 import { api, errorKeyFor } from '../lib/api'
-import { getDoctor } from '../data/hospital'
+import { getDoctor, WEEKDAYS } from '../data/hospital'
 import { formatTime, todayKey } from '../lib/schedule'
 import { cx } from '../lib/cx'
 import KliniquePortal from '../components/KliniquePortal'
@@ -78,6 +78,30 @@ const STATUS_TONE = {
   called: 'bg-brand-50 text-brand-800 ring-brand-200',
   in_consult: 'bg-brand-600 text-white ring-brand-700',
   done: 'bg-mint-50 text-mint-800 ring-mint-200',
+}
+
+/**
+ * The weekday buttons on a doctor's schedule row.
+ *
+ * Built from the same WEEKDAYS list the rest of the app uses, so the desk can
+ * never disagree with the patient-facing site about which day index is Sunday.
+ * English only, like the rest of this screen.
+ */
+const DAYS = WEEKDAYS.map((day) => ({ i: day.index, label: day.short.en }))
+
+/**
+ * What a finished appointment is called on screen.
+ *
+ * Only the states with no action left reach this — an appointment that is over
+ * or called off. The word matters: reception marks a patient "Seen", so the
+ * badge afterwards says Seen too, rather than the database's "completed".
+ */
+const APPOINTMENT_LABEL = {
+  completed: 'Seen',
+  cancelled: 'Cancelled',
+  confirmed: 'Confirmed',
+  pending: 'Waiting',
+  requested: 'Call back',
 }
 
 /** Why a notification was not delivered, in words a receptionist can act on. */
@@ -803,7 +827,7 @@ function StatusActions({ appointment, onChanged }) {
   ].filter((b) => can[b.action])
 
   if (buttons.length === 0) {
-    return <Pill status={appointment.status} label={APPOINTMENT_LABEL[appointment.status]} />
+    return <Pill status={appointment.status} label={APPOINTMENT_LABEL?.[appointment.status]} />
   }
 
   return (
