@@ -17,11 +17,10 @@ export const conflict = (code, message) => new ApiError(409, code, message)
 export const tooMany = (code = 'RATE_LIMITED', message) => new ApiError(429, code, message)
 
 const NAME_PATTERN = /^[\p{L}\p{M}\s.'-]+$/u
-// International numbers are accepted, not just Indian ten-digit mobiles: the
-// hospital's patients travel, and relatives abroad book for them. See
-// src/lib/phone.js — the client mirror of this rule; keep the two in step.
-const INDIAN_MOBILE = /^[6-9]\d{9}$/
-const INTERNATIONAL = /^\+?\d{7,15}$/
+// Every real phone number is accepted, Indian or international — the hospital
+// would rather ring an unusual number than turn a patient away over a format.
+// See src/lib/phone.js, the client mirror; keep the two in step.
+const digitCount = (value) => String(value).replace(/\D/g, '').length
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 export const normalisePhone = (value) =>
@@ -39,9 +38,8 @@ export function requireString(value, field, { min = 1, max = 500 } = {}) {
 
 export function requirePhone(value, field = 'phone') {
   const phone = normalisePhone(value)
-  if (!INDIAN_MOBILE.test(phone) && !INTERNATIONAL.test(phone)) {
-    throw badRequest('INVALID_PHONE', 'Invalid phone number', { field })
-  }
+  const n = digitCount(phone)
+  if (n < 6 || n > 15) throw badRequest('INVALID_PHONE', 'Invalid phone number', { field })
   return phone
 }
 

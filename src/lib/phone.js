@@ -34,8 +34,12 @@ export function normalisePhone(value) {
  */
 export function isValidPhone(value) {
   const phone = normalisePhone(value)
-  if (/^[6-9]\d{9}$/.test(phone)) return true // Indian mobile
-  return /^\+?\d{7,15}$/.test(phone) // international
+  // Count only the digits, so formatting never decides validity. Six is the
+  // shortest real subscriber number in use anywhere; fifteen is the E.164 cap.
+  // Between those, accept anything — the hospital would rather ring a slightly
+  // odd number than turn a patient away over a format it did not expect.
+  const digits = phone.replace(/\D/g, '')
+  return digits.length >= 6 && digits.length <= 15
 }
 
 /** Group for legibility: Indian numbers as 5+5, others left as dialled. */

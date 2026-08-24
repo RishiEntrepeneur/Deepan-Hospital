@@ -547,7 +547,7 @@ export default function Account({ auth, upcomingCount, onNavigate, onBook }) {
             <h1 className="truncate text-xl font-extrabold text-slate-900">
               {user.fullName || t('account.completeProfileTitle')}
             </h1>
-            <p className="text-sm text-slate-500">+91 {user.phone}</p>
+            <p className="text-sm text-slate-500">{user.phone}</p>
           </div>
         </div>
 

@@ -35,7 +35,7 @@ import BrandMark from './BrandMark'
  *     chapters, no animation, no auto-entry — because a sequence that moves
  *     under you is exactly what that setting is asking us not to do.
  */
-export default function Opening({ onEnter, onBook, onPrivacy }) {
+export default function Opening({ onEnter, onBook, onTour, onPrivacy }) {
   const { t, lang, setLang } = useLanguage()
   const scrollRef = useRef(null)
   const canvasRef = useRef(null)
@@ -369,7 +369,7 @@ export default function Opening({ onEnter, onBook, onPrivacy }) {
                 </button>
                 <button
                   type="button"
-                  onClick={enterOnce}
+                  onClick={onTour ?? enterOnce}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 px-6 py-3.5 text-base font-semibold transition hover:border-brand-400 active:scale-[0.98]"
                 >
                   {t('opening.browse')}

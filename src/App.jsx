@@ -576,6 +576,15 @@ export default function App() {
               closeOpening();
               openBooking();
             }}
+            onTour={() => {
+              // "Look around first" enters the site and then runs the
+              // walkthrough over the home page — the tour the patient expected
+              // when they chose to be shown around, rather than being dropped
+              // on the home page with nothing happening.
+              closeOpening();
+              navigate("home");
+              setTourOpen(true);
+            }}
             onPrivacy={() => {
               closeOpening();
               navigate("privacy");
