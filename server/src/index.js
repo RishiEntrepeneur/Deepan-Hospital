@@ -81,8 +81,28 @@ app.use('/api', notFoundHandler)
 if (fs.existsSync(path.join(clientDir, 'index.html'))) {
   // redirect:false so a client route like /doctors is not 301'd to /doctors/;
   // it falls straight through to the index.html handler below.
-  app.use(express.static(clientDir, { index: false, maxAge: '1h', redirect: false }))
+  //
+  // Asset filenames carry a content hash, so a given file never changes — cache
+  // it hard. index.html is the opposite: it names which hashed files this build
+  // uses, so it must be revalidated every time, or a browser keeps loading the
+  // previous deploy's files after they have been replaced and the page goes
+  // blank. That is set explicitly on the sendFile below.
+  app.use(
+    express.static(clientDir, {
+      index: false,
+      redirect: false,
+      setHeaders(res, filePath) {
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+        } else {
+          res.setHeader('Cache-Control', 'no-cache')
+        }
+      },
+    }),
+  )
   app.get(/^\/(?!api\/).*/, (_req, res, next) => {
+    // Always revalidate the entry document, so a new build is picked up at once.
+    res.setHeader('Cache-Control', 'no-cache')
     res.sendFile(path.join(clientDir, 'index.html'), (error) => error && next())
   })
 } else {
