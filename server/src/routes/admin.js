@@ -428,6 +428,77 @@ adminRouter.get(
 )
 
 /* ------------------------------------------------------------------ *
+ * Review moderation — nothing a patient writes goes public unseen
+ * ------------------------------------------------------------------ *
+ * Patients submit reviews on the public router; they sit 'pending' until a
+ * staff member here approves or rejects them. Only 'approved' reviews are ever
+ * shown on the site, so this is the gate that keeps spam and anything hurtful
+ * off a hospital's front page.
+ */
+const reviewsByStatus = db.prepare(`
+  SELECT r.*, d.name_en AS doctor_name, a.date AS visit_date
+  FROM reviews r
+  LEFT JOIN doctors d ON d.id = r.doctor_id
+  LEFT JOIN appointments a ON a.id = r.appointment_id
+  WHERE r.status = ?
+  ORDER BY r.created_at ASC
+  LIMIT 200
+`)
+const reviewCounts = db.prepare('SELECT status, COUNT(*) AS n FROM reviews GROUP BY status')
+const oneReview = db.prepare('SELECT * FROM reviews WHERE id = ?')
+const setReviewStatus = db.prepare(
+  'UPDATE reviews SET status = ?, moderated_at = ?, moderated_by = ? WHERE id = ?',
+)
+
+function presentReviewForDesk(row) {
+  return {
+    id: row.id,
+    rating: row.rating,
+    comment: row.comment,
+    name: row.display_name,
+    status: row.status,
+    doctorName: row.doctor_name || null,
+    visitDate: row.visit_date || null,
+    createdAt: row.created_at,
+    moderatedAt: row.moderated_at || null,
+  }
+}
+
+adminRouter.get(
+  '/reviews',
+  loadSession,
+  requireStaff(),
+  asyncRoute(async (req, res) => {
+    const status = requireEnum(String(req.query.status ?? 'pending'), ['pending', 'approved', 'rejected'], 'status')
+    const counts = { pending: 0, approved: 0, rejected: 0 }
+    for (const row of reviewCounts.all()) counts[row.status] = Number(row.n)
+    res.json({ counts, reviews: reviewsByStatus.all(status).map(presentReviewForDesk) })
+  }),
+)
+
+adminRouter.post(
+  '/reviews/:id/moderate',
+  loadSession,
+  requireStaff(),
+  asyncRoute(async (req, res) => {
+    const review = oneReview.get(req.params.id)
+    if (!review) throw notFound('REVIEW_NOT_FOUND')
+    const decision = requireEnum(String(req.body?.decision ?? ''), ['approved', 'rejected'], 'decision')
+
+    setReviewStatus.run(decision, nowIso(), req.staff.id, review.id)
+    audit({
+      actorType: 'staff',
+      actorId: req.staff.id,
+      action: decision === 'approved' ? 'review.approved' : 'review.rejected',
+      entity: 'review',
+      entityId: review.id,
+      ip: req.clientIp,
+    })
+    res.json({ ok: true, id: review.id, status: decision })
+  }),
+)
+
+/* ------------------------------------------------------------------ *
  * Klinique worklist — what reception still has to enter
  * ------------------------------------------------------------------ */
 /*

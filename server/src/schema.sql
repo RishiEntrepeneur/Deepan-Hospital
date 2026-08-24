@@ -447,3 +447,37 @@ CREATE TABLE IF NOT EXISTS desk_devices (
   last_used_at TEXT,
   revoked_at   TEXT
 );
+
+/* ------------------------------------------------------------------ *
+ * Patient reviews.
+ *
+ * Every review hangs off one real, completed appointment — so only a patient
+ * who actually visited can leave one, and only once per visit (appointment_id
+ * is UNIQUE). Nothing a patient writes appears on the public site until a staff
+ * member approves it: `status` starts at 'pending' and the front end only ever
+ * shows 'approved'. That keeps spam and anything hurtful off a hospital's page
+ * without turning away genuine feedback.
+ *
+ * patient_id is nullable so an erased patient's row can be unlinked rather than
+ * blocking erasure; in practice the retention job deletes the review outright.
+ * doctor_id is denormalised for display and to show a doctor their own reviews.
+ * ------------------------------------------------------------------ */
+CREATE TABLE IF NOT EXISTS reviews (
+  id             TEXT PRIMARY KEY,
+  appointment_id TEXT NOT NULL UNIQUE REFERENCES appointments(id),
+  patient_id     TEXT REFERENCES patients(id),
+  doctor_id      TEXT REFERENCES doctors(id),
+  rating         INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment        TEXT NOT NULL DEFAULT '',
+  display_name   TEXT NOT NULL DEFAULT '',
+  status         TEXT NOT NULL DEFAULT 'pending'
+                 CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at     TEXT NOT NULL,
+  moderated_at   TEXT,
+  moderated_by   TEXT REFERENCES staff(id)
+);
+
+-- Moderation reads pending oldest-first; the public page reads approved
+-- newest-first. One index by status covers both.
+CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_reviews_doctor ON reviews(doctor_id, status);

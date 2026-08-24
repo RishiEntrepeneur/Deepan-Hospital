@@ -20,6 +20,7 @@ import { appointmentsRouter, settlePastAppointments } from './routes/appointment
 import { paymentsRouter, webhookHandler } from './routes/payments.js'
 import { adminRouter } from './routes/admin.js'
 import { clinicalRouter } from './routes/clinical.js'
+import { reviewsRouter } from './routes/reviews.js'
 import { loadDevice } from './lib/devices.js'
 import { startNotificationWorker } from './lib/notify.js'
 import { startBackups } from './lib/backup.js'
@@ -58,6 +59,7 @@ app.use('/api/doctors', doctorRouter)
 app.use('/api/appointments', appointmentsRouter)
 app.use('/api/payments', paymentsRouter)
 app.use('/api/admin', adminRouter)
+app.use('/api/reviews', reviewsRouter)
 app.use('/api', clinicalRouter)
 
 /*

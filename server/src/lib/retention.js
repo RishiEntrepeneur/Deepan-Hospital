@@ -56,6 +56,10 @@ export function runRetention() {
     .all()
   for (const row of erasable) {
     db.prepare('UPDATE appointments SET patient_id = NULL WHERE patient_id = ?').run(row.id)
+    // A review is feedback, not a record the hospital must keep — it holds the
+    // patient's own words, so it goes with them, and its FK would block the
+    // delete besides.
+    db.prepare('DELETE FROM reviews WHERE patient_id = ?').run(row.id)
     db.prepare('DELETE FROM patients WHERE id = ?').run(row.id)
   }
   if (erasable.length) removed.erased_patients = erasable.length
@@ -88,6 +92,7 @@ export function exportPatient(patientId) {
       patientId,
     ),
     medicalRecords: one('SELECT * FROM medical_records WHERE patient_id = ?', patientId),
+    reviews: one('SELECT * FROM reviews WHERE patient_id = ?', patientId),
     // tokens carry no patient_id — they hang off the appointment.
     tokens: one(
       'SELECT * FROM tokens WHERE appointment_id IN (SELECT id FROM appointments WHERE patient_id = ?)',
