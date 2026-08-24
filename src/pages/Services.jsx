@@ -1,5 +1,5 @@
 import { useLanguage } from '../i18n/context'
-import { DEPARTMENTS, FACILITIES } from '../data/hospital'
+import { DEPARTMENTS, CONFIRMED_FACILITIES } from '../data/hospital'
 import DepartmentCard from '../components/DepartmentCard'
 
 export default function Services({ onSelectDepartment }) {
@@ -38,7 +38,7 @@ export default function Services({ onSelectDepartment }) {
         <p className="mt-2 text-slate-600">{t('services.facilitiesSub')}</p>
 
         <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {FACILITIES.map((facility) => {
+          {CONFIRMED_FACILITIES.map((facility) => {
             const Icon = facility.icon
             return (
               <li

@@ -1,4 +1,4 @@
-import { DEPARTMENTS, DOCTORS, FACILITIES, GRADES, HOSPITAL, getDepartment } from '../data/hospital'
+import { DEPARTMENTS, DOCTORS, CONFIRMED_FACILITIES, GRADES, HOSPITAL, getDepartment } from '../data/hospital'
 import { GLOSSARY } from '../data/glossary'
 import { HEALTH_TOPICS, NUTRITION_HINTS } from '../data/healthTips'
 import { availabilityLabel, formatFee, isDoctorAvailableOn, sessionRangeLabel } from './schedule'
@@ -381,7 +381,9 @@ export function answer(rawQuery, ctx) {
   }
 
   /* --- Facilities: pharmacy, lab, scan, insurance, ambulance, rooms --- */
-  const facility = FACILITIES.find((item) => {
+  // Confirmed only: the assistant telling somebody there is an ICU here
+  // would be worse than the page saying it, because it sounds like an answer.
+  const facility = CONFIRMED_FACILITIES.find((item) => {
     // The id matters as well as the name — "Free Wi-Fi" splits into fragments
     // that never match how anyone actually types "wifi".
     const keys = [item.id, ...normalise(tl(item.name)).split(' ')].filter((word) => word.length > 2)
