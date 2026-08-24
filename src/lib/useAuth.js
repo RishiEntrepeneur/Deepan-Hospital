@@ -77,13 +77,13 @@ export function useAuth() {
   }, [])
 
   const login = useCallback(
-    async (phone, password) => applySession(await api.auth.login(phone, password)),
+    async (phone, password, captcha) => applySession(await api.auth.login(phone, password, captcha)),
     [applySession],
   )
 
   const register = useCallback(
-    async (phone, password, fullName, bookingReference) =>
-      applySession(await api.auth.register(phone, password, fullName, bookingReference)),
+    async (phone, password, fullName, bookingReference, captcha) =>
+      applySession(await api.auth.register(phone, password, fullName, bookingReference, captcha)),
     [applySession],
   )
 

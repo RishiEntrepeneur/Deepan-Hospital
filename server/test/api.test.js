@@ -61,6 +61,19 @@ async function call(who, endpoint, { method = 'GET', body, raw = false } = {}) {
   return { status: res.status, json }
 }
 
+/**
+ * Sign-up asks for a sum to be answered, so a script cannot create accounts in
+ * bulk. These tests are exactly such a script, so they solve it the way a
+ * patient would — read the question, do the arithmetic, send the answer back
+ * with the token it came with.
+ */
+async function solveCaptcha(who) {
+  const { json } = await call(who, '/auth/captcha')
+  const [, a, op, b] = json.question.match(/^(\d+)\s*([+×])\s*(\d+)$/)
+  const answer = op === '+' ? Number(a) + Number(b) : Number(a) * Number(b)
+  return { captchaToken: json.token, captchaAnswer: answer }
+}
+
 const waitForHealth = async () => {
   for (let i = 0; i < 100; i++) {
     try {
@@ -338,7 +351,7 @@ describe('claiming a number that already has records', () => {
   it('refuses to set a password on it with the number alone', async () => {
     const res = await call('stranger', '/auth/register', {
       method: 'POST',
-      body: { phone, password: 'stranger-password' },
+      body: { phone, password: 'stranger-password', ...(await solveCaptcha('stranger')) },
     })
     assert.equal(res.status, 400, 'a stranger claimed an account with only a phone number')
     assert.equal(res.json.error.code, 'CLAIM_PROOF_REQUIRED')
@@ -347,7 +360,12 @@ describe('claiming a number that already has records', () => {
   it('refuses a booking reference belonging to somebody else', async () => {
     const res = await call('stranger', '/auth/register', {
       method: 'POST',
-      body: { phone, password: 'stranger-password', bookingReference: 'DH-000000' },
+      body: {
+        phone,
+        password: 'stranger-password',
+        bookingReference: 'DH-000000',
+        ...(await solveCaptcha('stranger')),
+      },
     })
     assert.equal(res.status, 400)
     assert.equal(res.json.error.code, 'CLAIM_PROOF_REQUIRED')
@@ -356,7 +374,12 @@ describe('claiming a number that already has records', () => {
   it('accepts the patient\u2019s own booking reference', async () => {
     const res = await call('claimant', '/auth/register', {
       method: 'POST',
-      body: { phone, password: 'my-own-password', bookingReference: reference },
+      body: {
+        phone,
+        password: 'my-own-password',
+        bookingReference: reference,
+        ...(await solveCaptcha('claimant')),
+      },
     })
     assert.equal(res.status, 201, JSON.stringify(res.json))
     const me = await call('claimant', '/auth/me')
@@ -1522,7 +1545,7 @@ describe('patient sign-in with a password', () => {
   it('creates an account and signs in immediately', async () => {
     const res = await call('pw', '/auth/register', {
       method: 'POST',
-      body: { phone, password, fullName: 'Password Patient' },
+      body: { phone, password, fullName: 'Password Patient', ...(await solveCaptcha('pw')) },
     })
     assert.equal(res.status, 201)
     assert.equal(res.json.patient.fullName, 'Password Patient')
@@ -1534,7 +1557,7 @@ describe('patient sign-in with a password', () => {
   it('refuses a password shorter than eight characters', async () => {
     const res = await call('nobody', '/auth/register', {
       method: 'POST',
-      body: { phone: '+919333000112', password: 'short' },
+      body: { phone: '+919333000112', password: 'short', ...(await solveCaptcha('nobody')) },
     })
     assert.equal(res.status, 400)
     assert.equal(res.json.error.code, 'WEAK_PASSWORD')
@@ -1543,9 +1566,37 @@ describe('patient sign-in with a password', () => {
   it('refuses a second account on the same number', async () => {
     const res = await call('nobody', '/auth/register', {
       method: 'POST',
-      body: { phone, password: 'another-password-here' },
+      body: { phone, password: 'another-password-here', ...(await solveCaptcha('nobody')) },
     })
     assert.equal(res.status, 409)
+  })
+
+  it('will not create an account without answering the sum', async () => {
+    // The whole point of the captcha: a script that skips it gets nowhere,
+    // and it is refused before the password is even considered.
+    const res = await call('nobody', '/auth/register', {
+      method: 'POST',
+      body: { phone: '+919333000119', password: 'a-perfectly-good-password' },
+    })
+    assert.equal(res.status, 400)
+    assert.equal(res.json.error.code, 'CAPTCHA_REQUIRED')
+
+    const after = await call('nobody', '/auth/me')
+    assert.equal(after.json.patient, null, 'a session was started without the captcha')
+  })
+
+  it('will not accept a made-up captcha token', async () => {
+    const res = await call('nobody', '/auth/register', {
+      method: 'POST',
+      body: {
+        phone: '+919333000120',
+        password: 'a-perfectly-good-password',
+        captchaToken: 'made.up.token',
+        captchaAnswer: 7,
+      },
+    })
+    assert.equal(res.status, 400)
+    assert.match(res.json.error.code, /^CAPTCHA_/)
   })
 
   it('answers a wrong password and an unknown number identically', async () => {

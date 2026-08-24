@@ -4,6 +4,7 @@ import { db, nowIso, transaction } from '../db.js'
 import { generateOtp, hashSecret, randomSalt, uuid, verifySecret } from '../lib/crypto.js'
 import { rateLimit } from '../lib/rateLimit.js'
 import { audit } from '../lib/audit.js'
+import { issueChallenge, requireCaptcha, verifyChallenge } from '../lib/captcha.js'
 import { erasePatient, exportPatient } from '../lib/retention.js'
 import {
   badRequest,
@@ -215,10 +216,44 @@ function assertMayClaim(existing, phone, supplied) {
   )
 }
 
+/* ------------------------------------------------------------------ *
+ * Captcha
+ * ------------------------------------------------------------------ *
+ * A sum to answer, so a script cannot create accounts in bulk. The question is
+ * handed out here; the answer never leaves the server (see lib/captcha.js).
+ *
+ * Sign-up always asks. Signing in only asks once an address has got the
+ * password wrong repeatedly — a patient who signs in normally is never made to
+ * do arithmetic, and somebody working through a password list is.
+ */
+authRouter.get(
+  '/captcha',
+  rateLimit({ limit: 60, windowMs: 15 * 60 * 1000, code: 'CAPTCHA_LIMIT' }),
+  (_req, res) => {
+    res.json(issueChallenge())
+  },
+)
+
+/** Failed sign-ins per address, to decide when to start asking for a sum. */
+const FAILURES_BEFORE_CAPTCHA = 3
+const loginFailures = new Map()
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, entry] of loginFailures) if (entry.until <= now) loginFailures.delete(ip)
+}, 60_000).unref()
+
+const loginNeedsCaptcha = (ip) => (loginFailures.get(ip)?.count ?? 0) >= FAILURES_BEFORE_CAPTCHA
+
+/** Tells the sign-in form whether it must show a sum before it submits. */
+authRouter.get('/login-challenge', (req, res) => {
+  res.json({ required: loginNeedsCaptcha(req.clientIp) })
+})
+
 /** Create an account, or set a password on one that has none yet. */
 authRouter.post(
   '/register',
   registerLimiter,
+  requireCaptcha,
   asyncRoute(async (req, res) => {
     const phone = requirePhone(req.body?.phone)
     const password = String(req.body?.password ?? '')
@@ -264,6 +299,12 @@ authRouter.post(
   '/login',
   loginLimiter,
   asyncRoute(async (req, res) => {
+    // Once this address has failed a few times, it has to answer a sum before
+    // the password is even checked — that is what makes a password list slow.
+    if (loginNeedsCaptcha(req.clientIp)) {
+      verifyChallenge(req.body?.captchaToken, req.body?.captchaAnswer)
+    }
+
     const phone = requirePhone(req.body?.phone)
     const password = String(req.body?.password ?? '')
     const patient = findPatientByPhone.get(phone)
@@ -281,10 +322,17 @@ authRouter.post(
         : (hashSecret(password, 'timing-equaliser'), false)
 
     if (!ok) {
+      const entry = loginFailures.get(req.clientIp)
+      loginFailures.set(req.clientIp, {
+        count: (entry?.count ?? 0) + 1,
+        until: Date.now() + 60 * 60 * 1000,
+      })
       audit({ actorType: 'patient', action: 'auth.signin_failed', ip: req.clientIp })
       throw unauthorized('INVALID_CREDENTIALS')
     }
 
+    // A real sign-in clears the suspicion against this address.
+    loginFailures.delete(req.clientIp)
     touchLogin.run(nowIso(), patient.id)
     startSession(res, req, patient.id, 'patient')
     audit({ actorType: 'patient', actorId: patient.id, action: 'auth.signed_in', ip: req.clientIp })

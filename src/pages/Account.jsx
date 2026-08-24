@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import {
   CalendarCheck,
   CircleAlert,
@@ -12,6 +12,7 @@ import { useLanguage } from '../i18n/context'
 import { GENDERS } from '../data/hospital'
 import { api, errorKeyFor } from '../lib/api'
 import { rememberedPhone } from '../lib/rememberedPhone'
+import CaptchaField from '../components/CaptchaField'
 import { cx } from '../lib/cx'
 
 const NAME_PATTERN = /^[\p{L}\p{M}\s.'-]+$/u
@@ -215,17 +216,48 @@ function PatientSignIn({ auth, onBack, onDone }) {
   const [reference, setReference] = useState('')
   const ids = { phone: useId(), password: useId(), name: useId(), reference: useId() }
 
+  /*
+   * Signing up always answers a sum. Signing in only does once this address has
+   * got the password wrong a few times — a patient signing in normally is never
+   * made to do arithmetic, and somebody working through a password list is.
+   */
+  const [captcha, setCaptcha] = useState(null)
+  const [loginNeedsCaptcha, setLoginNeedsCaptcha] = useState(false)
+  const [refreshCaptcha, setRefreshCaptcha] = useState(null)
+  const captchaShown = mode === 'register' || loginNeedsCaptcha
+
+  useEffect(() => {
+    if (mode !== 'signin') return undefined
+    const controller = new AbortController()
+    api.auth
+      .loginChallenge(controller.signal)
+      .then((data) => setLoginNeedsCaptcha(Boolean(data.required)))
+      .catch(() => {})
+    return () => controller.abort()
+  }, [mode])
+
   const submit = async (event) => {
     event.preventDefault()
     setErrorKey(null)
     setBusy(true)
     try {
-      if (mode === 'signin') await auth.login(phone.trim(), password)
-      else await auth.register(phone.trim(), password, fullName.trim(), reference.trim())
+      const proof = captchaShown ? captcha : undefined
+      if (mode === 'signin') await auth.login(phone.trim(), password, proof)
+      else await auth.register(phone.trim(), password, fullName.trim(), reference.trim(), proof)
       rememberPhone(phone.trim())
       onDone?.()
     } catch (error) {
       if (error?.code === 'CLAIM_PROOF_REQUIRED') setClaimNeeded(true)
+      // A tried sum is spent on the server, so any refusal needs a fresh one —
+      // and a wrong password may be what turns the sum on for sign-in.
+      if (String(error?.code ?? '').startsWith('CAPTCHA')) refreshCaptcha?.()
+      if (mode === 'signin' && error?.code === 'INVALID_CREDENTIALS') {
+        api.auth
+          .loginChallenge()
+          .then((data) => setLoginNeedsCaptcha(Boolean(data.required)))
+          .catch(() => {})
+        refreshCaptcha?.()
+      }
       setErrorKey(errorKeyFor(error))
     } finally {
       setBusy(false)
@@ -319,6 +351,10 @@ function PatientSignIn({ auth, onBack, onDone }) {
               className={field}
             />
           </div>
+        )}
+
+        {captchaShown && (
+          <CaptchaField value={captcha} onChange={setCaptcha} onReady={(fn) => setRefreshCaptcha(() => fn)} />
         )}
 
         {errorKey && (

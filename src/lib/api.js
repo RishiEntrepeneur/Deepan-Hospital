@@ -68,13 +68,31 @@ export const api = {
     saveProfile: (profile) => request('/auth/profile', { method: 'POST', body: profile }),
     signOut: () => request('/auth/signout', { method: 'POST' }),
     /* Password sign-in — no code, no SMS. */
-    register: (phone, password, fullName, bookingReference) =>
+    register: (phone, password, fullName, bookingReference, captcha) =>
       request('/auth/register', {
         method: 'POST',
-        body: { phone, password, fullName, bookingReference },
+        body: {
+          phone,
+          password,
+          fullName,
+          bookingReference,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
+        },
       }),
-    login: (phone, password) =>
-      request('/auth/login', { method: 'POST', body: { phone, password } }),
+    login: (phone, password, captcha) =>
+      request('/auth/login', {
+        method: 'POST',
+        body: {
+          phone,
+          password,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
+        },
+      }),
+    /* The sum a patient answers, and whether signing in needs one yet. */
+    captcha: (signal) => request('/auth/captcha', { signal }),
+    loginChallenge: (signal) => request('/auth/login-challenge', { signal }),
     consent: (version) => request('/auth/consent', { method: 'POST', body: { version } }),
     exportData: (signal) => request('/auth/export', { signal }),
     erase: () => request('/auth/erase', { method: 'POST' }),
@@ -227,6 +245,10 @@ export function errorKeyFor(error) {
     // Register/sign-in throttle — without this it fell through to the generic
     // "something went wrong", which read like the account itself was broken.
     SIGNIN_LIMIT: 'error.tooManyAttempts',
+    CAPTCHA_REQUIRED: 'captcha.errorRequired',
+    CAPTCHA_INVALID: 'captcha.errorWrong',
+    CAPTCHA_EXPIRED: 'captcha.errorExpired',
+    CAPTCHA_USED: 'captcha.errorExpired',
     ACCOUNT_SIGNIN_LIMIT: 'error.tooManyAttempts',
     STAFF_SIGNIN_LIMIT: 'error.tooManyAttempts',
     BOOKING_LIMIT: 'error.tooManyAttempts',

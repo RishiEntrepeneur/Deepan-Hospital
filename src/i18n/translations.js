@@ -743,6 +743,15 @@ export const translations = {
     'reviews.errorGeneric': 'Sorry, we could not save your review. Please try again.',
     'reviews.chooseRating': 'Please choose a star rating.',
     'reviews.close': 'Close',
+
+    /* ---------- Captcha ---------- */
+    'captcha.label': 'Just checking you are a person',
+    'captcha.hint': 'Answer the sum so we know you are not a computer.',
+    'captcha.aria': 'What is {sum}?',
+    'captcha.newSum': 'Give me a different sum',
+    'captcha.errorRequired': 'Please answer the sum to continue.',
+    'captcha.errorWrong': 'That answer was not right. Please try the new sum.',
+    'captcha.errorExpired': 'That sum has expired. Please answer the new one.',
   },
 
   ta: {
@@ -1452,6 +1461,15 @@ export const translations = {
     'reviews.errorGeneric': 'மன்னிக்கவும், உங்கள் கருத்தைச் சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
     'reviews.chooseRating': 'தயவுசெய்து ஒரு நட்சத்திர மதிப்பீட்டைத் தேர்ந்தெடுக்கவும்.',
     'reviews.close': 'மூடு',
+
+    /* ---------- Captcha ---------- */
+    'captcha.label': 'நீங்கள் ஒரு நபர் என்பதைச் சரிபார்க்கிறோம்',
+    'captcha.hint': 'நீங்கள் கணினி இல்லை என்பதை அறிய இந்தக் கணக்கிற்கு விடை அளியுங்கள்.',
+    'captcha.aria': '{sum} எவ்வளவு?',
+    'captcha.newSum': 'வேறு ஒரு கணக்கு கொடுங்கள்',
+    'captcha.errorRequired': 'தொடர கணக்கிற்கு விடை அளிக்கவும்.',
+    'captcha.errorWrong': 'அந்த விடை சரியில்லை. புதிய கணக்கை முயற்சிக்கவும்.',
+    'captcha.errorExpired': 'அந்தக் கணக்கின் காலம் முடிந்தது. புதியதற்கு விடை அளியுங்கள்.',
   },
 
   // Hindi lives in its own file — see the note at the top of this one.
