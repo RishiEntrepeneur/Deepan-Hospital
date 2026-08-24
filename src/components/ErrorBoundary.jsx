@@ -20,6 +20,7 @@ import { Component } from 'react'
  */
 
 const RELOAD_GUARD = 'deepan_chunk_reloaded'
+const CACHE_BUST = '_r'
 
 function looksLikeStaleChunk(error) {
   const text = `${error?.name ?? ''} ${error?.message ?? ''}`
@@ -32,10 +33,45 @@ function looksLikeStaleChunk(error) {
   )
 }
 
+/**
+ * Reload in a way that actually fetches a new document.
+ *
+ * `location.reload()` is allowed to re-serve the cached page, and after a
+ * deploy that cached page is the whole problem: it names asset files that no
+ * longer exist, so reloading it fails in exactly the same way and the patient
+ * sees the error screen anyway. A one-time query string cannot be answered
+ * from the cache, so the browser has to ask the server — which returns the new
+ * index.html naming the new files.
+ *
+ * The parameter is dropped from the address bar afterwards so nobody is left
+ * with it in a bookmark, and the hash is preserved so a reload from the desk
+ * comes back to the desk.
+ */
+function freshReload() {
+  const url = new URL(window.location.href)
+  url.searchParams.set(CACHE_BUST, String(Date.now()))
+  window.location.replace(url.toString())
+}
+
+/*
+ * Tidy the marker away once the fresh page is running, so nobody bookmarks or
+ * shares a URL with it. Done here rather than in the app because this module
+ * loads before anything that could itself fail.
+ */
+try {
+  const url = new URL(window.location.href)
+  if (url.searchParams.has(CACHE_BUST)) {
+    url.searchParams.delete(CACHE_BUST)
+    window.history.replaceState(null, '', url.toString())
+  }
+} catch {
+  /* no history API, or a URL we cannot parse — harmless either way */
+}
+
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
-    this.state = { crashed: false, recovering: false }
+    this.state = { crashed: false, recovering: false, detail: null }
   }
 
   static getDerivedStateFromError(error) {
@@ -53,14 +89,19 @@ export default class ErrorBoundary extends Component {
       if (!reloadedBefore) {
         // Show a neutral "updating" screen for the instant before the reload.
         try {
-          window.location.reload()
+          freshReload()
         } catch {
           /* ignore */
         }
         return { crashed: false, recovering: true }
       }
     }
-    return { crashed: true, recovering: false }
+    /*
+     * Keep the message. It is never shown to a patient, but a member of staff
+     * who can read out "Cannot read properties of undefined (reading slot)"
+     * turns an unreproducible report into a fixable one.
+     */
+    return { crashed: true, recovering: false, detail: String(error?.message ?? error ?? '') }
   }
 
   componentDidCatch(error, info) {
@@ -75,7 +116,7 @@ export default class ErrorBoundary extends Component {
     } catch {
       /* ignore */
     }
-    window.location.reload()
+    freshReload()
   }
 
   render() {
@@ -89,21 +130,51 @@ export default class ErrorBoundary extends Component {
     }
 
     if (this.state.crashed) {
+      /*
+       * Who is reading this?
+       *
+       * "Please tell the front desk" is exactly wrong when the front desk is
+       * the one looking at it, and "we can book it over the phone" is advice
+       * for a patient, not for the person who would be taking that call. The
+       * hash is the one thing still readable after a crash — no state, no
+       * context, nothing that could itself have thrown.
+       */
+      const atDesk = typeof window !== 'undefined' && /^#\/?desk/.test(window.location.hash)
+
       return (
         <div style={STYLES.wrap} role="alert">
           <div style={STYLES.card}>
             <div style={STYLES.mark} aria-hidden="true">＋</div>
             <h1 style={STYLES.title}>Something went wrong</h1>
-            <p style={STYLES.body}>
-              The page ran into a problem. Reloading usually fixes it. If it keeps
-              happening, please tell the front desk.
-            </p>
+
+            {atDesk ? (
+              <p style={STYLES.body}>
+                The desk ran into a problem. Reloading usually fixes it, and no
+                booking has been lost — everything is saved on the server.
+              </p>
+            ) : (
+              <p style={STYLES.body}>
+                The page ran into a problem. Reloading usually fixes it. If it keeps
+                happening, please tell the front desk.
+              </p>
+            )}
+
             <button type="button" onClick={this.handleReload} style={STYLES.button}>
               Reload the page
             </button>
-            <p style={STYLES.help}>
-              Or call the hospital directly — we can book your appointment over the phone.
-            </p>
+
+            {atDesk ? (
+              <>
+                <p style={STYLES.help}>
+                  If it keeps happening, send this line to whoever looks after the website.
+                </p>
+                {this.state.detail && <p style={STYLES.detail}>{this.state.detail}</p>}
+              </>
+            ) : (
+              <p style={STYLES.help}>
+                Or call the hospital directly — we can book your appointment over the phone.
+              </p>
+            )}
           </div>
         </div>
       )
@@ -162,6 +233,20 @@ const STYLES = {
     minHeight: '44px',
   },
   help: { margin: '20px 0 0', fontSize: '13px', color: '#a8a294' },
+  /* Staff only: the actual fault, in a form somebody can copy out. */
+  detail: {
+    margin: '10px 0 0',
+    padding: '8px 10px',
+    background: '#f4f2ec',
+    border: '1px solid #e7e3d9',
+    borderRadius: '6px',
+    fontFamily: 'ui-monospace, Menlo, Consolas, monospace',
+    fontSize: '11.5px',
+    lineHeight: 1.45,
+    color: '#5b564c',
+    wordBreak: 'break-word',
+    textAlign: 'left',
+  },
   muted: { marginTop: '16px', fontSize: '14px', color: '#5b564c' },
   spinner: {
     width: '28px',
