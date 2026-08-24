@@ -142,6 +142,9 @@ export const api = {
   /** Staff-only. Everything here is behind a staff session cookie. */
   desk: {
     me: (signal) => request('/admin/me', { signal }),
+    // A doctor's own appointments for the day (read-only).
+    myDay: (date, signal) =>
+      request(`/admin/my-day${date ? `?date=${date}` : ''}`, { signal }),
     signIn: (username, password, as) =>
       request('/admin/signin', { method: 'POST', body: { username, password, as } }),
     signOut: () => request('/admin/signout', { method: 'POST' }),

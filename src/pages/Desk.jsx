@@ -26,6 +26,7 @@ import { getDoctor } from '../data/hospital'
 import { formatTime, todayKey } from '../lib/schedule'
 import { cx } from '../lib/cx'
 import KliniquePortal from '../components/KliniquePortal'
+import DoctorPortal from '../components/DoctorPortal'
 import KliniqueTransfer from '../components/KliniqueTransfer'
 import TellPatient from '../components/TellPatient'
 import { useLiveDesk } from '../lib/useLiveDesk'
@@ -113,7 +114,11 @@ function SignIn({ onSignedIn }) {
     setBusy(true)
     setError(null)
     try {
-      const data = await api.desk.signIn(username, password)
+      // A doctor account's username starts with 'doctor' by convention, and the
+      // server keys the real distinction on doctor_id. Declaring 'doctor' here
+      // lets a consultant sign in on the same form as reception.
+      const as = /^doctor/i.test(username.trim()) ? 'doctor' : 'staff'
+      const data = await api.desk.signIn(username.trim(), password, as)
       onSignedIn(data.staff)
     } catch (err) {
       setError(err.code === 'INVALID_CREDENTIALS' ? 'Incorrect username or password.' : err.message)
@@ -1280,6 +1285,16 @@ export default function Desk({ onSignedOut }) {
     )
   }
   if (!staff) return <SignIn onSignedIn={setStaff} />
+
+  /*
+   * A doctor sees their own day, not the reception desk. Doctor accounts are
+   * staff rows with a doctor_id set; reception and the manager have none. The
+   * server enforces the same split on every endpoint, so this is presentation,
+   * not the security boundary.
+   */
+  if (staff.doctorId) {
+    return <DoctorPortal staff={staff} onSignedOut={() => { setStaff(null); onSignedOut?.() }} />
+  }
 
   const today = todayKey()
   const todays = data.appointments.filter((a) => a.date === today && a.status !== 'cancelled')

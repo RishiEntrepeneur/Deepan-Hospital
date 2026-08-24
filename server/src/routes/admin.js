@@ -393,6 +393,41 @@ adminRouter.get(
 )
 
 /* ------------------------------------------------------------------ *
+ * A doctor's own day
+ * ------------------------------------------------------------------ *
+ *
+ * The doctor portal, and deliberately the whole of it: one read-only list of
+ * who is coming to see THIS doctor today. Writing notes and prescriptions is
+ * Klinique's job — this screen exists so a consultant can glance at their list
+ * without opening the clinical system, and it links across to Klinique for the
+ * actual work. Scoped hard to the signed-in doctor's own id, so one doctor can
+ * never read another's list; reception (no doctor_id) gets a plain 403.
+ */
+const doctorDay = db.prepare(`
+  SELECT * FROM appointments
+  WHERE doctor_id = ? AND date = ? AND status != 'cancelled'
+  ORDER BY CASE WHEN slot IS NULL THEN 1 ELSE 0 END, slot, created_at
+`)
+
+adminRouter.get(
+  '/my-day',
+  loadSession,
+  requireStaff(),
+  asyncRoute(async (req, res) => {
+    if (!req.staff.doctor_id) throw forbidden('NOT_A_DOCTOR')
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(String(req.query.date ?? ''))
+      ? String(req.query.date)
+      : todayKey()
+    const rows = doctorDay.all(req.staff.doctor_id, date)
+    res.json({
+      date,
+      doctorId: req.staff.doctor_id,
+      appointments: rows.map(presentAppointment),
+    })
+  }),
+)
+
+/* ------------------------------------------------------------------ *
  * Klinique worklist — what reception still has to enter
  * ------------------------------------------------------------------ */
 /*
