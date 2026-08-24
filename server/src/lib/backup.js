@@ -19,6 +19,12 @@ import { audit } from './audit.js'
  *   2. Every backup is opened and read back before it counts as taken. A
  *      backup that has never been read is an assumption.
  *
+ * A backup covers the database *and* the files patients uploaded. Those live
+ * outside the database on purpose, so a snapshot of the .db alone would restore
+ * an appointment book full of references to photographs that no longer exist.
+ * The files are mirrored into the same backup folder, which also means the
+ * off-site copy script picks them up without knowing they exist.
+ *
  * It still writes to the same machine. That is a real limitation and the
  * console says so on the first run — off-machine copies are a deployment
  * decision, not something the app can make for you.
@@ -41,6 +47,40 @@ function verify(file) {
   } finally {
     copy.close()
   }
+}
+
+/**
+ * Bring the copy of the uploads folder up to date.
+ *
+ * An attachment is written once and never edited, so "has this name already
+ * been copied?" is the whole comparison — no checksums, no timestamps. Files
+ * the retention job has deleted are dropped from the mirror too, so a backup
+ * does not quietly become the last place a patient's erased photograph lives.
+ */
+function mirrorUploads(backupDir) {
+  const source = config.uploadDir
+  const target = path.join(backupDir, 'files')
+  if (!fs.existsSync(source)) return { copied: 0, removed: 0, total: 0 }
+
+  fs.mkdirSync(target, { recursive: true })
+  const live = new Set(fs.readdirSync(source))
+  const held = new Set(fs.readdirSync(target))
+
+  let copied = 0
+  for (const name of live) {
+    if (held.has(name)) continue
+    fs.copyFileSync(path.join(source, name), path.join(target, name))
+    copied += 1
+  }
+
+  let removed = 0
+  for (const name of held) {
+    if (live.has(name)) continue
+    fs.rmSync(path.join(target, name), { force: true })
+    removed += 1
+  }
+
+  return { copied, removed, total: live.size }
 }
 
 export function takeBackup() {
@@ -66,9 +106,17 @@ export function takeBackup() {
     fs.rmSync(path.join(dir, stale), { force: true })
   }
 
+  // After the snapshot, never before: a file copied first and then deleted by
+  // retention would be restored as an orphan the database knows nothing about.
+  const files = mirrorUploads(dir)
+
   const size = fs.statSync(file).size
-  audit({ actorType: 'system', action: 'backup.taken', detail: { file: path.basename(file), size } })
-  return { file, size, kept: Math.min(kept.length, config.backup.keep) }
+  audit({
+    actorType: 'system',
+    action: 'backup.taken',
+    detail: { file: path.basename(file), size, files },
+  })
+  return { file, size, files, kept: Math.min(kept.length, config.backup.keep) }
 }
 
 let warned = false
@@ -82,12 +130,14 @@ export function startBackups() {
 
   const tick = () => {
     try {
-      const { file, size } = takeBackup()
+      const { file, size, files } = takeBackup()
       if (!warned) {
         warned = true
         console.log(
           `  ✓ Backup written (${Math.round(size / 1024)} KB) — ${path.basename(file)}\n` +
-            '     These sit on this machine. Copy them somewhere else as well.',
+            `     Plus ${files.total} uploaded file${files.total === 1 ? '' : 's'}.\n` +
+            '     These sit on this machine. Copy them somewhere else as well:\n' +
+            '       npm run backup:offsite      (see scripts/backup-offsite.sh)',
         )
       }
     } catch (error) {

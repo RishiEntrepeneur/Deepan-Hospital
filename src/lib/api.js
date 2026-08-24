@@ -212,6 +212,9 @@ export const api = {
     signOut: () => request('/admin/signout', { method: 'POST' }),
     changePassword: (currentPassword, newPassword) =>
       request('/admin/me/password', { method: 'POST', body: { currentPassword, newPassword } }),
+    /** Find a booking by its reference, phone number or name. */
+    findAppointments: (q, signal) =>
+      request(`/admin/appointments?q=${encodeURIComponent(q)}`, { signal }),
     appointments: (params = {}, signal) => {
       const qs = new URLSearchParams(
         Object.entries(params).filter(([, v]) => v),

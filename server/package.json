@@ -28,7 +28,9 @@
     "klinique-doctors": "node --env-file-if-exists=.env scripts/klinique-doctors.js",
     "reg-numbers": "node --env-file-if-exists=.env scripts/reg-numbers.js",
     "hide-incomplete": "node --env-file-if-exists=.env scripts/hide-incomplete-doctors.js",
-    "stats": "node --env-file-if-exists=.env scripts/stats.js"
+    "stats": "node --env-file-if-exists=.env scripts/stats.js",
+    "backup:now": "node --env-file-if-exists=.env scripts/backup-now.js",
+    "backup:offsite": "bash scripts/backup-offsite.sh"
   },
   "dependencies": {
     "express": "^5.1.0"

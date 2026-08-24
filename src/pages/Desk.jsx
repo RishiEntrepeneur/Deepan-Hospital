@@ -29,6 +29,7 @@ import KliniquePortal from '../components/KliniquePortal'
 import DoctorPortal from '../components/DoctorPortal'
 import ReviewModeration from '../components/ReviewModeration'
 import AttachmentStrip from '../components/AttachmentStrip'
+import FindBooking from '../components/desk/FindBooking'
 import KliniqueTransfer from '../components/KliniqueTransfer'
 import TellPatient from '../components/TellPatient'
 import { useLiveDesk } from '../lib/useLiveDesk'
@@ -1341,6 +1342,7 @@ export default function Desk({ onSignedOut }) {
      */
     { id: 'transfer', label: 'To enter in Klinique', count: 0 },
     { id: 'klinique', label: 'Klinique', count: 0 },
+    { id: 'find', label: 'Find a booking', count: 0 },
     { id: 'requests', label: 'New requests', count: pending.length },
     { id: 'today', label: 'Today', count: todays.length },
     { id: 'book', label: 'Book for a caller', count: 0 },
@@ -1759,6 +1761,13 @@ export default function Desk({ onSignedOut }) {
               ))
             )}
           </div>
+        </div>
+      )}
+
+      {/* ---------------- Find a booking ---------------- */}
+      {tab === 'find' && (
+        <div className="mt-6">
+          <FindBooking />
         </div>
       )}
 

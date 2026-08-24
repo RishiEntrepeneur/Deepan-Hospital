@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Copies the database backups somewhere that is not this machine.
+# Copies the backups — database snapshots and the files patients uploaded —
+# somewhere that is not this machine.
 #
 #   ./scripts/backup-offsite.sh
 #
@@ -53,8 +54,13 @@ if ! command -v rclone >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "  Copying $count backup(s) from $source_dir → $remote"
-rclone copy "$source_dir" "$remote" --include '*.db' --stats-one-line
+# Everything in the backup folder, not just the .db files. The snapshots sit
+# beside a `files/` mirror of the photographs and reports patients uploaded;
+# copying only *.db would restore an appointment book full of references to
+# images that no longer exist anywhere.
+files="$(find "$source_dir/files" -type f 2>/dev/null | wc -l | tr -d ' ')"
+echo "  Copying $count snapshot(s) and $files uploaded file(s) from $source_dir → $remote"
+rclone copy "$source_dir" "$remote" --stats-one-line
 
 newest="$(find "$source_dir" -name '*.db' -type f -printf '%T@ %p\n' | sort -rn | head -1 | cut -d' ' -f2-)"
 echo "  ✓ Done. Newest local backup: $(basename "$newest")"

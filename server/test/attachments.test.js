@@ -292,6 +292,53 @@ describe('attachments', () => {
     assert.equal(res.status, 200, 'reception could not open an attachment')
   })
 
+  it('finds a booking from the reference the patient reads out', async () => {
+    const a = await upload('patient', 'image/jpeg', JPEG, 'find.jpg')
+    let free = null
+    for (let i = 1; i <= 14 && !free; i++) {
+      const day = new Date()
+      day.setDate(day.getDate() + i)
+      const key = day.toISOString().slice(0, 10)
+      const avail = await call('patient', `/doctors/${doctorId}/availability?date=${key}`)
+      const open = avail.json?.slots?.find((s) => s.available)
+      if (open) free = { date: key, slot: open.slot }
+    }
+    assert.ok(free, 'no slot free for the search test')
+
+    const booked = await call('patient', '/appointments', {
+      method: 'POST',
+      body: {
+        doctorId,
+        ...free,
+        patient: { name: 'Selvi Ganesan', age: 51, phone, gender: 'female', reason: 'knee pain' },
+        visitType: 'first',
+        attachments: [{ id: a.json.id, token: a.json.token }],
+      },
+    })
+    assert.equal(booked.status, 201, JSON.stringify(booked.json))
+    const reference = booked.json.appointment.id
+
+    // Exactly as read out, and without the "DH-" a patient may skip.
+    for (const term of [reference, reference.replace(/^DH-/, '')]) {
+      const found = await call('desk', `/admin/appointments?q=${encodeURIComponent(term)}`)
+      assert.equal(found.status, 200)
+      assert.equal(found.json.appointments.length, 1, `"${term}" did not find it`)
+      assert.equal(found.json.appointments[0].id, reference)
+      assert.equal(found.json.appointments[0].attachments.length, 1, 'the file did not come with it')
+    }
+
+    // And by the number they booked with.
+    const byPhone = await call('desk', `/admin/appointments?q=${encodeURIComponent('9000000030')}`)
+    assert.ok(
+      byPhone.json.appointments.some((x) => x.id === reference),
+      'searching the phone number did not find the booking',
+    )
+
+    // A stranger cannot search at all.
+    const outsider = await call('nobody', '/admin/appointments?q=DH-AAAAAA')
+    assert.equal(outsider.status, 401)
+  })
+
   it('keeps the stored file out of reach of a path in its name', async () => {
     const res = await upload('patient', 'image/jpeg', JPEG, '../../../etc/passwd.jpg')
     assert.equal(res.status, 201)

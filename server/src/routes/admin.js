@@ -371,6 +371,7 @@ adminRouter.get(
   asyncRoute(async (req, res) => {
     const status = req.query.status ? String(req.query.status) : null
     const date = req.query.date ? String(req.query.date) : null
+    const query = String(req.query.q ?? '').trim()
 
     const clauses = []
     const params = []
@@ -381,6 +382,22 @@ adminRouter.get(
     if (date) {
       clauses.push('date = ?')
       params.push(date)
+    }
+    /*
+     * Search, for the commonest call the desk takes: somebody rings up and
+     * reads out the reference from their slip, or gives the number they booked
+     * with. Reference first because it is exact — matched with or without the
+     * "DH-" the patient may or may not read out — then phone, then name.
+     */
+    if (query) {
+      const bare = query.replace(/^dh-?/i, '')
+      clauses.push('(id = ? OR id = ? OR patient_phone LIKE ? OR patient_name LIKE ?)')
+      params.push(
+        query.toUpperCase(),
+        `DH-${bare.toUpperCase()}`,
+        `%${query.replace(/[\s-]/g, '')}%`,
+        `%${query}%`,
+      )
     }
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''
 
