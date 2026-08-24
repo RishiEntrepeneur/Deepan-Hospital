@@ -112,9 +112,18 @@
 
   /* ---- Type ---- */
   --font-sans: 'Instrument Sans', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
-  --font-display: 'Instrument Serif', 'Noto Serif Tamil', Georgia, serif;
+  /*
+   * Source Serif 4, not a display face.
+   *
+   * The previous serif was a single-weight display cut — handsome at 60px and
+   * mannered everywhere else, and its figures in particular read as styling
+   * rather than as information. This one was drawn for reading: it holds up at
+   * a stat's size, has real weights, and its lining figures line up in a fee
+   * table without looking decorative.
+   */
+  --font-display: 'Source Serif 4', 'Noto Serif Tamil', Georgia, serif;
   --font-tamil: 'Noto Sans Tamil', 'Instrument Sans', system-ui, sans-serif;
-  --font-tamil-display: 'Noto Serif Tamil', 'Instrument Serif', Georgia, serif;
+  --font-tamil-display: 'Noto Serif Tamil', 'Source Serif 4', Georgia, serif;
 
   /* ---- Radii: tightened. Nothing here is a bubble ---- */
   --radius-xs: 2px;

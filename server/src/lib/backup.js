@@ -135,10 +135,25 @@ export function startBackups() {
         warned = true
         console.log(
           `  ✓ Backup written (${Math.round(size / 1024)} KB) — ${path.basename(file)}\n` +
-            `     Plus ${files.total} uploaded file${files.total === 1 ? '' : 's'}.\n` +
-            '     These sit on this machine. Copy them somewhere else as well:\n' +
-            '       npm run backup:offsite      (see scripts/backup-offsite.sh)',
+            `     Plus ${files.total} uploaded file${files.total === 1 ? '' : 's'}.`,
         )
+        /*
+         * Say plainly whether these exist anywhere but this machine.
+         *
+         * "Backups are on" reads as safety, and on one disk it is not: the
+         * commonest way a small hospital loses its records is the server going
+         * away, which takes the backups with it. The warning stays until an
+         * off-site destination is actually configured.
+         */
+        if (process.env.BACKUP_REMOTE) {
+          console.log(`     Copied off this machine to ${process.env.BACKUP_REMOTE}.`)
+        } else {
+          console.log(
+            '  ⚠  These are on the SAME machine as the database.\n' +
+              '     If this droplet dies, they die with it. Fix it once:\n' +
+              '       sudo bash scripts/backup-setup.sh',
+          )
+        }
       }
     } catch (error) {
       console.error('  ✗ BACKUP FAILED —', error.message)
