@@ -17,10 +17,19 @@ export const conflict = (code, message) => new ApiError(409, code, message)
 export const tooMany = (code = 'RATE_LIMITED', message) => new ApiError(429, code, message)
 
 const NAME_PATTERN = /^[\p{L}\p{M}\s.'-]+$/u
-const PHONE_PATTERN = /^[6-9]\d{9}$/
+// International numbers are accepted, not just Indian ten-digit mobiles: the
+// hospital's patients travel, and relatives abroad book for them. See
+// src/lib/phone.js — the client mirror of this rule; keep the two in step.
+const INDIAN_MOBILE = /^[6-9]\d{9}$/
+const INTERNATIONAL = /^\+?\d{7,15}$/
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
-export const normalisePhone = (value) => String(value ?? '').replace(/[\s-]/g, '').replace(/^\+91/, '')
+export const normalisePhone = (value) =>
+  String(value ?? '')
+    .replace(/[\s\-().]/g, '')
+    .replace(/^00/, '+')      // 0044… → +44…
+    .replace(/^\+91/, '')     // +91 is home; store it bare
+    .replace(/^0(?=\d{10}$)/, '') // a leading trunk 0 on a 10-digit number
 
 export function requireString(value, field, { min = 1, max = 500 } = {}) {
   const text = typeof value === 'string' ? value.trim() : ''
@@ -30,7 +39,9 @@ export function requireString(value, field, { min = 1, max = 500 } = {}) {
 
 export function requirePhone(value, field = 'phone') {
   const phone = normalisePhone(value)
-  if (!PHONE_PATTERN.test(phone)) throw badRequest('INVALID_PHONE', 'Invalid mobile number', { field })
+  if (!INDIAN_MOBILE.test(phone) && !INTERNATIONAL.test(phone)) {
+    throw badRequest('INVALID_PHONE', 'Invalid phone number', { field })
+  }
   return phone
 }
 

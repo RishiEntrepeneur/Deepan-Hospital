@@ -217,10 +217,20 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
                   : signInLabel
             }
             className={cx(
-              'hidden items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-semibold transition sm:inline-flex',
+              // Visible on a phone too, not just sm+. For a new visitor this is
+              // the one button that makes an account, and hiding it behind the
+              // hamburger is why 'where do I sign up' kept being asked. The
+              // label collapses to the icon below sm so the header does not
+              // overflow next to the language switcher; the words return at sm+
+              // and are always in the drawer.
+              'inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-sm font-semibold whitespace-nowrap transition sm:px-3',
               page === 'account'
                 ? 'border-brand-600 bg-brand-50 text-brand-700'
-                : 'border-slate-200 text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700',
+                : hasSession
+                  ? 'border-slate-200 text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700'
+                  // Signed out: a light-green pill so the sign-up entry reads as
+                  // an action, not a stray icon.
+                  : 'border-brand-300 bg-brand-50 text-brand-700 hover:bg-brand-100',
             )}
           >
             {/* A patient who signed in but has not completed their profile has
@@ -245,7 +255,7 @@ export default function Header({ page, onNavigate, onBook, appointmentCount, use
                 signed-out label is a fixed phrase we chose, and clipping it to
                 "Create ac…" makes the one button a new visitor needs look
                 broken. */}
-            <span className={cx('truncate', hasSession && 'max-w-24')}>
+            <span className={cx('hidden truncate sm:inline', hasSession && 'max-w-24')}>
               {/* Always identify who is signed in. Falling back to the generic
                   "My account" told the patient nothing; their number does. */}
               {user

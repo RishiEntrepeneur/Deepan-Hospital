@@ -1,3 +1,4 @@
+import { isValidPhone, normalisePhone, prettyPhone as pretty } from './phone'
 /**
  * The last mobile number that signed in successfully on this device.
  *
@@ -17,13 +18,10 @@
  */
 const KEY = 'deepan_last_phone'
 
-/** Ten digits, Indian mobile. Anything else is treated as absent. */
-const VALID = /^[6-9]\d{9}$/
-
 export function rememberedPhone() {
   try {
     const value = localStorage.getItem(KEY) ?? ''
-    return VALID.test(value) ? value : ''
+    return isValidPhone(value) ? value : ''
   } catch {
     // Private browsing, or storage disabled — behave as a new device.
     return ''
@@ -31,8 +29,8 @@ export function rememberedPhone() {
 }
 
 export function rememberPhone(phone) {
-  const clean = String(phone ?? '').replace(/[\s-]/g, '')
-  if (!VALID.test(clean)) return
+  const clean = normalisePhone(phone)
+  if (!isValidPhone(clean)) return
   try {
     localStorage.setItem(KEY, clean)
   } catch {
@@ -51,6 +49,5 @@ export function forgetPhone() {
 /** Has anyone signed in on this device before? Decides log-in vs sign-in copy. */
 export const hasAccountOnThisDevice = () => rememberedPhone() !== ''
 
-/** '9943969691' → '99439 69691', easier to check at a glance than ten digits. */
-export const prettyPhone = (phone) =>
-  VALID.test(phone) ? `${phone.slice(0, 5)} ${phone.slice(5)}` : phone
+/** '9943969691' → '99439 69691', easier to check at a glance. */
+export const prettyPhone = (phone) => pretty(phone)

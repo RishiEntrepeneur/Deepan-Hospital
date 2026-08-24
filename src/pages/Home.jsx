@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, CalendarPlus, Clock, HeartHandshake, Languages, ShieldPlus, Sparkles } from 'lucide-react'
+import { ArrowRight, BadgeCheck, CalendarPlus, Clock, Compass, HeartHandshake, Languages, ShieldPlus, Sparkles } from 'lucide-react'
 import { useLanguage } from '../i18n/context'
 import { DEPARTMENTS, DOCTORS, HOME_DEPARTMENT_IDS, HOSPITAL, iconFor } from '../data/hospital'
 import DepartmentCard from '../components/DepartmentCard'
@@ -24,7 +24,7 @@ const WHY_ITEMS = [
   { icon: Languages, titleKey: 'home.why4Title', textKey: 'home.why4Text', tone: 'bg-mint-50 text-mint-600' },
 ]
 
-export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartment }) {
+export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartment, onStartTour }) {
   const { t, tl } = useLanguage()
   const quickDepartments = HOME_DEPARTMENT_IDS.map((id) =>
     DEPARTMENTS.find((dept) => dept.id === id),
@@ -101,6 +101,25 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
                   <ArrowRight className="size-5" aria-hidden="true" />
                 </button>
               </div>
+
+              {/*
+                * "Show me around" — the one obvious way into the walkthrough.
+                *
+                * The tour used to be reachable only from a button buried on the
+                * glossary page, where no first-time patient ever looks. It sits
+                * here, under the two main actions, so anyone unsure where to
+                * start can be walked through booking in half a minute.
+                */}
+              {onStartTour && (
+                <button
+                  type="button"
+                  onClick={onStartTour}
+                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand-700 underline underline-offset-4 transition hover:text-brand-800"
+                >
+                  <Compass className="size-4" aria-hidden="true" />
+                  {t('tour.replay')}
+                </button>
+              )}
 
               <dl className="mt-10 grid max-w-lg grid-cols-3 gap-x-6 gap-y-5">
                 {stats.map((stat) => (

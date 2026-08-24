@@ -1,3 +1,4 @@
+import { isValidPhone } from '../../lib/phone'
 /**
  * Client-side validation — a fast first pass only.
  * The server re-validates every field; nothing here is trusted.
@@ -5,7 +6,6 @@
 
 /** Letters (any script, so Tamil names pass), spaces and the usual name punctuation. */
 const NAME_PATTERN = /^[\p{L}\p{M}\s.'-]+$/u
-const PHONE_PATTERN = /^[6-9]\d{9}$/
 
 export function validatePatient(patient) {
   const errors = {}
@@ -23,7 +23,7 @@ export function validatePatient(patient) {
   }
 
   if (!phone) errors.phone = 'error.phoneRequired'
-  else if (!PHONE_PATTERN.test(phone)) errors.phone = 'error.phoneInvalid'
+  else if (!isValidPhone(phone)) errors.phone = 'error.phoneInvalid'
 
   if (!patient.gender) errors.gender = 'error.genderRequired'
 

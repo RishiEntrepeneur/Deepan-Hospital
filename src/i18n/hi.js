@@ -195,7 +195,7 @@ export const hi = {
   'field.female': 'महिला',
   'field.other': 'अन्य',
   'field.phone': 'मोबाइल नंबर',
-  'field.phonePlaceholder': '10 अंकों का मोबाइल नंबर',
+  'field.phonePlaceholder': 'मोबाइल — भारत या +देश कोड',
   'field.reason': 'आने का कारण',
   'field.reasonPlaceholder': 'अपनी तकलीफ़ संक्षेप में लिखें',
   'field.optional': 'वैकल्पिक',
@@ -282,7 +282,7 @@ export const hi = {
   'error.ageInvalid': 'सही उम्र लिखें।',
   'error.underAge':
     'खाता रखने के लिए 18 वर्ष या उससे अधिक होना ज़रूरी है। अगर मरीज़ बच्चा है तो माता-पिता या अभिभावक खाता बनाएँ — फिर बच्चे के लिए बुक करते समय उसकी उम्र लिख दें।',
-  'error.phoneInvalid': 'सही 10 अंकों का मोबाइल नंबर लिखें।',
+  'error.phoneInvalid': 'सही फ़ोन नंबर दर्ज करें — भारतीय मोबाइल, या देश कोड सहित पूरा अंतरराष्ट्रीय नंबर।',
   'error.emailInvalid': 'सही ईमेल पता लिखें।',
   'error.genderRequired': 'लिंग चुनें।',
   'error.reasonTooShort': 'आने का कारण थोड़ा विस्तार से लिखें।',

@@ -402,6 +402,7 @@ export default function App() {
             onBook={() => openBooking()}
             onBookDoctor={bookDoctor}
             onSelectDepartment={showDepartment}
+            onStartTour={() => setTourOpen(true)}
           />
         )}
 

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { isValidPhone } from '../lib/phone'
 import {
   BellRing,
   Bell,
@@ -459,9 +460,8 @@ function BookForPatient({ doctors, onBooked, prefill, onClearPrefill }) {
   }, [doctorId, date])
 
   const submit = async () => {
-    const digits = form.phone.replace(/[\s-]/g, '').replace(/^\+91/, '')
-    if (!isConversion && !INDIAN_MOBILE.test(digits)) {
-      setError('That is not an Indian mobile number. The hospital can only book against a 10-digit Indian mobile starting 6–9.')
+    if (!isConversion && !isValidPhone(form.phone)) {
+      setError('That does not look like a phone number. Use a 10-digit Indian mobile, or a full international number with its country code (for example +44 7911 123456).')
       return
     }
     setBusy(true); setError(null)
@@ -562,9 +562,9 @@ function BookForPatient({ doctors, onBooked, prefill, onClearPrefill }) {
             patient does not answer. Now the field shows what was entered and
             says plainly when it is not a number this app can use.
           */}
-          <input className={inputClass} placeholder="Mobile (10 digits, India)" inputMode="tel" maxLength={16}
+          <input className={inputClass} placeholder="Mobile — India or +country code" inputMode="tel" maxLength={20}
             value={form.phone}
-            aria-invalid={form.phone !== '' && !INDIAN_MOBILE.test(form.phone.replace(/[\s-]/g, '').replace(/^\+91/, ''))}
+            aria-invalid={form.phone !== '' && !isValidPhone(form.phone)}
             onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           <input className={inputClass} type="number" placeholder="Age" value={form.age}
             onChange={(e) => setForm({ ...form, age: e.target.value })} />
@@ -852,7 +852,6 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 /* The same rule the server enforces, so the desk cannot submit what the API
    will refuse. Indian mobiles only — a number outside that set is a real
    limitation to state, not something to bend a foreign number into. */
-const INDIAN_MOBILE = /^[6-9]\d{9}$/
 
 
 /**

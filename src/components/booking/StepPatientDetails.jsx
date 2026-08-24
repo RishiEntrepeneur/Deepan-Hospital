@@ -247,7 +247,7 @@ export default function StepPatientDetails({
             type="tel"
             inputMode="tel"
             autoComplete="tel"
-            maxLength={14}
+            maxLength={20}
             value={patient.phone}
             onChange={set('phone')}
             placeholder={t('field.phonePlaceholder')}
