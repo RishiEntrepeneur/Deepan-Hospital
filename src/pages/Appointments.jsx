@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   CalendarClock,
   CalendarPlus,
@@ -10,6 +10,7 @@ import {
   MapPin,
   Receipt,
   RefreshCw,
+  Star,
   Stethoscope,
   Trash2,
   Wallet,
@@ -20,7 +21,9 @@ import { daysFromToday, formatDateLong, formatFee, formatTime } from '../lib/sch
 // formatFee is used by the payment summary below.
 import { displayStatus } from '../lib/useAppointments'
 import { downloadSummary } from '../lib/summary'
+import { api } from '../lib/api'
 import Modal from '../components/Modal'
+import ReviewForm from '../components/ReviewForm'
 import { cx } from '../lib/cx'
 
 const STATUS_STYLES = {
@@ -53,7 +56,7 @@ function RelativeDay({ dateKey }) {
   )
 }
 
-function AppointmentCard({ appointment, onCancel, onReschedule, onPay }) {
+function AppointmentCard({ appointment, onCancel, onReschedule, onPay, onReview, canReview }) {
   const { t, tl, lang } = useLanguage()
   const doctor = getDoctor(appointment.doctorId)
   const department = getDepartment(appointment.departmentId)
@@ -226,6 +229,17 @@ function AppointmentCard({ appointment, onCancel, onReschedule, onPay }) {
             {t('action.cancelRequest')}
           </button>
         )}
+
+        {status === 'completed' && canReview && (
+          <button
+            type="button"
+            onClick={() => onReview(appointment)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-1.5 text-xs font-semibold text-amber-800 transition hover:bg-amber-100"
+          >
+            <Star className="size-3.5" aria-hidden="true" />
+            {t('reviews.leaveCta')}
+          </button>
+        )}
       </div>
     </article>
   )
@@ -268,6 +282,24 @@ export default function Appointments({
   const { t, tl, lang } = useLanguage()
   const [tab, setTab] = useState('upcoming')
   const [pendingCancel, setPendingCancel] = useState(null)
+  const [reviewing, setReviewing] = useState(null)
+
+  /*
+   * Which past visits this patient may still review. Asking the server rather
+   * than guessing from status keeps one source of truth: a visit already
+   * reviewed from another device drops out of this list, so the button does
+   * not offer something the server will refuse.
+   */
+  const [reviewable, setReviewable] = useState(null)
+  useEffect(() => {
+    if (!signedIn) return undefined
+    const controller = new AbortController()
+    api.reviews
+      .eligible(controller.signal)
+      .then((data) => setReviewable(new Set(data.appointments.map((a) => a.id))))
+      .catch(() => setReviewable(new Set()))
+    return () => controller.abort()
+  }, [signedIn])
 
   const list = tab === 'upcoming' ? upcoming : past
   const tabs = [
@@ -368,6 +400,8 @@ export default function Appointments({
               onCancel={setPendingCancel}
               onReschedule={onReschedule}
               onPay={onPay}
+              onReview={setReviewing}
+              canReview={reviewable?.has(appointment.id) ?? false}
             />
           ))
         )}
@@ -409,6 +443,19 @@ export default function Appointments({
           </p>
         )}
       </Modal>
+
+      <ReviewForm
+        appointment={reviewing}
+        onClose={() => setReviewing(null)}
+        onSubmitted={(id) =>
+          // Take it out of the eligible set so the button does not come back.
+          setReviewable((prev) => {
+            const next = new Set(prev ?? [])
+            next.delete(id)
+            return next
+          })
+        }
+      />
     </div>
   )
 }

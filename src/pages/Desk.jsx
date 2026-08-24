@@ -27,6 +27,7 @@ import { formatTime, todayKey } from '../lib/schedule'
 import { cx } from '../lib/cx'
 import KliniquePortal from '../components/KliniquePortal'
 import DoctorPortal from '../components/DoctorPortal'
+import ReviewModeration from '../components/ReviewModeration'
 import KliniqueTransfer from '../components/KliniqueTransfer'
 import TellPatient from '../components/TellPatient'
 import { useLiveDesk } from '../lib/useLiveDesk'
@@ -1260,6 +1261,19 @@ export default function Desk({ onSignedOut }) {
 
   const connection = useLiveDesk(Boolean(staff), onLive)
 
+  // How many reviews are waiting, so the tab can carry a badge without the
+  // moderation panel having to be open.
+  const [pendingReviews, setPendingReviews] = useState(0)
+  useEffect(() => {
+    if (!staff) return undefined
+    const controller = new AbortController()
+    api.desk
+      .reviews('pending', controller.signal)
+      .then((data) => setPendingReviews(data.counts?.pending ?? 0))
+      .catch(() => {})
+    return () => controller.abort()
+  }, [staff])
+
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
   // Opening either list is what counts as "seen"; the badge is a nudge, not a
@@ -1334,6 +1348,7 @@ export default function Desk({ onSignedOut }) {
     { id: 'repeats', label: 'Repeat requests', count: 0 },
     { id: 'followups', label: 'Follow-ups due', count: 0 },
     { id: 'alerts', label: 'Alerts', count: undelivered.length },
+    { id: 'reviews', label: 'Reviews', count: pendingReviews },
     { id: 'contacts', label: 'Doctor contacts', count: data.contacts.filter((c) => !c.contactable).length },
   ]
 
@@ -1740,6 +1755,13 @@ export default function Desk({ onSignedOut }) {
               ))
             )}
           </div>
+        </div>
+      )}
+
+      {/* ---------------- Reviews ---------------- */}
+      {tab === 'reviews' && (
+        <div className="mt-6">
+          <ReviewModeration onCountChange={setPendingReviews} />
         </div>
       )}
 

@@ -139,12 +139,27 @@ export const api = {
     saveMyDoctor: (body) => request('/admin/me/doctor', { method: 'PATCH', body }),
   },
 
+  /** Patient reviews. The list is public; leaving one needs a patient session. */
+  reviews: {
+    list: (signal) => request('/reviews', { signal }),
+    eligible: (signal) => request('/reviews/eligible', { signal }),
+    submit: (body) => request('/reviews', { method: 'POST', body }),
+  },
+
   /** Staff-only. Everything here is behind a staff session cookie. */
   desk: {
     me: (signal) => request('/admin/me', { signal }),
     // A doctor's own appointments for the day (read-only).
     myDay: (date, signal) =>
       request(`/admin/my-day${date ? `?date=${date}` : ''}`, { signal }),
+    // Review moderation.
+    reviews: (status = 'pending', signal) =>
+      request(`/admin/reviews?status=${encodeURIComponent(status)}`, { signal }),
+    moderateReview: (id, decision) =>
+      request(`/admin/reviews/${encodeURIComponent(id)}/moderate`, {
+        method: 'POST',
+        body: { decision },
+      }),
     signIn: (username, password, as) =>
       request('/admin/signin', { method: 'POST', body: { username, password, as } }),
     signOut: () => request('/admin/signout', { method: 'POST' }),

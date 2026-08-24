@@ -4,6 +4,7 @@ import { DEPARTMENTS, DOCTORS, HOME_DEPARTMENT_IDS, HOSPITAL, iconFor } from '..
 import DepartmentCard from '../components/DepartmentCard'
 import DoctorCard from '../components/DoctorCard'
 import Photo from '../components/Photo'
+import ReviewsSection from '../components/ReviewsSection'
 
 function SectionHeading({ title, subtitle, action }) {
   return (
@@ -261,6 +262,9 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
           ))}
         </div>
       </section>
+
+      {/* ---------------- What patients say ---------------- */}
+      <ReviewsSection />
 
       {/* ---------------- CTA ---------------- */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
