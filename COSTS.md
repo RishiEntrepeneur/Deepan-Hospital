@@ -19,7 +19,7 @@ stated otherwise.
 | Software licences | **₹0** |
 | Servers, domain, backups | **₹10,000 – ₹25,000** |
 | Someone to look after it ★ | **₹60,000 – ₹2,50,000** |
-| SMS — **required**, see §3 ★ | **₹15,000 – ₹25,000** |
+| Patient reminders — **optional**, see §3 and §3a ★ | **₹0 – ₹25,000** |
 | Online payment fees ★ | a % of what you collect, not a fixed cost |
 
 **The server is not the expense. The person is.** A hospital administrator
@@ -215,21 +215,22 @@ development — it is a much cheaper conversation.
 
 ## Worked example — realistic first year
 
-Modest setup: hosted in India, SMS on so patients can sign in, payments at the
-counter, a freelancer on call for a few hours a month.
+Modest setup: hosted in India, payments at the counter, a freelancer on call
+for a few hours a month.
 
 | | |
 | --- | --- |
 | Server, domain, backups | ₹15,000 |
 | Software | ₹0 |
-| SMS | ₹18,000 (required for patient sign-in) |
 | Payment fees | ₹0 (counter only) |
 | Maintenance | ₹90,000 |
-| **First-year total** | **≈ ₹1,23,000** |
+| **First-year total** | **≈ ₹1,05,000** |
 
-Drop SMS and run it staff-assisted only and it is roughly **₹1,05,000**, but
-patients cannot book themselves. Add self-hosted video and roughly
-**₹1,71,000**.
+Patients book themselves at that figure — sign-in is a password, not an SMS
+code, so nothing here is buying them the ability to use the site.
+
+Add appointment reminders and it is roughly **₹1,20,000** with WhatsApp or SMS.
+Add self-hosted video and roughly **₹1,71,000**.
 
 For context: that is in the region of what one full-time reception salary
 costs. Whether it is worth it depends on whether the app saves more reception
