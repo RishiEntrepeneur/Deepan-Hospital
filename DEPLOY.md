@@ -142,6 +142,66 @@ provider). More steps, but yours entirely.
 
 ---
 
+## A test server, on the same machine, for nothing
+
+Until now there has been one copy of this app and it is the one patients use,
+which means every change has been tried out on a live hospital's appointment
+book. That is how the desk portal came to be broken in front of real users
+twice.
+
+`deploy.sh` and `update.sh` now take an `INSTANCE` name. Set one and you get a
+second, entirely separate copy on the same droplet:
+
+|  | Live | Test |
+| --- | --- | --- |
+| Address | `deepanhospital.com` | `test.deepanhospital.com` |
+| Folder | `/opt/deepan-hospital` | `/opt/deepan-hospital-staging` |
+| Database | `/var/lib/deepan-hospital` | `/var/lib/deepan-hospital-staging` |
+| Service | `deepan` | `deepan-staging` |
+| Port | 4000 | 4001 |
+| Linux user | `deepan` | `deepan-staging` |
+
+Nothing is shared. Different database, different backups, different system
+user, and neither can write into the other's folder. It costs nothing — the
+same droplet runs both — and it uses a few hundred MB of disk.
+
+### Setting it up, once
+
+**1. Point a name at the droplet.** At your domain registrar, add an `A`
+record for `test` pointing at the droplet's IP. Wait ten minutes.
+
+**2. Deploy it.** On the server:
+
+```
+INSTANCE=staging bash deepan-src/update.sh test.deepanhospital.com
+```
+
+That builds the same code, creates a fresh database seeded with the ordinary
+departments and doctors, and prints its own `reception` and `manager`
+passwords. They are different from the live ones. Write them down.
+
+### Using it
+
+Test the branch you are working on before it goes near patients:
+
+```
+INSTANCE=staging bash deepan-src/update.sh test.deepanhospital.com my-branch
+```
+
+Break it as hard as you like. When it works there, deploy the same branch to
+the live site the usual way.
+
+### Two rules
+
+**Never restore a production backup into it.** The moment it holds real patient
+records it stops being a test server and becomes a second thing you have to
+protect, back up and worry about. Its value is precisely that losing all of it
+costs nothing.
+
+**Tell people it is not the real site.** `test.` in the address is not enough on
+its own — somebody will bookmark it. If reception ever needs to see it, say so
+out loud, and check the address bar before believing a booking happened.
+
 ## Whichever you choose — the production checklist
 
 - [ ] `NODE_ENV=production` and `COOKIE_SECURE=true` are set.

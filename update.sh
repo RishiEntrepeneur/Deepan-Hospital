@@ -17,14 +17,27 @@ set -euo pipefail
 DOMAIN="${1:-}"
 BRANCH="${2:-claude/project-continuation-vsx8gq}"
 REPO=https://github.com/RishiEntrepeneur/Deepan-Hospital.git
-WORK=/root/deepan-src
-PKG=/root/deepan-deploy
+
+#
+#   bash update.sh deepanhospital.com                          the real site
+#   INSTANCE=staging bash update.sh test.deepanhospital.com     the test one
+#
+# INSTANCE is passed straight through to deploy.sh, which puts every path,
+# port, service and user behind the same suffix. The checkout and build folders
+# are suffixed too, so updating the test site cannot leave a half-built tree
+# where the live site's next update expects to find one.
+#
+INSTANCE="${INSTANCE:-}"
+SUFFIX="${INSTANCE:+-$INSTANCE}"
+WORK="/root/deepan-src$SUFFIX"
+PKG="/root/deepan-deploy$SUFFIX"
 
 say() { printf '\n  \033[1;36m%s\033[0m\n' "$*"; }
 ok()  { printf '  \033[0;32m✓\033[0m %s\n' "$*"; }
 die() { printf '\n  \033[0;31m✖  %s\033[0m\n\n' "$*" >&2; exit 1; }
 
 [ -n "$DOMAIN" ] || die "Give me your domain:  bash update.sh deepanhospital.com"
+[ -n "$INSTANCE" ] && say "Updating the \"$INSTANCE\" copy at $DOMAIN — not the live site"
 command -v git >/dev/null || { apt-get update -qq && apt-get install -y -qq git; }
 
 say "1/4  Getting the latest code"
@@ -52,4 +65,4 @@ cp "$WORK/deploy.sh" "$PKG/deploy.sh"
 ok "package ready in $PKG"
 
 say "4/4  Deploying"
-bash "$PKG/deploy.sh" "$DOMAIN"
+INSTANCE="$INSTANCE" bash "$PKG/deploy.sh" "$DOMAIN"
