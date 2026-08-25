@@ -344,6 +344,40 @@
   }
 }
 
+/*
+ * ECG paper, behind the hero.
+ *
+ * The hero has no photograph — the hospital has not supplied one — and a large
+ * empty white rectangle is the single weakest thing on the page. Rather than
+ * fill it with the stock image of a smiling stranger in a white coat that
+ * every clinic site on the internet already has, it gets the grid that comes
+ * off the hospital's own machines: 1mm squares in fives, exactly as real
+ * electrocardiograph paper is ruled, with the trace running along the foot of
+ * it. Dr Deepan will recognise it before he has read a word.
+ *
+ * Held at 4% and masked away from the headline, so it is texture rather than
+ * pattern — the thing you notice on the second look, never competing with the
+ * type sitting on top of it.
+ */
+.ecg-paper {
+  --grid-fine: rgb(14 106 92 / 0.055);
+  --grid-bold: rgb(14 106 92 / 0.115);
+  background-image:
+    repeating-linear-gradient(to right, var(--grid-bold) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to bottom, var(--grid-bold) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to right, var(--grid-fine) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(to bottom, var(--grid-fine) 0 1px, transparent 1px 8px);
+  /*
+   * Anchored bottom-right rather than to one edge, because the page stacks on
+   * a phone: on a wide screen that is away from the headline, and on a narrow
+   * one it is below it. Both prefixes — this site is opened on Android phones
+   * old enough to need the -webkit- one, and an unsupported mask is not a
+   * degraded texture, it is a full-strength grid across the headline.
+   */
+  -webkit-mask-image: radial-gradient(ellipse 95% 115% at 84% 78%, #000, transparent 78%);
+  mask-image: radial-gradient(ellipse 95% 115% at 84% 78%, #000, transparent 78%);
+}
+
 @keyframes dh-fade-up {
   from {
     opacity: 0;

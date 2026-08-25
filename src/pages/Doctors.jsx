@@ -3,6 +3,7 @@ import { Search, SlidersHorizontal, TriangleAlert, X } from 'lucide-react'
 import { useLanguage } from '../i18n/context'
 import { DEPARTMENTS, DOCTORS } from '../data/hospital'
 import DoctorCard from '../components/DoctorCard'
+import Reveal from '../components/Reveal'
 import { cx } from '../lib/cx'
 
 export default function Doctors({ departmentFilter, onDepartmentFilterChange, onBookDoctor, onOpenDoctor }) {
@@ -144,8 +145,13 @@ export default function Doctors({ departmentFilter, onDepartmentFilterChange, on
         </div>
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} onBook={onBookDoctor} onOpen={onOpenDoctor} />
+          {results.map((doctor, i) => (
+            /* Staggered by column, not by index — filtering can leave this
+               list long, and a card that waits a second to appear has been
+               scrolled past by the time it does. */
+            <Reveal key={doctor.id} delay={(i % 3) * 70} className="h-full">
+              <DoctorCard doctor={doctor} onBook={onBookDoctor} onOpen={onOpenDoctor} />
+            </Reveal>
           ))}
         </div>
       )}

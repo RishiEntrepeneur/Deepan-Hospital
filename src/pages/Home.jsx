@@ -66,6 +66,8 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/70"
         />
+        {/* Electrocardiograph ruling — see .ecg-paper in index.css. */}
+        <div aria-hidden="true" className="ecg-paper pointer-events-none absolute inset-0" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid items-center gap-12 lg:grid-cols-2">
