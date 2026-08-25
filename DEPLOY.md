@@ -161,12 +161,13 @@ provider). More steps, but yours entirely.
 - [ ] A copy of `server/data/deepan.db` is taken **off the server** regularly,
       with `server/scripts/backup-offsite.sh` on a nightly cron — see the header
       of that file for the one-time rclone setup.
-      The app already writes its own backups every 6 hours to `server/backups/`
+      The app already writes its own backups every 6 hours to `BACKUP_DIR`
+      (`/var/lib/deepan-hospital/backups` on a deployed server)
       (`BACKUP_EVERY_HOURS`, `BACKUP_KEEP`), but those sit on the same disk as
       the database — which is no protection at all against the disk being the
       thing that fails. Copy them somewhere else on a schedule, e.g. nightly:
       ```
-      0 2 * * *  rclone copy /path/server/backups remote:deepan-backups
+      0 2 * * *  rclone copy /var/lib/deepan-hospital/backups remote:deepan-backups
       ```
       **Then restore one, once, onto a spare machine.** A backup nobody has
       ever restored is a belief, not a backup.

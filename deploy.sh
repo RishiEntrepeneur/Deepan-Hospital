@@ -73,9 +73,23 @@ id "$APP_USER" >/dev/null 2>&1 || \
 ok "$APP_USER — the app never runs as root, so a flaw in it cannot take the machine"
 
 say "5/9  Copying the code"
-mkdir -p "$APP_DIR" "$DATA_DIR"
+mkdir -p "$APP_DIR" "$DATA_DIR" "$DATA_DIR/backups"
 # The database lives outside the code folder on purpose, so re-running this
 # script and copying a new build over the top can never land on top of it.
+#
+# Backups needed to move out for exactly the same reason, and for a long time
+# they did not. With no BACKUP_DIR set the app fell back to
+# $APP_DIR/server/backups — inside the folder the next line deletes — so every
+# deploy quietly threw away all twenty-eight snapshots and then wrote a fresh
+# one six hours later. The gap never showed up as an error. Rescue anything
+# still sitting there before the copy, and step 6 pins BACKUP_DIR so it cannot
+# happen again.
+if [ -d "$APP_DIR/server/backups" ]; then
+  rescued="$(find "$APP_DIR/server/backups" -type f | wc -l | tr -d ' ')"
+  cp -an "$APP_DIR/server/backups/." "$DATA_DIR/backups/" 2>/dev/null || true
+  rm -rf "$APP_DIR/server/backups"
+  ok "moved $rescued backup file(s) out of the code folder, into $DATA_DIR/backups"
+fi
 rsync -a --delete --exclude server/data "$SRC"/ "$APP_DIR"/ 2>/dev/null || {
   apt-get install -y -qq rsync >/dev/null
   rsync -a --delete --exclude server/data "$SRC"/ "$APP_DIR"/
@@ -97,10 +111,19 @@ HOSPITAL_NAME=Deepan Hospital
 BACKUP_ENABLED=true
 BACKUP_EVERY_HOURS=6
 BACKUP_KEEP=28
+BACKUP_DIR=$DATA_DIR/backups
 ENV
   ok "written for https://$DOMAIN"
 else
-  ok "kept the settings already here"
+  # Settings written before backups moved have no BACKUP_DIR line, and without
+  # one the app puts its snapshots straight back into the folder step 5 wipes.
+  # Add the line; leave everything else in this file exactly as it is.
+  if ! grep -q '^BACKUP_DIR=' "$ENV_FILE"; then
+    echo "BACKUP_DIR=$DATA_DIR/backups" >>"$ENV_FILE"
+    ok "kept the settings already here, and pinned backups to $DATA_DIR/backups"
+  else
+    ok "kept the settings already here"
+  fi
 fi
 
 say "7/9  The database"

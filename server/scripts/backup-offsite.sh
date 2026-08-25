@@ -27,6 +27,14 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Look where the app itself puts backups, not where a default guesses they are.
+# The server's .env pins BACKUP_DIR (on a deployed machine, to
+# /var/lib/deepan-hospital/backups); read it the same way the app does, so this
+# script and the app can never quietly disagree about the location.
+if [ -z "${BACKUP_DIR:-}" ] && [ -f "$here/.env" ]; then
+  BACKUP_DIR="$(grep -E '^BACKUP_DIR=' "$here/.env" | tail -1 | cut -d= -f2-)"
+fi
 source_dir="${BACKUP_DIR:-$here/backups}"
 remote="${BACKUP_REMOTE:-}"
 

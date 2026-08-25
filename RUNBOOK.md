@@ -341,7 +341,10 @@ which entrance to use after 8pm, and whether a particular insurer is accepted.
 
 ## Backups
 
-Automatic, every 6 hours, into `server/backups/`. The 28 most recent are kept.
+Automatic, every 6 hours, into `BACKUP_DIR` — on a deployed server that is
+`/var/lib/deepan-hospital/backups` (deploy.sh pins it there, safely outside
+the code folder each deploy replaces); running locally with no `BACKUP_DIR`
+set it falls back to `server/backups/`. The 28 most recent are kept.
 Each backup is read back and integrity-checked before it counts.
 
 **They are on the same machine as the database.** That protects you from a bad
