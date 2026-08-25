@@ -21,12 +21,19 @@ export default function Services({ onSelectDepartment }) {
         */}
       <h2 className="sr-only">{t('services.departmentsHeading')}</h2>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {DEPARTMENTS.map((dept) => (
+        {DEPARTMENTS.map((dept, i) => (
           <DepartmentCard
             key={dept.id}
             department={dept}
             onSelect={(d) => onSelectDepartment(d.id)}
             showHighlights
+            /*
+             * Staggered by column, not by position in the list. This page runs
+             * to twenty-odd departments; multiplying by the index would have
+             * the last card waiting a second and a half after the first, long
+             * after the reader has scrolled past it.
+             */
+            delay={(i % 3) * 70}
           />
         ))}
       </div>

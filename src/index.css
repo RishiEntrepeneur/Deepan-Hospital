@@ -124,6 +124,18 @@
   --font-display: 'Source Serif 4', 'Noto Serif Tamil', Georgia, serif;
   --font-tamil: 'Noto Sans Tamil', 'Instrument Sans', system-ui, sans-serif;
   --font-tamil-display: 'Noto Serif Tamil', 'Source Serif 4', Georgia, serif;
+  /*
+   * Devanagari, for the Hindi third of the site.
+   *
+   * This was missing outright: the site has offered Hindi since it launched
+   * while loading fonts for only two of its three languages, so every Hindi
+   * reader got whatever their device happened to have. On Android that is
+   * usually Noto and looks accidental-but-fine; on Windows it is Mangal, which
+   * is a different colour and weight from the Latin around it, and the page
+   * visibly falls apart mid-sentence wherever the two meet.
+   */
+  --font-hindi: 'Noto Sans Devanagari', 'Instrument Sans', system-ui, sans-serif;
+  --font-hindi-display: 'Noto Serif Devanagari', 'Source Serif 4', Georgia, serif;
 
   /* ---- Radii: tightened. Nothing here is a bubble ---- */
   --radius-xs: 2px;
@@ -169,16 +181,66 @@
     letter-spacing: -0.015em;
   }
 
-  /* Tamil has taller glyphs and longer words than Latin at the same size. */
+  /*
+   * Tamil and Devanagari.
+   *
+   * Both scripts carry more inside each glyph than Latin does at the same
+   * size — Tamil its loops and curls, Devanagari its matras hanging above and
+   * below the shirorekha — so both want to be set a little larger and rather
+   * more open than the Latin they share a stylesheet with.
+   *
+   * The size is added to running text only, in `em`, and NOT to the root.
+   * Scaling the root was tried first and is the tidier idea — Tailwind's type
+   * and spacing are both in `rem`, so the whole page grows together. It also
+   * breaks the site: the header nav in Tamil clears 1280px by about forty
+   * pixels, and at 103.5% it overflowed the viewport. Chrome has no slack to
+   * give; a paragraph does. So paragraphs and list items grow, and buttons,
+   * nav links and table cells stay exactly where they were measured to fit.
+   */
+  html[lang='ta'] p,
+  html[lang='ta'] li,
+  html[lang='ta'] dd,
+  html[lang='hi'] p,
+  html[lang='hi'] li,
+  html[lang='hi'] dd {
+    font-size: 1.045em;
+  }
+
   html[lang='ta'] body {
     font-family: var(--font-tamil);
     line-height: 1.75;
+    /* The Latin character variants above mean nothing here. */
+    font-feature-settings: normal;
   }
   html[lang='ta'] h1,
   html[lang='ta'] h2 {
     font-family: var(--font-tamil-display);
     letter-spacing: 0;
     line-height: 1.4;
+  }
+
+  html[lang='hi'] body {
+    font-family: var(--font-hindi);
+    line-height: 1.8;
+    font-feature-settings: normal;
+  }
+  html[lang='hi'] h1,
+  html[lang='hi'] h2 {
+    font-family: var(--font-hindi-display);
+    letter-spacing: 0;
+    line-height: 1.45;
+  }
+
+  /*
+   * Neither script hyphenates, and both build words long enough to overrun a
+   * button or a card — 'மருத்துவமனை', 'अस्पताल में भर्ती'. Let them break
+   * rather than escape their container, and never let the browser insert a
+   * hyphen it has no business inserting.
+   */
+  html[lang='ta'],
+  html[lang='hi'] {
+    overflow-wrap: break-word;
+    hyphens: none;
   }
 
   /* Figures line up in tables, fees and appointment references. */
@@ -375,12 +437,123 @@
   border-radius: 0.5rem;
 }
 
+/*
+ * Scroll reveal. The hidden state is deliberately gentle — 16px and a fade —
+ * because the point is for a section to *settle*, not to fly in. See
+ * src/lib/reveal.js for why nothing is ever hidden when the reveal cannot run.
+ */
+[data-reveal='hidden'] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+[data-reveal='shown'] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1) var(--reveal-delay, 0ms),
+    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1) var(--reveal-delay, 0ms);
+}
+
+/*
+ * A line drawing that draws itself.
+ *
+ * `stroke-dasharray` is set to a length comfortably longer than any path in
+ * the anatomical set, so one rule covers all of them without measuring each
+ * path in JavaScript. Overshooting is free — the dash simply never repeats —
+ * whereas undershooting would make a path appear in two pieces.
+ */
+@keyframes dh-draw {
+  from {
+    stroke-dashoffset: 260;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+[data-reveal='shown'] .draw-in path,
+[data-reveal='shown'] .draw-in circle {
+  stroke-dasharray: 260;
+  animation: dh-draw 1.15s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+}
+
+/*
+ * The cardiac trace under the hero.
+ *
+ * Two animations, because a real monitor does two things at once: the trace is
+ * drawn left to right by the sweep, and the whole line brightens on the beat.
+ * 0.86s per cycle is 70 beats a minute — a resting adult pulse, which is the
+ * detail that makes it read as a monitor rather than as decoration.
+ */
+@keyframes dh-trace {
+  from {
+    stroke-dashoffset: 1400;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.ecg-trace {
+  stroke-dasharray: 1400;
+  animation: dh-trace 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes dh-beat {
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.09);
+  }
+  26% {
+    transform: scale(1.02);
+  }
+}
+
+/* 0.86s is 70bpm. The heart on the hero panel keeps a resting pulse. */
+.animate-beat {
+  animation: dh-beat 0.86s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-scale-in,
   .animate-page-in,
-  .animate-sweep {
+  .animate-sweep,
+  .animate-beat,
+  .ecg-trace,
+  [data-reveal='shown'] .draw-in path,
+  [data-reveal='shown'] .draw-in circle {
     animation: none;
+  }
+
+  /* Never leave a revealed element mid-transition or a drawing half-drawn. */
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  /*
+   * Matched at the same specificity as the rule that sets the dash, not at the
+   * plainer `.draw-in path` — `[data-reveal='shown'] .draw-in path` outranks
+   * that, so the reset lost and every path kept a 260-unit dasharray. It
+   * happened to render whole, because a dash longer than the path with no
+   * offset covers it; the first path longer than 260 units would have appeared
+   * broken into pieces for exactly the readers who asked for less movement.
+   */
+  [data-reveal='shown'] .draw-in path,
+  [data-reveal='shown'] .draw-in circle,
+  .draw-in path,
+  .draw-in circle,
+  .ecg-trace {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
   }
   /* Still a placeholder, just a still one — the shimmer is the moving part. */
   .skeleton {

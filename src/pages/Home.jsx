@@ -4,17 +4,20 @@ import { DEPARTMENTS, DOCTORS, HOME_DEPARTMENT_IDS, HOSPITAL, iconFor } from '..
 import DepartmentCard from '../components/DepartmentCard'
 import DoctorCard from '../components/DoctorCard'
 import Photo from '../components/Photo'
+import Reveal from '../components/Reveal'
+import Vitals from '../components/anatomy/Vitals'
+import CountUp from '../components/CountUp'
 import ReviewsSection from '../components/ReviewsSection'
 
 function SectionHeading({ title, subtitle, action }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
+    <Reveal className="flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
         <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">{title}</h2>
         {subtitle && <p className="mt-2 text-slate-600">{subtitle}</p>}
       </div>
       {action}
-    </div>
+    </Reveal>
   )
 }
 
@@ -128,7 +131,7 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
                     <dt className="sr-only">{t(stat.labelKey)}</dt>
                     <dd>
                       <span data-numeric className="block font-display text-3xl text-slate-900 sm:text-4xl">
-                        {stat.value}
+                        <CountUp value={stat.value} />
                       </span>
                       <span className="mt-0.5 block text-xs leading-snug text-slate-500">
                         {t(stat.labelKey)}
@@ -144,7 +147,8 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
               <div className="mx-auto w-full max-w-md rounded-3xl border border-white/60 bg-white/80 p-6 shadow-xl shadow-brand-900/5 backdrop-blur">
                 <div className="flex items-center gap-3">
                   <span className="grid size-11 place-items-center rounded-2xl bg-brand-600 text-white">
-                    <HeartHandshake className="size-6" aria-hidden="true" />
+                    {/* A resting pulse, 70 a minute — see .animate-beat. */}
+                    <HeartHandshake className="size-6 animate-beat" aria-hidden="true" />
                   </span>
                   <div>
                     <p className="text-sm font-bold text-slate-900">{t('home.ctaTitle')}</p>
@@ -184,6 +188,18 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
             </div>
           </div>
         </div>
+
+        {/*
+          * The trace along the foot of the hero.
+          *
+          * Pinned to the section's bottom edge and clipped by it, so it reads
+          * as the floor of the hero rather than as a band sitting on top of
+          * the page. Low opacity on purpose: it should be the thing you notice
+          * second, after the headline, and never the thing competing with it.
+          */}
+        <Vitals
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 w-full text-brand-600/70"
+        />
       </section>
 
       {/* ---------------- Quick departments ---------------- */}
@@ -204,12 +220,13 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
         />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {quickDepartments.map((dept) => (
+          {quickDepartments.map((dept, i) => (
             <DepartmentCard
               key={dept.id}
               department={dept}
               onSelect={(d) => onSelectDepartment(d.id)}
               showHighlights
+              delay={i * 70}
             />
           ))}
         </div>
@@ -220,19 +237,20 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading title={t('home.whyTitle')} subtitle={t('home.whySubtitle')} />
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {WHY_ITEMS.map((item) => {
+            {WHY_ITEMS.map((item, i) => {
               const Icon = item.icon
               return (
-                <div
+                <Reveal
                   key={item.titleKey}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  delay={i * 70}
+                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md"
                 >
                   <span className={`grid size-11 place-items-center rounded-xl ${item.tone}`}>
-                    <Icon className="size-5" aria-hidden="true" />
+                    <Icon className="draw-in size-5" aria-hidden="true" />
                   </span>
                   <h3 className="mt-4 text-base font-bold text-slate-900">{t(item.titleKey)}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{t(item.textKey)}</p>
-                </div>
+                </Reveal>
               )
             })}
           </div>
@@ -257,8 +275,10 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
         />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} onBook={onBookDoctor} compact />
+          {featured.map((doctor, i) => (
+            <Reveal key={doctor.id} delay={i * 70} className="h-full">
+              <DoctorCard doctor={doctor} onBook={onBookDoctor} compact />
+            </Reveal>
           ))}
         </div>
       </section>
@@ -268,7 +288,7 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
 
       {/* ---------------- CTA ---------------- */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-brand-700 px-6 py-12 text-center sm:px-12">
+        <Reveal className="relative overflow-hidden rounded-3xl bg-brand-700 px-6 py-12 text-center sm:px-12">
           <div className="relative">
             <h2 className="text-2xl font-extrabold text-white sm:text-3xl">{t('home.ctaTitle')}</h2>
             <p className="mx-auto mt-3 max-w-xl text-brand-100">{t('home.ctaText')}</p>
@@ -281,7 +301,7 @@ export default function Home({ onNavigate, onBook, onBookDoctor, onSelectDepartm
               {t('action.book')}
             </button>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   )

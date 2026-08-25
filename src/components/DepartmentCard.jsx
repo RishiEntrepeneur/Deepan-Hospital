@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import { useLanguage } from '../i18n/context'
 import { getDoctorsByDepartment, iconFor } from '../data/hospital'
 import { cx } from '../lib/cx'
+import Reveal from './Reveal'
 
 const TONES = {
   emergency: 'bg-rose-50 text-rose-600 group-hover:bg-rose-600',
@@ -16,25 +17,29 @@ const TONES = {
   nephrology: 'bg-cyan-50 text-cyan-600 group-hover:bg-cyan-600',
 }
 
-export default function DepartmentCard({ department, onSelect, showHighlights = false }) {
+export default function DepartmentCard({ department, onSelect, showHighlights = false, delay = 0 }) {
   const { t, tl } = useLanguage()
   const Icon = iconFor(department.icon)
   const doctorCount = getDoctorsByDepartment(department.id).length
   const tone = TONES[department.id] ?? 'bg-brand-50 text-brand-600 group-hover:bg-brand-600'
 
   return (
-    <button
+    <Reveal
+      as="button"
+      delay={delay}
       type="button"
       onClick={() => onSelect(department)}
-      className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 text-start shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md active:translate-y-0 active:scale-[0.98]"
+      className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 text-start shadow-sm transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
     >
       <span
         className={cx(
-          'grid size-12 place-items-center rounded-xl transition group-hover:text-white',
+          'grid size-12 place-items-center rounded-xl transition-colors duration-300 group-hover:text-white',
           tone,
         )}
       >
-        <Icon className="size-6" aria-hidden="true" />
+        {/* `draw-in` makes the organ draw itself the first time the card
+            is scrolled to — see the keyframes in index.css. */}
+        <Icon className="draw-in size-7 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
       </span>
 
       <h3 className="mt-4 text-base leading-snug font-bold text-slate-900">{tl(department.name)}</h3>
@@ -68,6 +73,6 @@ export default function DepartmentCard({ department, onSelect, showHighlights = 
             : t('services.doctorsInDept', { count: doctorCount })}
         <ArrowRight className="size-4 transition group-hover:translate-x-1 rtl:rotate-180" aria-hidden="true" />
       </span>
-    </button>
+    </Reveal>
   )
 }

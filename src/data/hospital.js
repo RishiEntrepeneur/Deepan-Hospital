@@ -28,6 +28,7 @@ import {
   Wifi,
   Wind,
 } from 'lucide-react'
+import { ANATOMY } from '../components/anatomy/icons'
 
 /**
  * The catalogue is served by the API and cached here as live module bindings,
@@ -50,14 +51,22 @@ export const getDoctor = (id) => DOCTORS.find((doc) => doc.id === id)
 export const getDoctorsByDepartment = (departmentId) =>
   DOCTORS.filter((doc) => doc.departmentId === departmentId)
 
-/** Icon names come from the database as strings; resolve them here. */
+/**
+ * Icon names come from the database as strings; resolve them here.
+ *
+ * The anatomical set drawn for this hospital takes precedence, and the stock
+ * icons stay underneath it as the fallback — a department added later with an
+ * icon nobody has drawn yet still gets a sensible picture instead of nothing.
+ * Both halves are keyed by the same names, so the database never had to know
+ * which one it is getting.
+ */
 const ICONS = {
   Activity, Ambulance, Baby, Bandage, Bed, Bone, Brain, Cake, CreditCard, Droplet, Ear, Eye,
   FlaskConical, HeartHandshake, HeartPulse, Microscope, Pill, Ribbon, ScanLine, Scissors, Smile,
   Sparkles, Stethoscope, Truck, Utensils, Venus, Wifi, Wind,
 }
 
-export const iconFor = (name) => ICONS[name] ?? Stethoscope
+export const iconFor = (name) => ANATOMY[name] ?? ICONS[name] ?? Stethoscope
 
 /** Shown on the home page when present, in this order. */
 export const HOME_DEPARTMENT_IDS = [

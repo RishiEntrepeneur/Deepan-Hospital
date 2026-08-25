@@ -64,7 +64,13 @@ export default function Logo({ compact = false, onClick, className }) {
              * still carries the hospital's name; the tagline returns as soon
              * as there is room for it.
              */
-            <span className="mt-0.5 truncate text-[11px] leading-tight text-slate-500 sm:text-xs xl:hidden 2xl:block">
+            /*
+             * `w-full` is what makes `truncate` mean anything here. The column
+             * is `items-start`, so without it the line sizes to its own text
+             * and simply runs out from under the logo — on a 390px phone it
+             * crossed the language switcher sitting beside it.
+             */
+            <span className="mt-0.5 w-full truncate text-[11px] leading-tight text-slate-500 sm:text-xs xl:hidden 2xl:block">
               {t('brand.tagline')}
             </span>
           )}
