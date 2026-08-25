@@ -59,25 +59,28 @@ anything large.
 500 appointments a day, growth is on the order of a few hundred MB a year. This
 app will not outgrow the cheapest server available on storage, ever.
 
-## 3. SMS — required for patient self-booking, ₹15,000 – ₹25,000 in year one
+## 3. SMS — optional, ₹15,000 – ₹25,000 in year one
 
-**This is not an optional extra. Without it, patients cannot sign in.**
+**This section used to say SMS was mandatory. That is no longer true**, and the
+correction is worth ₹25,000 a year, so it is spelled out rather than quietly
+edited.
 
-Signing in works by sending a one-time code to the patient's mobile. There is
-currently no channel to send it on: in development the code is shown on screen,
-and the server refuses to allow that in production for the obvious reason. So
-on a live server the code is generated and delivered nowhere. A patient can
-browse the doctor list and nothing else — not book, not even request a callback.
+Sign-in was originally a one-time code sent to the patient's mobile, which made
+an SMS channel the difference between a booking site and a doctor directory.
+It is now a phone number and a password, with an arithmetic captcha in front of
+registration and in front of repeated failed logins (`/auth/register` and
+`/auth/login` in `server/src/routes/auth.js`). No message is sent anywhere, and
+a patient can register and book today, on the live site, with nothing bought.
 
-Two ways forward:
+The one-time code route still exists and still has no delivery channel: it
+prints the code to the server log for reception to read out over the phone. It
+is a fallback for a patient who cannot manage a password, not the way in.
 
-- **Turn SMS on** (below) — patients book themselves, which is what the app was
-  built for
-- **Run it staff-assisted only** — ₹0, works today. The public site becomes a
-  doctor directory; patients phone reception, who book for them on the desk
-  screen. Everything still works, but the headline feature is switched off
+So SMS now buys **appointment reminders** — worth having, because a reminder
+the day before is the cheapest way to cut people not turning up, but not worth
+delaying a launch for.
 
-If you want patients booking their own appointments, this line is mandatory:
+If you do want it, this is what it costs:
 
 | Item | Estimate | Notes |
 | --- | --- | --- |
@@ -90,8 +93,49 @@ a week if the paperwork is clean. It is also the one thing you cannot do alone:
 registration is in the hospital's name, using the hospital's PAN, GST and
 letterhead. Step-by-step instructions are in [SMS-SETUP.md](SMS-SETUP.md).
 
-Note also that **the app has no SMS-sending code** — it was removed earlier in
-the project. Budget a few hours of development alongside the registration.
+Note also that **the app has no SMS-sending code**. It queues messages — they
+sit in the notifications table at `pending` — but nothing drains that queue.
+Budget a few hours of development alongside the registration.
+
+**Before paying for any of this, read §3a.** WhatsApp reaches more patients here
+than SMS does, costs about the same, and is not subject to DLT at all.
+
+## 3a. WhatsApp instead of SMS — probably the better answer
+
+For a hospital in Trichy, WhatsApp reaches more patients than SMS does, and it
+sidesteps the single hardest part of the SMS route.
+
+**It is not subject to TRAI DLT.** DLT governs SMS sent over Indian mobile
+carriers. WhatsApp is not that, so there is no Principal Entity registration,
+no six-character header, no operator portal, no week of waiting on three
+approvals. Meta approves message templates instead, which is a form rather than
+a compliance process.
+
+| | SMS | WhatsApp Business |
+| --- | --- | --- |
+| Regulator | TRAI DLT — entity, header, templates | Meta template approval |
+| Lead time | ~1 week, three approval steps | 1–3 days |
+| Per message | ₹0.12 – ₹0.25 | broadly comparable for utility messages |
+| Delivery | every phone, including basic handsets | smartphones with WhatsApp |
+| Read | often ignored | usually read |
+
+**What it still needs from the hospital.** Meta Business verification, using the
+hospital's documents, and a phone number that is not already on ordinary
+WhatsApp. So it is not paperwork-free — it is less paperwork, and it is faster.
+
+**Who sells it.** MSG91, Gupshup, Interakt, AiSensy and WATI all resell the
+WhatsApp Business API. MSG91 and Gupshup do both channels, so one account can
+cover WhatsApp now and SMS later without changing providers.
+
+**What it does not replace.** Basic handsets, and patients who do not use
+WhatsApp — mostly older ones, who are a real share of this hospital's list. If
+reminders matter for that group, SMS is still the only channel that reaches
+them. Sending both is a legitimate answer; so is WhatsApp with reception
+phoning the handful who cannot receive it.
+
+The sending code is the same shape either way: something that drains the
+pending queue and calls an HTTP API. Choosing WhatsApp first does not close the
+door on adding SMS later.
 
 ## 4. Online payment — a percentage, not a bill
 

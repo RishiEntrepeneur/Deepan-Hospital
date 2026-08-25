@@ -1,6 +1,8 @@
 # Turning SMS on — DLT registration, step by step
 
-Without this, patients cannot sign in to the app. See §3 of [COSTS.md](COSTS.md).
+**This is optional.** It used to be the only way to sign in; sign-in is now a
+phone number and a password, so patients can register and book without it. SMS
+buys appointment reminders. See §3 of [COSTS.md](COSTS.md).
 
 **Realistic timeline: about a week**, if the documents are in order. Each of the
 three approval steps takes roughly 24–48 working hours.
