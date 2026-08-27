@@ -31,7 +31,8 @@
     "stats": "node --env-file-if-exists=.env scripts/stats.js",
     "backup:now": "node --env-file-if-exists=.env scripts/backup-now.js",
     "backup:offsite": "bash scripts/backup-offsite.sh",
-    "backup:setup": "bash scripts/backup-setup.sh"
+    "backup:setup": "bash scripts/backup-setup.sh",
+    "klinique-visits": "node --env-file-if-exists=.env scripts/klinique-visits.js"
   },
   "dependencies": {
     "express": "^5.1.0"

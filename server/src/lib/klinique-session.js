@@ -188,6 +188,43 @@ function parsedGenderMap() {
 }
 
 /**
+ * Fetches one page from Klinique as the signed-in account.
+ *
+ * Signs in if there is no session or the stored one has aged past its TTL, and
+ * signs in once more if Klinique bounces this request back to the login — a
+ * session can lapse early on the server's say-so, and a single retry is the
+ * difference between "reads reliably" and "reads until the cookie expires".
+ *
+ * READ ONLY by construction: it issues a GET and returns the HTML. Nothing
+ * here can write to a patient's record.
+ */
+export async function fetchPage(path) {
+  const target = url(path)
+
+  const get = async () =>
+    fetch(target, {
+      headers: { Cookie: session.cookie ?? '', Accept: 'text/html' },
+      redirect: 'manual',
+      signal: timeout(),
+    })
+
+  if (!session.cookie || Date.now() - session.signedInAt > SESSION_TTL_MS) await signIn()
+
+  let res = await get()
+  // A redirect to the sign-in page is Devise saying the session is gone.
+  const bounced =
+    (res.status === 302 || res.status === 303) && /sign_in/.test(res.headers.get('location') ?? '')
+  if (bounced) {
+    resetSession()
+    await signIn()
+    res = await get()
+  }
+
+  if (!res.ok) throw new Error(`${path} returned ${res.status}`)
+  return res.text()
+}
+
+/**
  * Reasons this booking must not be submitted automatically.
  *
  * Everything here is a value we would otherwise send to Klinique while only
