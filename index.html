@@ -13,6 +13,32 @@
       content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
     />
     <meta name="theme-color" content="#0e6a5c" />
+
+    <!--
+      Do not let the browser translate this page.
+
+      The site is written in English, Tamil and Hindi by people, and carries its
+      own switcher. Chrome sees `lang="ta"`, decides a reader whose browser is
+      set to English needs help, and machine-translates the whole page back over
+      the top of the human translation.
+
+      The result is worse than the original in every way. "Now accepting online
+      appointments" — written as such in English, and translated properly into
+      Tamil — comes back through the machine as "Online meeting registration has
+      begun". A department called Paediatrics & Neonatology becomes "Child Health
+      and Infant Care". Even the language buttons are rewritten: தமிழ் and हिंदी
+      turn into "Tamil" and "Hindi", so the one control that would let the reader
+      fix it no longer looks like itself.
+
+      On a hospital site the stakes are not only aesthetic. Machine translation
+      of a department name, a drug, or an instruction about when to come in is
+      not something anyone here has checked, and it appears with no indication
+      that a machine wrote it.
+
+      So: this page declines translation. The reader still has three languages —
+      ours, correct, one click away.
+    -->
+    <meta name="google" content="notranslate" />
     <meta
       name="description"
       content="Deepan Hospital — book appointments with our doctors online. தீபன் மருத்துவமனை — மருத்துவரிடம் சந்திப்பு பதிவு செய்யுங்கள்."
