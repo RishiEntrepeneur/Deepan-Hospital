@@ -147,6 +147,18 @@ else
   fi
 fi
 
+#
+# Readable by the app and by root, and by nobody else.
+#
+# This file was being left at whatever the umask gave it — 644, world-readable.
+# Everything secret the server has is in it: the database path, the cookie
+# secret, and now a login to Klinique, which is the hospital's actual clinical
+# system. Any account on this machine could read all of it. Set every time, not
+# only on first write, so servers deployed before this are fixed by the next
+# deploy rather than staying open until somebody remembers.
+#
+chmod 600 "$ENV_FILE"
+
 say "7/9  The database"
 FIRST_RUN=0
 if [ ! -f "$DATA_DIR/deepan.db" ]; then
